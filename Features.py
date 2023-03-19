@@ -15,18 +15,40 @@ class Features:
 
         self.ref = db.reference('/')
 
+    """
+    This function will add friend based from friend ID
+    INPUT: CurrentUserID, FriendUserID
+    OUTPUT: Error if exists
+    """
     def addFriend(self, curr, username):
-        # Set pointer to users table
-        user_ref = self.ref.child('users').child('-NQtPPeETgTXKu49GUjr').get()
-        print(user_ref)
-        # users = user_ref.get()
+        # Safe Guard to prevent add themselves
+        if curr == username:
+            return "You can't add yourself!"
         
-        # currUser = user_ref.order_by_child('username')
-        # print(user_ref.order_by_child('users').equal_to("Oak").get())
-        # try:
-        #     for user in users.keys():
-        #         if users[user]['username'] == username:
-        #             return "Success"
-        #     return "Account not found"
-        # except:
-        #     return "No account found in DB"
+        # Set pointer to users
+        users_ref = self.ref.child('users')
+        
+        # Query current user
+        currUser = self.ref.child('users').child(curr)
+        
+        # Query all users
+        users = users_ref.get()
+        
+        # Update database to show sending request on current user and incoming on receiver
+        try:
+            for user in users.keys():
+                if user == username:
+                    currUser.update({
+                        'pending' : username
+                    })
+                    incomingUser = self.ref.child('users').child(username)
+                    incomingUser.update({
+                        'incoming' : curr
+                    })
+                    return "Success"
+            return "No user with that ID"
+        except:
+            pass
+    
+    def rejectFriendRequest(self):
+        pass

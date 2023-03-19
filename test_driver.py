@@ -24,10 +24,12 @@ def testDatabase():
 
 def testFeatures():
     func = Features()
-    #userInput = int(input("1) Add friend \n2) Remove friend \n> "))
-    curUser = "Oak"
+    #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
+    curUser = "Oak1"
     #name = input("Whats friend ID? >")
-    func.addFriend(curUser,"name")
+    err = func.addFriend(curUser,"Oak12")
+    if err:
+        print(err)
     
-#testFeatures()
-testDatabase()
+testFeatures()
+#testDatabase()
