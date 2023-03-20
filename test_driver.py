@@ -26,8 +26,8 @@ def testFeatures():
     func = Features()
     #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
     curUser = "Oak1"
-    #name = input("Whats friend ID? >")
-    err = func.addFriend(curUser,"Oak12")
+    name = input("Whats friend ID? >")
+    err = func.addFriend(curUser,name)
     if err:
         print(err)
     

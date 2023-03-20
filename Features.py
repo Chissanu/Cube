@@ -28,18 +28,28 @@ class Features:
         # Set pointer to users
         users_ref = self.ref.child('users')
         
-        # Query current user
-        currUser = self.ref.child('users').child(curr)
+        # Set Reference to current user
+        currUserRef = self.ref.child('users').child(curr)
+
+        # Query current user data
+        currUser = currUserRef.get()
         
         # Query all users
         users = users_ref.get()
+
+        currUserPending = currUser['pending']
+        if type(currUserPending) is not list:
+            currUserPending = []
+            currUserPending.append(currUser['pending'])
         
-        # Update database to show sending request on current user and incoming on receiver
+        #Update database to show sending request on current user and incoming on receiver
         try:
             for user in users.keys():
                 if user == username:
-                    currUser.update({
-                        'pending' : username
+                    if username not in currUserPending:
+                        currUserPending.append(username)
+                    currUserRef.update({
+                        'pending' : currUserPending
                     })
                     incomingUser = self.ref.child('users').child(username)
                     incomingUser.update({
@@ -47,8 +57,8 @@ class Features:
                     })
                     return "Success"
             return "No user with that ID"
-        except:
-            pass
+        except Exception as e:
+            print(e)
     
     def rejectFriendRequest(self):
         pass
