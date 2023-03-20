@@ -6,7 +6,7 @@ class app:
     def __init__(self, master):
         self.master = master
         self.master.geometry("800x800")
-        self.login()
+        self.main_menu()
     
     def login(self):
         for i in self.master.winfo_children():
@@ -43,6 +43,17 @@ class app:
         tk.Label(self.frame2, text="").pack()
         self.login_btn = tk.Button(self.frame2, text="Go to Login", command=self.login)
         self.login_btn.pack()
+
+    def main_menu(self):
+        for i in self.master.winfo_children():
+            i.destroy()
+        self.menu = Frame(self.master, width=300, height=300)
+        # self.menu.title("Account login")
+        tk.Label(text="Select Your Choice", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
+        tk.Label(text="").pack()
+        tk.Button(text="Login", height="2", width="30", command = self.login).pack()
+        tk.Label(text="").pack()
+        tk.Button(text="Register", height="2", width="30", command= self.register).pack()
 
 if __name__ == '__main__':
     root = Tk()
