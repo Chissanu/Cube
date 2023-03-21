@@ -14,7 +14,11 @@ class Database:
         })
         self.ref = db.reference('/')
 
-    def createAccount(self, username, password):
+    def createAccount(self, username, name, password):
+        username = username.lower()
+        # Check if username is empty
+        if username == "":
+            return "Name must not be empty!"
         # Current Date and Time
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y")
@@ -37,9 +41,11 @@ class Database:
         
         # Create User in DB
         new_user_ref.set({
-            'username' : username,
+            'name' : name,
             'password' : password,
-            'friends'  : [],
+            'pending'  : [""],
+            'incoming' : [""],
+            'friends'  : [""],
             'created'  : date_time
         })
 

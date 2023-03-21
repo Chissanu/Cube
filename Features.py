@@ -14,6 +14,12 @@ class Features:
         })
 
         self.ref = db.reference('/')
+        
+    def checkNull(self,arr):
+        for val in arr:
+            if val == "":
+                arr.pop(0)
+        return arr
 
     """
     This function will add friend based from friend ID
@@ -21,6 +27,10 @@ class Features:
     OUTPUT: Error if exists
     """
     def addFriend(self, curr, username):
+        # Change input to lowercase
+        curr = curr.lower()
+        username = username.lower()
+        
         # Safe Guard to prevent add themselves
         if curr == username:
             return "You can't add yourself!"
@@ -37,23 +47,32 @@ class Features:
         # Query all users
         users = users_ref.get()
 
+        # Check if user have 1 pending or multiple if single it will convert to array and put in array
         currUserPending = currUser['pending']
-        if type(currUserPending) is not list:
-            currUserPending = []
-            currUserPending.append(currUser['pending'])
+        currUserPending = self.checkNull(currUserPending)
         
         #Update database to show sending request on current user and incoming on receiver
         try:
             for user in users.keys():
                 if user == username:
+                    # Check if user alreadt add this friend
                     if username not in currUserPending:
                         currUserPending.append(username)
+                    
+                    # Update value to DB
                     currUserRef.update({
                         'pending' : currUserPending
                     })
-                    incomingUser = self.ref.child('users').child(username)
-                    incomingUser.update({
-                        'incoming' : curr
+                    
+                    # Set reference to friend data
+                    friendIncomingRef = self.ref.child('users').child(username)
+                    
+                    # Query incoming friend request of the friend
+                    friendIncoming = friendIncomingRef.get()['incoming']
+                    friendIncoming = self.checkNull(friendIncoming)
+                    friendIncoming.append(curr)
+                    friendIncomingRef.update({
+                        'incoming' : friendIncoming
                     })
                     return "Success"
             return "No user with that ID"
