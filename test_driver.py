@@ -27,9 +27,19 @@ def testFeatures():
     #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
     curUser = "c2"
     name = input("Whats friend ID? >")
-    err = func.addFriend(curUser,name)
+    #err = func.addFriend(curUser,name)
+    err = func.acceptFriendRequest(curUser, name)
     if err:
         print(err)
-    
+
+def genUser():
+    db = Database()
+    for i in range(3):
+        username = 'c' + str(i + 1)
+        name = username
+        password = str(i + 1)
+        db.createAccount(username,name,password)
+
+#genUser()       
 testFeatures()
 #testDatabase()
