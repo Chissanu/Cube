@@ -25,10 +25,11 @@ def testDatabase():
 def testFeatures():
     func = Features()
     #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
-    curUser = "c2"
+    curUser = "c1"
     name = input("Whats friend ID? >")
     #err = func.addFriend(curUser,name)
-    err = func.acceptFriendRequest(curUser, name)
+    #err = func.acceptFriendRequest(curUser, name)
+    err = func.rejectFriendRequest(curUser,name)
     if err:
         print(err)
 

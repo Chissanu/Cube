@@ -143,5 +143,35 @@ class Features:
                 return "Accepted"
         
     
-    def rejectFriendRequest(self):
-        pass
+    def rejectFriendRequest(self, user, target):
+        # Format user and target to lowercase
+        user = user.lower()
+        target = target.lower()
+        
+        # Query current user data
+        currUserRef = self.ref.child('users').child(user)
+        currUserIncoming = currUserRef.get()['incoming']
+        
+        # Query target data
+        targetUserRef = self.ref.child('users').child(target)
+        targetUserPending = targetUserRef.get()['pending']
+        
+        for val in currUserIncoming:
+            if val == target:
+                # Remove from incoming array for current user
+                currUserIncoming.remove(target)
+                currUserIncoming = self.addNull(currUserIncoming)
+                
+                # Remove from pending array for target
+                targetUserPending.remove(user)
+                targetUserPending = self.addNull(targetUserPending)
+                
+                currUserRef.update({
+                    'incoming' : currUserIncoming
+                })
+                
+                targetUserRef.update({
+                    'pending' : targetUserPending
+                })
+                return "Success"
+        
