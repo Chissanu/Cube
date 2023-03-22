@@ -12,5 +12,16 @@ class Chat:
         })
 
         self.ref = db.reference('/')
+        
+    def sendChat(self, user, target):
+        # Format userinput to lowercase
+        user = user.lower()
+        target = target.user()
+        
+        currUserRef = self.ref.child('users').child(user)
+        
+    def retrieveChat(self):
+        pass
+        
     
     
