@@ -22,30 +22,32 @@ class app:
         self.main_menu()
 
 
-    def login(self):
+    def login(self):  
+        #   Setting up grid and frame for button widgets/ texts
+        #   comment these out for now, as they messed with the alignment of widgets for tkinter
+        # Grid.columnconfigure(root, index = 0, weight = 1)
+        # Grid.rowconfigure(root, 0, weight = 1)
+
         for i in self.master.winfo_children():
             i.destroy()
-        self.frame1 = Frame(self.master, width=300, height=300)     
-        self.frame1.pack()
-        self.reg_txt = tk.Label(self.frame1, text='login', bg="blue", width="300", height="2")
-        self.reg_txt.pack()
-        
-        # this will create a label widget
-        self.l1 = tk.Label(self.frame1, text = "First:")
-        self.l2 = tk.Label(self.frame1, text = "Second:")
 
-        self.l1.pack()
-        self.l1_label = Entry(self.frame1, bd=5)
-        self.l1_label.pack()
+        self.arrow_logo = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/material-symbols_arrow-back.png"), size=(50, 50))
+        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color='#D9D9D9', command=self.main_menu)
+        arrow_label.grid(row = 0, column = 0, sticky=tk.NW)
 
-        self.l2.pack()
-        self.l2_label = Entry(self.frame1, bd=5, show='*')
-        self.l2_label.pack()
 
-        tk.Label(self.frame1, text="").pack()
-        self.register_btn = tk.Button(self.frame1, text="Go to Register", command=self.register)
-        self.register_btn.pack()
+    def register(self):  
+        #   Setting up grid and frame for button widgets/ texts
+        # Grid.columnconfigure(root, index = 0, weight = 1)
+        # Grid.rowconfigure(root, 0, weight = 1)
 
+        for i in self.master.winfo_children():
+            i.destroy()
+
+        self.arrow_logo = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/material-symbols_arrow-back.png"), size=(50, 50))
+        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color='#D9D9D9', command=self.main_menu)
+        arrow_label.grid(row = 0, column = 0, sticky=tk.NW)
+    
     
     def main_menu(self):
         #   Setting up grid and frame for button widgets/ texts
@@ -58,7 +60,7 @@ class app:
         #   Title 
         tk.Label(self.master, text="Cube", font=("Inter", 64)).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
         
-        #   Cube img
+        #   Cube logo
         self.imge = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/vaadin_cube.png"), size=(220, 220))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.imge)
         img_label.grid(column=1, row=1)
@@ -69,7 +71,7 @@ class app:
         bt1 = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color="#000000", fg_color='#D9D9D9', width=350, height=75, command=self.login)
         bt1.grid(column=1, row=2, rowspan=2, sticky=tk.S, pady=30)
 
-        bt2 = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color="#000000", fg_color='#D9D9D9', width=350, height=75)
+        bt2 = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color="#000000", fg_color='#D9D9D9', width=350, height=75, command=self.register)
         bt2.grid(column=1, row=3, pady=100)
 
         bt3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color="#FFFFFF", fg_color='#D9D9D9', width=250, height=75, command=root.destroy)
