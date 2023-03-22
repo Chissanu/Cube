@@ -14,6 +14,24 @@ class Features:
         })
 
         self.ref = db.reference('/')
+    
+    def containNulls(self, arr):
+        for val in arr:
+            if val == "":
+                return True
+            
+    def addNull(self,arr):
+        if not arr:
+            arr = [""]
+            return arr
+        else:
+            return arr
+      
+    def removeNull(self,arr):
+        for val in arr:
+            if val == "":
+                arr.pop(0)
+        return arr
 
     """
     This function will add friend based from friend ID
@@ -21,6 +39,10 @@ class Features:
     OUTPUT: Error if exists
     """
     def addFriend(self, curr, username):
+        # Change input to lowercase
+        curr = curr.lower()
+        username = username.lower()
+        
         # Safe Guard to prevent add themselves
         if curr == username:
             return "You can't add yourself!"
@@ -28,27 +50,98 @@ class Features:
         # Set pointer to users
         users_ref = self.ref.child('users')
         
-        # Query current user
-        currUser = self.ref.child('users').child(curr)
+        # Set Reference to current user
+        currUserRef = self.ref.child('users').child(curr)
+
+        # Query current user data
+        currUser = currUserRef.get()
         
         # Query all users
         users = users_ref.get()
+
+        # Check if user have 1 pending or multiple if single it will convert to array and put in array
+        currUserPending = currUser['pending']
+        currUserPending = self.removeNull(currUserPending)
         
-        # Update database to show sending request on current user and incoming on receiver
+        #Update database to show sending request on current user and incoming on receiver
         try:
             for user in users.keys():
                 if user == username:
-                    currUser.update({
-                        'pending' : username
+                    # Check if user alreadt add this friend
+                    if username not in currUserPending:
+                        currUserPending.append(username)
+                    
+                    # Update value to DB
+                    currUserRef.update({
+                        'pending' : currUserPending
                     })
-                    incomingUser = self.ref.child('users').child(username)
-                    incomingUser.update({
-                        'incoming' : curr
+                    
+                    # Set reference to friend data
+                    friendIncomingRef = self.ref.child('users').child(username)
+                    
+                    # Query incoming friend request of the friend
+                    friendIncoming = friendIncomingRef.get()['incoming']
+                    friendIncoming = self.removeNull(friendIncoming)
+                    friendIncoming.append(curr)
+                    friendIncomingRef.update({
+                        'incoming' : friendIncoming
                     })
                     return "Success"
             return "No user with that ID"
-        except:
-            pass
+        except Exception as e:
+            print(e)
+            
+    def acceptFriendRequest(self, user, target):
+        # Format user and target to lowercase
+        user = user.lower()
+        target = target.lower()
+        
+        # Query current user data
+        currUserRef = self.ref.child('users').child(user)
+        currUserIncoming = currUserRef.get()['incoming']
+        currUserFriends = currUserRef.get()['friends']
+        
+        # Query target user data
+        targetUserRef = self.ref.child('users').child(target)
+        targetUserPending = targetUserRef.get()['pending']
+        targetUserFriend = targetUserRef.get()['friends']
+        
+        # Check if list has empty string
+        err = self.containNulls(currUserIncoming)
+        if err:
+            return "You have no friend request!"
+        
+        for val in currUserIncoming:
+            if val == target:
+                # Remove from incoming array
+                currUserIncoming.remove(target)
+                
+                # Append to friend list
+                currUserFriends = self.removeNull(currUserFriends)
+                currUserFriends.append(target)
+                
+                # Check if list is empty
+                currUserIncoming = self.addNull(currUserIncoming)
+                
+                # Update current user friend list 
+                currUserRef.update({
+                    'incoming' : currUserIncoming,
+                    'friends'  : currUserFriends
+                })
+                
+                # Remove empty string and append to target friend list
+                targetUserFriend = self.removeNull(targetUserFriend)
+                targetUserFriend.append(user)
+                
+                # Remove from pending and check if there is value in list left
+                targetUserPending.remove(user)
+                targetUserPending = self.addNull(targetUserPending)
+                targetUserRef.update({
+                    'friends' : targetUserFriend,
+                    'pending' : targetUserPending
+                })
+                return "Accepted"
+        
     
     def rejectFriendRequest(self):
         pass
