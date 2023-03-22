@@ -1,14 +1,27 @@
 from tkinter import *
-# from tkinter import ttk
+from tkinter.ttk import *
 import tkinter as tk
+import customtkinter
+from PIL import Image, ImageTk
 
 
 class app:
     def __init__(self, master):
         self.master = master
-        self.master.geometry("1920x1080")
+        window_width = 1080
+        window_height = 1920
+        # get the screen dimension
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
+
+        # find the center point
+        center_x = int(screen_width/2 - window_width / 2)
+        center_y = int(screen_height/2 - window_height / 2)
+        self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        self.master.resizable(0, 0)
         self.main_menu()
-    
+
+
     def login(self):
         for i in self.master.winfo_children():
             i.destroy()
@@ -34,37 +47,33 @@ class app:
         self.register_btn.pack()
 
     
-    def register(self):
-        for i in self.master.winfo_children():
-            i.destroy()
-        self.frame2 = Frame(self.master, width=300, height=300)
-        self.frame2.pack()
-        self.reg_txt2 = tk.Label(self.frame2, text='register')
-        self.reg_txt2.pack()
-
-        tk.Label(self.frame2, text="").pack()
-        self.login_btn = tk.Button(self.frame2, text="Go to Login", command=self.login)
-        self.login_btn.pack()
-
-        tk.Label(self.frame2, text="").pack()
-        self.quit_txt = tk.Button(self.frame2, text='press to quit program', command=root.destroy)
-        self.quit_txt.pack(pady=10)
-
-        # tk.Label(text=root.winfo_screenwidth()).pack()
-        # tk.Label(text=root.winfo_screenheight()).pack()
-
-
     def main_menu(self):
+        #   Setting up grid and frame for button widgets/ texts
+        Grid.columnconfigure(root,1,weight=1)
+        Grid.rowconfigure(root,3,weight=1)
+        Grid.rowconfigure(root,4,weight=1)
+
         for i in self.master.winfo_children():
             i.destroy()
-        self.menu = Frame(self.master, width=600, height=600)
-        # self.menu.title("Account login")
+        #   Title 
+        tk.Label(self.master, text="Cube", font=("Inter", 64)).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
         
-        tk.Label(text="Select Your Choice", bg="blue", width="400", height="2", font=("Calibri", 24)).pack()
-        tk.Label(text="\n").pack()
-        tk.Button(text="Login", height="5", width="40", command = self.login).pack()
-        tk.Label(text="\n\n").pack()
-        tk.Button(text="Register", height="5", width="40", command= self.register).pack()
+        #   Cube img
+        self.imge = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/vaadin_cube.png"), size=(220, 220))
+        img_label = customtkinter.CTkLabel(self.master, text="", image=self.imge)
+        img_label.grid(column=1, row=1)
+
+        #   Menu texts/ three buttons: Login, Register, & Quit
+        tk.Label(self.master, text="Welcome\nglad to see you!\n\n\n\n", font=("Inter", 25)).grid(column=1, row=2, padx=1, pady=10, rowspan=2, sticky=tk.N)
+
+        bt1 = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color="#000000", fg_color='#D9D9D9', width=350, height=75, command=self.login)
+        bt1.grid(column=1, row=2, rowspan=2, sticky=tk.S, pady=30)
+
+        bt2 = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color="#000000", fg_color='#D9D9D9', width=350, height=75)
+        bt2.grid(column=1, row=3, pady=100)
+
+        bt3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color="#FFFFFF", fg_color='#D9D9D9', width=250, height=75, command=root.destroy)
+        bt3.grid(column=1, row=4)
 
 if __name__ == '__main__':
     try:
