@@ -1,7 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
-from datetime import datetime
 
 class Features:
     def __init__(self):
@@ -15,18 +14,21 @@ class Features:
 
         self.ref = db.reference('/')
     
+    # Chedck if value contain empty string
     def containNulls(self, arr):
         for val in arr:
             if val == "":
                 return True
-            
+    
+    # Check if array is empty if yes it will add empty string to represent NULL
     def addNull(self,arr):
         if not arr:
             arr = [""]
             return arr
         else:
             return arr
-      
+    
+    # Remove empty string and return empty array
     def removeNull(self,arr):
         for val in arr:
             if val == "":
@@ -90,7 +92,13 @@ class Features:
             return "No user with that ID"
         except Exception as e:
             print(e)
-            
+    
+    """
+    This function will accept friend request by query user and target data
+    and check if possible or not then update data in DB
+    INPUT: CurrentUser, TargetUser
+    OUTPUT: Error if exists
+    """      
     def acceptFriendRequest(self, user, target):
         # Format user and target to lowercase
         user = user.lower()
@@ -142,6 +150,42 @@ class Features:
                 })
                 return "Accepted"
         
-    
-    def rejectFriendRequest(self):
-        pass
+    """
+    This function will reject friend request by quering current and target user
+    to check possibility and it will remvoe incoming friend request and pending
+    friend request
+    INPUT: CurrentUser, TargetUser
+    OUTPUT: Error if exists
+    """
+    def rejectFriendRequest(self, user, target):
+        # Format user and target to lowercase
+        user = user.lower()
+        target = target.lower()
+        
+        # Query current user data
+        currUserRef = self.ref.child('users').child(user)
+        currUserIncoming = currUserRef.get()['incoming']
+        
+        # Query target data
+        targetUserRef = self.ref.child('users').child(target)
+        targetUserPending = targetUserRef.get()['pending']
+        
+        for val in currUserIncoming:
+            if val == target:
+                # Remove from incoming array for current user
+                currUserIncoming.remove(target)
+                currUserIncoming = self.addNull(currUserIncoming)
+                
+                # Remove from pending array for target
+                targetUserPending.remove(user)
+                targetUserPending = self.addNull(targetUserPending)
+                
+                currUserRef.update({
+                    'incoming' : currUserIncoming
+                })
+                
+                targetUserRef.update({
+                    'pending' : targetUserPending
+                })
+                return "Success"
+        

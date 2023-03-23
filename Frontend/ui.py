@@ -2,8 +2,10 @@ from tkinter import *
 from tkinter.ttk import *
 import tkinter as tk
 import customtkinter
+import os
 from PIL import Image, ImageTk
 
+CURRENT_PATH = os.getcwd()
 
 class app:
     def __init__(self, master):
