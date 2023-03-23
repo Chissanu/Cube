@@ -46,7 +46,7 @@ class app:
         for i in self.master.winfo_children():
             i.destroy()
 
-        self.arrow_logo = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/material-symbols_arrow-back.png"), size=(50, 50))
+        self.arrow_logo = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color='#D9D9D9', command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, sticky=tk.NW)
     
@@ -63,7 +63,7 @@ class app:
         tk.Label(self.master, text="Cube", font=("Inter", 64)).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
         
         #   Cube logo
-        self.imge = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/vaadin_cube.png"), size=(220, 220))
+        self.imge = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(220, 220))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.imge)
         img_label.grid(column=1, row=1)
 
