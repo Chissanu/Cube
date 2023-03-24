@@ -16,7 +16,7 @@ pip3 install torchaudio --index-url https://download.pytorch.org/whl/cu118
 ## Step 1: Install the Pytorch libraries (Others) (Low Performance).
 
 ```shell
-pip3 install torch --index-url
+pip3 install torch
 pip3 install torchvision
 pip3 install torchaudio
 ```
