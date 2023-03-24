@@ -3,7 +3,7 @@
 # Download the models here:
 ## OneDrive - https://kmitlthailand-my.sharepoint.com/:f:/g/personal/64011532_kmitl_ac_th/Eu1vFiHfwXFGqmF67tWw_ogBKCKi1wPFEpRUrqMYaoFldw?e=QEIieH
 
-# Download the CUDA Support for NVIDIA GPUs here: https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11
+## Download the CUDA Support for NVIDIA GPUs here: https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11
 
 # Testing the model via command line
 
