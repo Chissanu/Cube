@@ -13,6 +13,14 @@ pip3 install torchvision --index-url https://download.pytorch.org/whl/cu118
 pip3 install torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
+## Step 1: Install the Pytorch libraries (Others) (Low Performance).
+
+```shell
+pip3 install torch --index-url
+pip3 install torchvision
+pip3 install torchaudio
+```
+
 ## Step 2: Clone the YOLOv5 repository.
 
 ```shell
