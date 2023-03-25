@@ -36,19 +36,19 @@ pip3 install -qr requirements.txt
 ## Picture:
 
 ```shell
-python detect.py --weights runs/train/exp/weights/best.pt --img 416 --conf 0.5 --source <your_picture_directory>
+python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source <your_picture_directory>
 ```
 
 ## Video:
 
 ```shell
-python detect.py --weights runs/train/exp/weights/best.pt --img 416 --conf 0.5 --source <your_video_directory>
+python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source <your_video_directory>
 ```
 
 ## Webcam (Live Video Feed):
 
 ```shell
-python detect.py --weights runs/train/exp/weights/best.pt --img 416 --conf 0.5 --source 0
+python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source 0
 ```
 
 ### Note: Other than the webcam detection, the video and picture detection can provide an output with drawn landmarks. The directory of that file will be shown in the command line output.
