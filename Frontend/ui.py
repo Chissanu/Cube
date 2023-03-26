@@ -34,7 +34,7 @@ class app:
         for i in self.master.winfo_children():
             i.destroy()
 
-        self.arrow_logo = customtkinter.CTkImage(Image.open("C:/Users/mrput/Documents/VSProject/Cuby/logostorage/material-symbols_arrow-back.png"), size=(50, 50))
+        self.arrow_logo = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color='#D9D9D9', command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, sticky=tk.NW)
 
