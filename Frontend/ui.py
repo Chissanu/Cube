@@ -33,10 +33,28 @@ class app:
 
         for i in self.master.winfo_children():
             i.destroy()
-
+        #   Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color='#D9D9D9', command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, sticky=tk.NW)
+
+        #   Cube logo
+        self.imge = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(180, 180))
+        img_label = customtkinter.CTkLabel(self.master, text="", image=self.imge)
+        img_label.grid(column=1, row=0, pady=35)
+
+        tk.Label(self.master, text="Login", font=("Inter", 40), bg='#B9D6F2').grid(column=1, row=1, pady=5, sticky=tk.N)
+
+        #   Insert text widget/ To add in sending data to firebase admin things after actual login attempt
+        entry_1 = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color='#989898', fg_color="#FFFFFF", width=300, height=45)
+        entry_1.grid(column=1, row=2, rowspan=2, sticky=tk.N, pady=25)
+
+        entry_2 = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color='#989898', fg_color="#FFFFFF", width=300, height=45)
+        entry_2.grid(column=1, row=2, rowspan=2, pady=30)
+
+        #   Login button
+        bottom_ = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color="#FFFFFF", fg_color='#051739', width=300, height=50, command=root.destroy)
+        bottom_.grid(column=1, row=4)
 
 
     def register(self):  
@@ -47,15 +65,45 @@ class app:
 
         for i in self.master.winfo_children():
             i.destroy()
-
+        #   Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color='#D9D9D9', command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, sticky=tk.NW)
     
-    
+        #   Cube logo
+        self.imge = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(180, 180))
+        img_label = customtkinter.CTkLabel(self.master, text="", image=self.imge)
+        img_label.grid(column=1, row=0, pady=35)
+
+        tk.Label(self.master, text="Register", font=("Inter", 40), bg='#B9D6F2').grid(column=1, row=1, pady=5)
+
+        #   Insert text widget/ To add in sending data to firebase admin things after actual login attempt
+        entry_1 = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color='#989898', fg_color="#FFFFFF", width=300, height=45)
+        # entry_1.grid(column=1, row=2, rowspan= 2, sticky=tk.N, pady=25)
+        entry_1.grid(column=1, row=2, pady=15)
+
+        entry_2 = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color='#989898', fg_color="#FFFFFF", width=300, height=45)
+        # entry_2.grid(column=1, row=2, pady=25)
+        entry_2.grid(column=1, row=3, pady=15)
+
+        entry_3 = customtkinter.CTkEntry(self.master, placeholder_text="Password", font=("Inter", 20), corner_radius=15, text_color='#989898', fg_color="#FFFFFF", width=300, height=45)
+        # entry_3.grid(column=1, row=3, rowspan= 2, sticky=tk.N, pady=25)
+        entry_3.grid(column=1, row=4, pady=15)
+
+        entry_4 = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", font=("Inter", 20), corner_radius=15, text_color='#989898', fg_color="#FFFFFF", width=300, height=45)
+        # entry_4.grid(column=1, row=3, pady=25)
+        entry_4.grid(column=1, row=5, pady=15)
+
+        #   Register button
+        bottom_ = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color="#FFFFFF", fg_color='#051739', width=300, height=50, command=root.destroy)
+        bottom_.grid(column=1, row=8)
+
+
     def main_menu(self):
         #   Setting up grid and frame for button widgets/ texts
+        Grid.columnconfigure(root,0,weight=1)
         Grid.columnconfigure(root,1,weight=1)
+        Grid.columnconfigure(root,2,weight=1)
         Grid.rowconfigure(root,3,weight=1)
         Grid.rowconfigure(root,4,weight=1)
 
@@ -81,6 +129,7 @@ class app:
         bt3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color="#000000", fg_color='#FFFFFF', width=250, height=75, command=root.destroy)
         bt3.grid(column=1, row=4)
 
+
 if __name__ == '__main__':
     try:
         from ctypes import windll
@@ -88,6 +137,7 @@ if __name__ == '__main__':
         windll.shcore.SetProcessDpiAwareness(1)
     finally:
         root = Tk()
+        # root = customtkinter.CTk()                    #   TO DO: may change the app from using Tk to customtkinterCTk as app frame instead
         root.attributes('-fullscreen', True)
         app(root)
         root.mainloop()
