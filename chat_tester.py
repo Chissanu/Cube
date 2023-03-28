@@ -1,46 +1,54 @@
-from Database import Database
-from Features import Features
+from Database import Database as dbb
+from Features import Features as ft
+import firebase_admin
+from firebase_admin import db
+from firebase_admin import credentials
+import Chat
 
-"""
-This function is for creating an account and it will verify if
-the user is already exists in the DB or not
-INPUT: username, password
-OUTPUT: Error if exists
-"""
-def testDatabase():
-    db = Database()
-    userInput = int(input("1) Login \n2) Register \n> "))
-    name = input("What is your name? >")
-    username = input("Whats username? >")
-    password = input("Whats pass? >")
-
-    if userInput == 1:
-        err = db.login(username,password)
-    else:
-        err = db.createAccount(username,name,password)
-    if err:
-        print(err)
+class chat_test:
+    def __init__(self):
+        self.username = "Tonkhaow"
+        self.name = "Ton"
+        self.password = "1234"
+        self.friendUsername = "Nigger"
+        self.friendName = "Nigg"
+        self.friendPassword = "1234"
+        # Fetch the service account key JSON file contents
+        cred = credentials.Certificate("db_key.json")
+        # Initialize the app with a service account, granting admin privileges
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/'
+        })
+        self.ref = db.reference('/')
+        self.chat = None
+        self.database = dbb()
         
-
-def testFeatures():
-    func = Features()
-    #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
-    curUser = "c1"
-    name = input("Whats friend ID? >")
-    #err = func.addFriend(curUser,name)
-    #err = func.acceptFriendRequest(curUser, name)
-    err = func.rejectFriendRequest(curUser,name)
-    if err:
-        print(err)
-
-def genUser():
-    db = Database()
-    for i in range(3):
-        username = 'c' + str(i + 1)
-        name = username
-        password = str(i + 1)
-        db.createAccount(username,name,password)
-
-#genUser()       
-testFeatures()
-#testDatabase()
+    def register(self):
+        self.database.createAccount(self.username, self.name, self.password)
+        self.database.createAccount(self.friendUsername, self.friendName, self.friendPassword)
+        
+    def login(self):
+        self.database.login(self.username, self.password)
+        self.ref = self.database.reference('/users/'+ self.username)
+        
+    def createChatroom(self):
+        self.chat = Chat.Chat(self.username)
+        try:
+            self.chat.loadchat(self.friendUsername)
+        except:
+            self.chat.createChatroom(self.friendUsername)
+            
+    def enterChatRoom(self):
+        thread = Chat.CustomThread(self.friendUsername, self.chat)
+        thread.start()
+        while True:
+            message = input("Enter message: ")
+            self.chat.send(message, self.friendUsername)
+            
+test = chat_test()
+test.register()
+test.login()
+test.createChatroom()
+test.enterChatRoom()
+        
+        
