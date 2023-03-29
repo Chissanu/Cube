@@ -12,6 +12,7 @@ class chat_test:
         self.ref = "/"
         self.database = dbb.Database()
         self.features = dbb.Features()
+        #self.chat = dbb.Chat()
         
     def register(self):
         self.database.createAccount(self.username, self.name, self.password)

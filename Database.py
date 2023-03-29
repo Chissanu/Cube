@@ -52,12 +52,15 @@ class Database:
         })
 
     def login(self, username, password):
+        username = username.lower()
+        print(username)
+        password = str(password)
         # Set pointer to users table
         user_ref = self.ref.child('users')
         users = user_ref.get()
         try:
             for user in users.keys():
-                if users[user]['username'] == username and users[user]['password'] == password:
+                if user == username and users[user]['password'] == password:
                     return db.reference("/users/" + username)
             return "Wrong password or Account not found!"
         except:
@@ -87,3 +90,24 @@ class Features:
     
     def rejectFriendRequest(self, user, target):
         return self.features.rejectFriendRequest(self, user, target)
+    
+class Chat:
+    def __init__(self, username):
+        self.ref = db.reference("/")
+        self.chat = chat.Chat(username, self.ref)
+        self.thread = None
+        
+    def createChatroom(self, friend):
+        return self.chat.createChatroom(self, friend)
+    
+    def send(self, message, friend):
+        return self.chat.send(message, friend)
+    
+    def loadchat(self, friend):
+        return self.chat.loadchat(friend)
+    
+    def countMessage(self, friend):
+        return self.chat.countMessage(friend)
+    
+    def customThread(self, friend, chatroom):
+        self.thread = chat.CustomThread(friend, chatroom)
