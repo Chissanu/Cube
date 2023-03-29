@@ -3,7 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 from datetime import datetime
 from Libs.Features import Features
-from Libs.Chat import Chat
+from Libs.Chat import Chat, CustomThread
 
 class Database:
     def __init__(self):
@@ -18,6 +18,7 @@ class Database:
         
         self.features = Features(self.ref)
         self.chat = Chat(self.ref)
+        self.thread = None
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -56,7 +57,6 @@ class Database:
 
     def login(self, username, password):
         username = username.lower()
-        print(username)
         password = str(password)
         # Set pointer to users table
         user_ref = self.ref.child('users')
@@ -92,6 +92,20 @@ class Database:
     def rejectFriendRequest(self, user, target):
         return self.features.rejectFriendRequest(user, target)
     
+    def createChatroom(self, friend):
+        return self.chat.createChatroom(friend)
+    
+    def send(self, message, friend):
+        return self.chat.send(message, friend)
+    
+    def loadchat(self, friend):
+        return self.chat.loadchat(friend)
+    
+    def countMessage(self, friend):
+        return self.chat.countMessage(friend)
+    
+    def customThread(self, friend, chatroom):
+        self.thread = CustomThread(friend, chatroom)
 # class Chat:
 #     def __init__(self, username):
 #         self.ref = db.reference("/")
