@@ -44,12 +44,12 @@ class app:
         for i in self.master.winfo_children():
             i.destroy()
         # Arrow on top corner left
-        self.arrow_logo = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
+        self.arrow_logo = customtkinter.CTkImage(Image.open("logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color=BG_COLOR, command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, sticky=tk.NW, columnspan=2)
 
         # Cube logo
-        self.image = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(180, 180))
+        self.image = customtkinter.CTkImage(Image.open("logostorage\\vaadin_cube.png"), size=(180, 180))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
         img_label.grid(column=1, row=0, pady=35)
 
@@ -78,12 +78,12 @@ class app:
         for i in self.master.winfo_children():
             i.destroy()
         # Arrow on top corner left
-        self.arrow_logo = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
+        self.arrow_logo = customtkinter.CTkImage(Image.open("logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color=BG_COLOR, command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, sticky=tk.NW, columnspan=2)
     
         # Cube logo
-        self.image = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(180, 180))
+        self.image = customtkinter.CTkImage(Image.open("logostorage\\vaadin_cube.png"), size=(180, 180))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
         img_label.grid(column=1, row=0, pady=35)
 
@@ -124,19 +124,19 @@ class app:
         friendList_frame = customtkinter.CTkFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)
         friendList_frame.grid(row=0, column=1, sticky="nsew")
 
-        chat_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\Chat_selected.png"), size=(50, 50))
+        chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_selected.png"), size=(50, 50))
         chat_label = customtkinter.CTkLabel(sidebar_frame, image=chat_logo, text="")
         chat_label.grid(row = 0, column = 0, padx = 25, pady = (30, 25))
 
-        addFriend_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\AddFriend_btn.png"), size=(50, 50))
+        addFriend_logo = customtkinter.CTkImage(Image.open("logostorage\AddFriend_btn.png"), size=(50, 50))
         addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=50, fg_color=BUTTON, command=self.addFriend)
         addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
 
-        logout_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\LogOut_btn.png"), size=(50, 50))
+        logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(50, 50))
         logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=50, fg_color=BUTTON, command=self.main_menu)
         logout_label.grid(row = 2, column = 0, padx = 25, pady = (665, 25))
 
-        shutdown_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\ShutDown_btn.png"), size=(50, 50))
+        shutdown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutdown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 25))
 
@@ -148,19 +148,19 @@ class app:
         sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
 
-        chat_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\Chat_btn.png"), size=(50, 50))
+        chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_btn.png"), size=(50, 50))
         chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=50, fg_color=BUTTON, command=self.chat)
         chat_label.grid(row = 0, column = 0, padx = 25, pady = (25, 25))
 
-        addFriend_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\AddFriend_selected.png"), size=(50, 50))
+        addFriend_logo = customtkinter.CTkImage(Image.open("logostorage\AddFriend_selected.png"), size=(50, 50))
         addFriend_label = customtkinter.CTkLabel(sidebar_frame, image=addFriend_logo, text="")
         addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
 
-        logout_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\LogOut_btn.png"), size=(50, 50))
+        logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(50, 50))
         logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=50, fg_color=BUTTON, command=self.main_menu)
         logout_label.grid(row = 2, column = 0, padx = 25, pady = (670, 25))
 
-        shutDown_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\ShutDown_btn.png"), size=(50, 50))
+        shutDown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
         shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
     
@@ -194,7 +194,7 @@ class app:
         tk.Label(self.master, text="CUBE", font=("Inter", 64, "bold"), bg=BG_COLOR).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
         
         # Cube logo
-        self.image = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(220, 220))
+        self.image = customtkinter.CTkImage(Image.open("logostorage\\vaadin_cube.png"), size=(220, 220))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
         img_label.grid(column=1, row=1)
 
