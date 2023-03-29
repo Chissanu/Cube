@@ -13,6 +13,7 @@ GENERAL_TEXT = "#000000"
 GRAY = "#989898"
 WHITE = "#FFFFFF"
 BUTTON = "#061A40"
+FRIEND_LIST = "#0353A4"
 
 class app:
     def __init__(self, master):
@@ -60,7 +61,7 @@ class app:
         entry_2.grid(column=1, row=3, sticky = N)
 
         #   Login button
-        bottom_ = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=root.destroy)
+        bottom_ = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
         bottom_.grid(column=1, row=4, sticky = "s", pady=(200,100))
 
 
@@ -98,8 +99,81 @@ class app:
         entry_4.grid(column=1, row=5, pady=(15,0))
 
         #   Register button
-        bottom_ = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=root.destroy)
+        bottom_ = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
         bottom_.grid(column=1, row=6, sticky = "s", pady=(200,100))
+
+    def chat(self):  
+        #   Setting up grid and frame for button widgets/ texts
+        #   comment these out for now, as they messed with the alignment of widgets for tkinter
+        Grid.columnconfigure(root, index = 0, weight = 0)
+        Grid.columnconfigure(root, index = 1, weight = 0)
+        Grid.columnconfigure(root, index = 2, weight = 0)
+        Grid.rowconfigure(root, 0, weight = 0)
+
+        for i in self.master.winfo_children():
+            i.destroy()
+
+        #create sidebar
+        sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
+        sidebar_frame.grid(row=0, column=0, sticky="nsew")
+
+        friendList_frame = customtkinter.CTkFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)
+        friendList_frame.grid(row=0, column=1, sticky="nsew")
+
+        chat_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\Chat_selected.png"), size=(50, 50))
+        chat_label = customtkinter.CTkLabel(sidebar_frame, image=chat_logo, text="")
+        chat_label.grid(row = 0, column = 0, padx = 25, pady = (30, 25))
+
+        addFriend_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\AddFriend_btn.png"), size=(50, 50))
+        addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=50, fg_color=BUTTON, command=self.addFriend)
+        addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
+
+        logout_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\LogOut_btn.png"), size=(50, 50))
+        logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=50, fg_color=BUTTON, command=self.main_menu)
+        logout_label.grid(row = 2, column = 0, padx = 25, pady = (665, 25))
+
+        shutDown_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\ShutDown_btn.png"), size=(50, 50))
+        shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
+        shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 25))
+
+    def addFriend(self):
+
+        for i in self.master.winfo_children():
+            i.destroy()
+
+        sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
+        sidebar_frame.grid(row=0, column=0, sticky="nsew")
+
+        chat_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\Chat_btn.png"), size=(50, 50))
+        chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=50, fg_color=BUTTON, command=self.chat)
+        chat_label.grid(row = 0, column = 0, padx = 25, pady = (25, 25))
+
+        addFriend_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\AddFriend_selected.png"), size=(50, 50))
+        addFriend_label = customtkinter.CTkLabel(sidebar_frame, image=addFriend_logo, text="")
+        addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
+
+        logout_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\LogOut_btn.png"), size=(50, 50))
+        logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=50, fg_color=BUTTON, command=self.main_menu)
+        logout_label.grid(row = 2, column = 0, padx = 25, pady = (670, 25))
+
+        shutDown_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\ShutDown_btn.png"), size=(50, 50))
+        shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
+        shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
+    
+        # sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
+        # sidebar_frame.grid(row=0, column=0, sticky="nsew")
+
+        # friendList_frame = customtkinter.CTkFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)
+        # friendList_frame.grid(row=0, column=1, sticky="nsew")
+
+        # chat_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\Chat_btn.png"), size=(50, 50))
+        # chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=50, fg_color=BUTTON, command=self.chat)
+        # chat_label.grid(row = 0, column = 0, padx = 25, pady = (30, 25))
+
+        # addFriend_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\AddFriend_btn.png"), size=(50, 50))
+        # addFriend_label = customtkinter.CTkLabel(sidebar_frame, image=addFriend_logo, text="")
+        # addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
+
 
 
     def main_menu(self):
@@ -131,6 +205,26 @@ class app:
 
         bt3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
         bt3.grid(column=1, row=4)
+
+# class FriendList(customtkinter.CTkScrollableFrame):
+#     def __init__(self, master, command=None, **kwargs):
+#         super().__init__(master, **kwargs)
+#         self.grid_columnconfigure(0, weight=1)
+
+#         self.command = command
+#         self.radiobutton_variable = customtkinter.StringVar()
+#         self.label_list = []
+#         self.button_list = []
+
+#     def add_item(self, item, image=None):
+#         label = customtkinter.CTkLabel(self, text=item, image=image, compound="left", padx=5, anchor="w")
+#         button = customtkinter.CTkButton(self, text="Command", width=100, height=24)
+#         if self.command is not None:
+#             button.configure(command=lambda: self.command(item))
+#         label.grid(row=len(self.label_list), column=0, pady=(0, 10), sticky="w")
+#         button.grid(row=len(self.button_list), column=1, pady=(0, 10), padx=5)
+#         self.label_list.append(label)
+#         self.button_list.append(button)
 
 
 if __name__ == '__main__':
