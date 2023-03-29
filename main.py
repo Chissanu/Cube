@@ -158,9 +158,13 @@ class app:
 
     def addFriend(self):
 
+        # Grid.columnconfigure(root,1,weight=1)
+        # Grid.rowconfigure(root,4,weight=1)
+
         for i in self.master.winfo_children():
             i.destroy()
 
+        # create sidebar
         sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
 
@@ -179,6 +183,14 @@ class app:
         shutDown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
         shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
+
+        # # create "add friend" label
+        # addFriend_text = customtkinter.CTkLabel(self.master, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
+        # addFriend_text.grid(row=1, column=1, sticky = "s")
+
+        # # add button
+        # add_btn = customtkinter.CTkButton(self.master, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=self.chat)
+        # add_btn.grid(column=1, row=6, sticky = "s", pady=(200,100))
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
