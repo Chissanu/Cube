@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 
 CURRENT_PATH = os.getcwd()
 
-#color palatte
+# color palatte
 BG_COLOR = "#B9D6F2"
 GENERAL_TEXT = "#000000"
 GRAY = "#989898"
@@ -56,10 +56,10 @@ class app:
         tk.Label(self.master, text="Login", font=("Inter", 40), bg= BG_COLOR).grid(column=1, row=1, pady=5, sticky=tk.N)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
-        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GRAY, fg_color=WHITE, width=500, height=60)
+        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         username_entry.grid(column=1, row=2, sticky = N, pady=(50, 40))
 
-        entry_2 = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GRAY, fg_color=WHITE, width=500, height=60)
+        entry_2 = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         entry_2.grid(column=1, row=3, sticky = N)
 
         # Login button
@@ -90,19 +90,19 @@ class app:
         tk.Label(self.master, text="Register", font=("Inter", 40), bg=BG_COLOR).grid(column=1, row=1, pady=5)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
-        name_entry = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color=GRAY, fg_color=WHITE, width=500, height=60)
+        name_entry = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         name_entry.grid(column=1, row=2, pady=(50,20))
 
-        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GRAY, fg_color=WHITE, width=500, height=60)
+        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         username_entry.grid(column=1, row=3)
 
-        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", font=("Inter", 20), corner_radius=15, text_color=GRAY, fg_color=WHITE, width=500, height=60)
+        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         password_entry.grid(column=1, row=4)
 
-        confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", font=("Inter", 20), corner_radius=15, text_color=GRAY, fg_color=WHITE, width=500, height=60)
+        confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         confirm_entry.grid(column=1, row=5, pady=(15,0))
 
-        #   Register button
+        # Register button
         reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
         reg_btn.grid(column=1, row=6, sticky = "s", pady=(200,100))
 
@@ -117,12 +117,9 @@ class app:
         for i in self.master.winfo_children():
             i.destroy()
 
-        #create sidebar
+        # create sidebar
         sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
-
-        friendList_frame = customtkinter.CTkFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)
-        friendList_frame.grid(row=0, column=1, sticky="nsew")
 
         chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_selected.png"), size=(50, 50))
         chat_label = customtkinter.CTkLabel(sidebar_frame, image=chat_logo, text="")
@@ -139,6 +136,24 @@ class app:
         shutdown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutdown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 25))
+
+        # create chat frame	
+        friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
+        friendList_frame.grid(row=0, column=1, sticky="nsew")	
+        name = "P'Oak"	
+        for i in range(20):	
+            friendChat = customtkinter.CTkButton(friendList_frame, image=shutdown_logo, text="  "+ name, font=("Inter", 40), anchor=W, width=500, height=100, fg_color=FRIEND_LIST, command=root.destroy)	
+            friendChat.grid(row=i, column=0, sticky="nsew")	
+            # profile = customtkinter.CTkLabel(friendChat, image=shutdown_logo, text="  "+"P'Oak", font=("Inter", 40), anchor=W)	
+            # profile.grid(row=0, column=0, sticky=W)	
+
+    # def chatScreen(name):
+    #     # create top bar	
+    #     topbar_frame = customtkinter.CTkFrame(self.master, width=1320, height=75, corner_radius=0, fg_color=WHITE)	
+    #     topbar_frame.grid(row=0, column=2, sticky=N)	
+    #     name = customtkinter.CTkLabel(friendChat, image=shutdown_logo, text="P'Oak", font=("Inter", 40), anchor=W)	
+    #     name.grid(row=0, column=0, sticky=W)	
+        
 
     def addFriend(self):
 
@@ -163,22 +178,6 @@ class app:
         shutDown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
         shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
-    
-        # sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
-        # sidebar_frame.grid(row=0, column=0, sticky="nsew")
-
-        # friendList_frame = customtkinter.CTkFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)
-        # friendList_frame.grid(row=0, column=1, sticky="nsew")
-
-        # chat_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\Chat_btn.png"), size=(50, 50))
-        # chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=50, fg_color=BUTTON, command=self.chat)
-        # chat_label.grid(row = 0, column = 0, padx = 25, pady = (30, 25))
-
-        # addFriend_logo = customtkinter.CTkImage(Image.open("Frontend\logostorage\AddFriend_btn.png"), size=(50, 50))
-        # addFriend_label = customtkinter.CTkLabel(sidebar_frame, image=addFriend_logo, text="")
-        # addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
-
-
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
@@ -212,27 +211,6 @@ class app:
         
     def quit(self,e):
         self.destroy()
-        
-
-# class FriendList(customtkinter.CTkScrollableFrame):
-#     def __init__(self, master, command=None, **kwargs):
-#         super().__init__(master, **kwargs)
-#         self.grid_columnconfigure(0, weight=1)
-
-#         self.command = command
-#         self.radiobutton_variable = customtkinter.StringVar()
-#         self.label_list = []
-#         self.button_list = []
-
-#     def add_item(self, item, image=None):
-#         label = customtkinter.CTkLabel(self, text=item, image=image, compound="left", padx=5, anchor="w")
-#         button = customtkinter.CTkButton(self, text="Command", width=100, height=24)
-#         if self.command is not None:
-#             button.configure(command=lambda: self.command(item))
-#         label.grid(row=len(self.label_list), column=0, pady=(0, 10), sticky="w")
-#         button.grid(row=len(self.button_list), column=1, pady=(0, 10), padx=5)
-#         self.label_list.append(label)
-#         self.button_list.append(button)
 
 
 if __name__ == '__main__':
@@ -242,7 +220,7 @@ if __name__ == '__main__':
         windll.shcore.SetProcessDpiAwareness(1)
     finally:
         root = Tk()
-        # root = customtkinter.CTk()                    #   TO DO: may change the app from using Tk to customtkinterCTk as app frame instead
+        # root = customtkinter.CTk()                    # TO DO: may change the app from using Tk to customtkinterCTk as app frame instead
         root.attributes('-fullscreen', True)
         app(root)
         root.mainloop()
