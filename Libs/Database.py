@@ -2,8 +2,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from datetime import datetime
-from Libs.Features import Features as features
-from Libs.Chat import Chat as chat
+from Libs.Features import Features
+from Libs.Chat import Chat
 
 class Database:
     def __init__(self):
@@ -15,6 +15,9 @@ class Database:
             'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/'
         })
         self.ref = db.reference('/')
+        
+        self.features = Features(self.ref)
+        self.chat = Chat(self.ref)
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -62,9 +65,9 @@ class Database:
             for user in users.keys():
                 if user == username and users[user]['password'] == password:
                     return db.reference("/users/" + username)
-            return "Wrong password or Account not found!"
+            return Exception("Wrong password or Account not found!")
         except:
-            return "No account found in DB!"
+            return Exception("No account found in DB!")
         
     def enterDir(self, currentDir, targetDir):
         try:
@@ -77,37 +80,35 @@ class Database:
         ls = currentDir.get.keys()
         return ls
     
-class Features:
-    def __init__(self):
-        self.ref = db.reference("/")
-        self.features = features.Features(db.reference("/"))
-        
-    def addFriend(self, curr, username):
-        return self.features.addFriend(self, curr, username)
+    """"
+    Function to call Features.py fuctions
+    """
+    def addFriend(self, curr, user):
+        return self.features.addFriend(curr,user)
     
     def acceptFriendRequest(self, user, target):
-        return self.features.acceptFriendRequest(self, user, target)
+        return self.features.acceptFriendRequest(user,target)
     
     def rejectFriendRequest(self, user, target):
-        return self.features.rejectFriendRequest(self, user, target)
+        return self.features.rejectFriendRequest(user, target)
     
-class Chat:
-    def __init__(self, username):
-        self.ref = db.reference("/")
-        self.chat = chat.Chat(username, self.ref)
-        self.thread = None
+# class Chat:
+#     def __init__(self, username):
+#         self.ref = db.reference("/")
+#         self.chat = chat.Chat(username, self.ref)
+#         self.thread = None
         
-    def createChatroom(self, friend):
-        return self.chat.createChatroom(self, friend)
+#     def createChatroom(self, friend):
+#         return self.chat.createChatroom(self, friend)
     
-    def send(self, message, friend):
-        return self.chat.send(message, friend)
+#     def send(self, message, friend):
+#         return self.chat.send(message, friend)
     
-    def loadchat(self, friend):
-        return self.chat.loadchat(friend)
+#     def loadchat(self, friend):
+#         return self.chat.loadchat(friend)
     
-    def countMessage(self, friend):
-        return self.chat.countMessage(friend)
+#     def countMessage(self, friend):
+#         return self.chat.countMessage(friend)
     
-    def customThread(self, friend, chatroom):
-        self.thread = chat.CustomThread(friend, chatroom)
+#     def customThread(self, friend, chatroom):
+#         self.thread = chat.CustomThread(friend, chatroom)

@@ -39,7 +39,7 @@ class Features:
         
         # Safe Guard to prevent add themselves
         if curr == username:
-            return "You can't add yourself!"
+            return Exception("You can't add yourself!")
         
         # Set pointer to users
         users_ref = self.ref.child('users')
@@ -81,7 +81,7 @@ class Features:
                         'incoming' : friendIncoming
                     })
                     return "Success"
-            return "No user with that ID"
+            return Exception("No user with that ID")
         except Exception as e:
             print(e)
     
@@ -109,7 +109,7 @@ class Features:
         # Check if list has empty string
         err = self.containNulls(currUserIncoming)
         if err:
-            return "You have no friend request!"
+            return Exception("You have no friend request!")
         
         for val in currUserIncoming:
             if val == target:
