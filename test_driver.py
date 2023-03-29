@@ -1,5 +1,5 @@
-from Database import Database
-from Features import Features
+from Libs.Database import Database
+from Libs.Features import Features
 
 """
 This function is for creating an account and it will verify if

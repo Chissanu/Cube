@@ -2,8 +2,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from datetime import datetime
-import Features as features
-import Chat as chat
+from Libs.Features import Features as features
+from Libs.Chat import Chat as chat
 
 class Database:
     def __init__(self):
