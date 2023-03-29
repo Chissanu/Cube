@@ -56,7 +56,18 @@ class Database:
         try:
             for user in users.keys():
                 if users[user]['username'] == username and users[user]['password'] == password:
-                    return "Success"
+                    return db.reference("/users/" + username)
             return "Wrong password or Account not found!"
         except:
             return "No account found in DB!"
+        
+    def enterDir(self, currentDir, targetDir):
+        try:
+            a = currentDir.reference(targetDir)
+        except:
+            a = None
+        return a
+    
+    def listDir(self, currentDir):
+        ls = currentDir.get.keys()
+        return ls

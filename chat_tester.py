@@ -13,14 +13,8 @@ class chat_test:
         self.friendUsername = "Nigger"
         self.friendName = "Nigg"
         self.friendPassword = "1234"
-        # Fetch the service account key JSON file contents
-        cred = credentials.Certificate("db_key.json")
-        # Initialize the app with a service account, granting admin privileges
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/'
-        })
-        self.ref = db.reference('/')
         self.chat = None
+        self.ref = "/"
         self.database = dbb()
         
     def register(self):
@@ -28,8 +22,8 @@ class chat_test:
         self.database.createAccount(self.friendUsername, self.friendName, self.friendPassword)
         
     def login(self):
-        self.database.login(self.username, self.password)
-        self.ref = self.database.reference('/users/'+ self.username)
+        self.ref = self.database.login(self.username, self.password)
+        print(self.ref)
         
     def createChatroom(self):
         self.chat = Chat.Chat(self.username)
@@ -46,7 +40,7 @@ class chat_test:
             self.chat.send(message, self.friendUsername)
             
 test = chat_test()
-test.register()
+#test.register()
 test.login()
 test.createChatroom()
 test.enterChatRoom()
