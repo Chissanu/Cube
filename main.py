@@ -142,17 +142,18 @@ class app:
         friendList_frame.grid(row=0, column=1, sticky="nsew")	
         name = "P'Oak"	
         for i in range(20):	
-            friendChat = customtkinter.CTkButton(friendList_frame, image=shutdown_logo, text="  "+ name, font=("Inter", 40), anchor=W, width=500, height=100, fg_color=FRIEND_LIST, command=root.destroy)	
+            friendChat = customtkinter.CTkButton(friendList_frame, image=shutdown_logo, text="  "+ str(i), font=("Inter", 40), anchor=W, width=500, height=100, fg_color=FRIEND_LIST, command=lambda: self.chatScreen(str(i)))	
             friendChat.grid(row=i, column=0, sticky="nsew")	
             # profile = customtkinter.CTkLabel(friendChat, image=shutdown_logo, text="  "+"P'Oak", font=("Inter", 40), anchor=W)	
-            # profile.grid(row=0, column=0, sticky=W)	
+            # profile.grid(row=0, column=0, sticky=W)
 
-    # def chatScreen(name):
-    #     # create top bar	
-    #     topbar_frame = customtkinter.CTkFrame(self.master, width=1320, height=75, corner_radius=0, fg_color=WHITE)	
-    #     topbar_frame.grid(row=0, column=2, sticky=N)	
-    #     name = customtkinter.CTkLabel(friendChat, image=shutdown_logo, text="P'Oak", font=("Inter", 40), anchor=W)	
-    #     name.grid(row=0, column=0, sticky=W)	
+    def chatScreen(self, name):
+        # create top bar	
+        print(name)
+        # topbar_frame = customtkinter.CTkFrame(self.master, width=1320, height=75, corner_radius=0, fg_color=WHITE)	
+        # topbar_frame.grid(row=0, column=2, sticky=N)	
+        # name = customtkinter.CTkLabel(topbar_frame, text=name, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
+        # name.grid(row=0, column=0, sticky="nsew")	
         
 
     def addFriend(self):
