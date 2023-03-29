@@ -2,6 +2,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from datetime import datetime
+import Features as features
+import Chat as chat
 
 class Database:
     def __init__(self):
@@ -71,3 +73,17 @@ class Database:
     def listDir(self, currentDir):
         ls = currentDir.get.keys()
         return ls
+    
+class Features:
+    def __init__(self):
+        self.ref = db.reference("/")
+        self.features = features.Features(db.reference("/"))
+        
+    def addFriend(self, curr, username):
+        return self.features.addFriend(self, curr, username)
+    
+    def acceptFriendRequest(self, user, target):
+        return self.features.acceptFriendRequest(self, user, target)
+    
+    def rejectFriendRequest(self, user, target):
+        return self.features.rejectFriendRequest(self, user, target)

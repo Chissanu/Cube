@@ -1,9 +1,4 @@
-from Database import Database as dbb
-from Features import Features as ft
-import firebase_admin
-from firebase_admin import db
-from firebase_admin import credentials
-import Chat
+import Database as dbb
 
 class chat_test:
     def __init__(self):
@@ -15,7 +10,8 @@ class chat_test:
         self.friendPassword = "1234"
         self.chat = None
         self.ref = "/"
-        self.database = dbb()
+        self.database = dbb.Database()
+        self.features = dbb.Features()
         
     def register(self):
         self.database.createAccount(self.username, self.name, self.password)
@@ -42,7 +38,7 @@ class chat_test:
 test = chat_test()
 #test.register()
 test.login()
-test.createChatroom()
-test.enterChatRoom()
+#test.createChatroom()
+#test.enterChatRoom()
         
         
