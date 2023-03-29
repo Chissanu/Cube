@@ -195,7 +195,7 @@ class app:
         
         # Cube logo
         self.image = customtkinter.CTkImage(Image.open("Frontend\\logostorage\\vaadin_cube.png"), size=(220, 220))
-        img_label = customtkinter.CTkLabel(self.master, text="", image=self.iamge)
+        img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
         img_label.grid(column=1, row=1)
 
         # Menu texts/ three buttons: Login, Register, & Quit
