@@ -17,8 +17,9 @@ class Database:
         self.ref = db.reference('/')
         
         self.features = Features(self.ref)
-        self.chat = Chat(self.ref)
-        self.thread = None
+        
+        #self.chat = Chat(self.ref)
+        #self.thread = None
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -92,6 +93,9 @@ class Database:
     def rejectFriendRequest(self, user, target):
         return self.features.rejectFriendRequest(user, target)
     
+    def showFriendList(self,user):
+        return self.features.showFriendList(user)
+        
     def createChatroom(self, friend):
         return self.chat.createChatroom(friend)
     

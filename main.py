@@ -4,6 +4,7 @@ import tkinter as tk
 import customtkinter
 import os
 from PIL import Image, ImageTk
+from Libs.Database import Database
 
 CURRENT_PATH = os.getcwd()
 
@@ -24,6 +25,8 @@ class app:
         # get the screen dimension
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
+        
+        self.db = Database()
 
         # find the center point
         center_x = int(screen_width/2 - window_width / 2)
@@ -31,8 +34,8 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
-        self.chat()
-        # self.main_menu()
+        #self.chat()
+        self.main_menu()
 
     def login(self):  
         """
@@ -59,11 +62,12 @@ class app:
         username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         username_entry.grid(column=1, row=2, sticky = N, pady=(50, 40))
 
-        entry_2 = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        entry_2.grid(column=1, row=3, sticky = N)
+        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        password_entry.grid(column=1, row=3, sticky = N)
 
         # Login button
-        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
+        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
+                                          command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=4, sticky = "s", pady=(100,100))
 
 
@@ -103,7 +107,8 @@ class app:
         confirm_entry.grid(column=1, row=5, pady=(15,0))
 
         # Register button
-        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
+        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
+                                          command= lambda : self.registerDB(username_entry.get(),name_entry.get(),password_entry.get(),confirm_entry.get()))
         reg_btn.grid(column=1, row=6, sticky = "s", pady=(200,100))
 
     def chat(self):  
@@ -139,14 +144,13 @@ class app:
 
         # create friendlist frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=450, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
-        friendList_frame.grid(row=0, column=1, sticky="nsew")	
-        friendListBtn = {
-        "P'Oak": "P'Oak profile",
-        "Putt": "Putt profile",
-        "Most": "Most profile",
-        "Ruj": "Ruj profile"
-        }
-        for i, button_name in enumerate(friendListBtn):	
+        friendList_frame.grid(row=0, column=1, sticky="nsew")
+        
+        tempFriends = {}
+        for val in self.db.showFriendList('c1'):
+            tempFriends[val] = 'Nothing here'
+        
+        for i, button_name in enumerate(tempFriends):	
             friendBtn = customtkinter.CTkButton(friendList_frame, 
                                                 image=shutdown_logo, 
                                                 text="  "+ button_name, 
@@ -154,8 +158,25 @@ class app:
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
+                                                command=lambda message=tempFriends[button_name]: self.display_chat(message))	
             friendBtn.grid(row=i, column=0, sticky="nsew")	
+        
+        # friendListBtn = {
+        # "P'Oak": "P'Oak profile",
+        # "Putt": "Putt profile",
+        # "Most": "Most profile",
+        # "Ruj": "Ruj profile"
+        # }
+        # for i, button_name in enumerate(friendListBtn):	
+        #     friendBtn = customtkinter.CTkButton(friendList_frame, 
+        #                                         image=shutdown_logo, 
+        #                                         text="  "+ button_name, 
+        #                                         font=("Inter", 40), 
+        #                                         anchor=W, 
+        #                                         width=500, height=100, 
+        #                                         fg_color=FRIEND_LIST, 
+        #                                         command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
+        #     friendBtn.grid(row=i, column=0, sticky="nsew")	
 
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
@@ -201,7 +222,6 @@ class app:
         name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)	
 
     def addFriend(self):
-
         Grid.columnconfigure(root,1,weight=1)
 
         for i in self.master.winfo_children():
@@ -269,7 +289,7 @@ class app:
         img_label.grid(column=1, row=1)
 
         # Menu texts/ three buttons: Login, Register, & Quit
-        tk.Label(self.master, text="Welcome\nglad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, padx=1, pady=10, rowspan=2, sticky=tk.N)
+        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, padx=1, pady=10, rowspan=2, sticky=tk.N)
 
         btn1 = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.login)
         btn1.grid(column=1, row=3, pady=100)
@@ -279,6 +299,29 @@ class app:
 
         btn3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
         btn3.grid(column=1, row=4)
+    
+    
+    """
+    Backend Code
+    """
+    def loginDB(self,username,password):
+        print("Logging in...")
+        err = self.db.login(username,password)
+        if type(err) == Exception:
+            print(err)
+        else:
+            self.chat()
+    
+    
+    def registerDB(self,username,name,password,confirm):
+        if password == confirm:
+            print("Creating Account...")
+            err = self.db.createAccount(username,name,password)
+        if type(err) == Exception:
+            print(err)
+        else:
+            self.chat()
+        
         
     def quit(self,e):
         self.destroy()
