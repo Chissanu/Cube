@@ -26,6 +26,7 @@ class Detection:
 	
 	# Takes three inputs, the source of the video (0 for webcam), the model_path and the duration. Returns nothing at the moment
 	def timedDetection(self, source, model_path, duration):
+		self.clearEmotionData()
 		vid = cv2.VideoCapture(source)
 		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
 		fno = 0
@@ -55,6 +56,7 @@ class Detection:
 
 
 	def untimedDetection(self, source, model_path):
+		self.clearEmotionData()
 		vid = cv2.VideoCapture(source)
 		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
 		fno = 0
@@ -76,6 +78,9 @@ class Detection:
 
 			# read next frame
 			success, img = vid.read()
+
+	def clearEmotionData(self):
+		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 
 # This class contains every processing algorithms for the emotions data
 class Processing:
