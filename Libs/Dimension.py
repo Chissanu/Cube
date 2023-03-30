@@ -3,6 +3,7 @@ import cv2
 import torch
 import time
 
+# This class contains all detection algorithms and some data accessing
 class Detection:
 	def __init__(self):
 		# This dictionary stores emotions count detected by the A.I
@@ -52,6 +53,37 @@ class Detection:
 			# read next frame
 			success, img = vid.read()
 
+
+	def untimedDetection(self, source, model_path):
+		vid = cv2.VideoCapture(source)
+		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
+		fno = 0
+		success, img = vid.read()
+		initial = time.time()
+
+		while success:
+	
+			if fno % 32 == 0:
+				results = model(img)
+
+			try:
+				self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
+				print(self.emotion_table)
+
+			except IndexError:
+				print("Not Detected")
+				pass
+
+			# read next frame
+			success, img = vid.read()
+
+# This class contains every processing algorithms for the emotions data
+class Processing:
+	def __init__(self, data):
+		self.data = data
+
+	def getDominantEmotion():
+		pass
 
 # Test run codes. Will be removed in the final iteration of this script.
 
