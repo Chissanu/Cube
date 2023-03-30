@@ -31,6 +31,7 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
+        # self.addFriend()
         self.main_menu()
 
 
@@ -45,8 +46,8 @@ class app:
             i.destroy()
         # Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open("logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
-        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color=BG_COLOR, command=self.main_menu)
-        arrow_label.grid(row = 0, column = 0, sticky=tk.NW, columnspan=2)
+        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG_COLOR, command=self.main_menu)
+        arrow_label.grid(row = 0, column = 0, padx=10, pady=10,sticky=tk.NW, columnspan=2)
 
         # Cube logo
         self.image = customtkinter.CTkImage(Image.open("logostorage\\vaadin_cube.png"), size=(180, 180))
@@ -64,7 +65,7 @@ class app:
 
         # Login button
         log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
-        log_btn.grid(column=1, row=4, sticky = "s", pady=(200,100))
+        log_btn.grid(column=1, row=4, sticky = "s", pady=(100,100))
 
 
     def register(self):  
@@ -79,8 +80,8 @@ class app:
             i.destroy()
         # Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open("logostorage\\material-symbols_arrow-back.png"), size=(50, 50))
-        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", fg_color=BG_COLOR, command=self.main_menu)
-        arrow_label.grid(row = 0, column = 0, sticky=tk.NW, columnspan=2)
+        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG_COLOR, command=self.main_menu)
+        arrow_label.grid(row = 0, column = 0, padx=10, pady=10, sticky=tk.NW, columnspan=2)
     
         # Cube logo
         self.image = customtkinter.CTkImage(Image.open("logostorage\\vaadin_cube.png"), size=(180, 180))
@@ -158,8 +159,7 @@ class app:
 
     def addFriend(self):
 
-        # Grid.columnconfigure(root,1,weight=1)
-        # Grid.rowconfigure(root,4,weight=1)
+        Grid.columnconfigure(root,1,weight=1)
 
         for i in self.master.winfo_children():
             i.destroy()
@@ -184,13 +184,28 @@ class app:
         shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
 
-        # # create "add friend" label
-        # addFriend_text = customtkinter.CTkLabel(self.master, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
-        # addFriend_text.grid(row=1, column=1, sticky = "s")
+        # create addFriend frame
+        addFriend_frame = customtkinter.CTkFrame(self.master, corner_radius=0, fg_color=WHITE)
+        addFriend_frame.grid(row=0, column=1)
 
-        # # add button
-        # add_btn = customtkinter.CTkButton(self.master, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=self.chat)
-        # add_btn.grid(column=1, row=6, sticky = "s", pady=(200,100))
+        # create "add friend" label
+        addFriend_text = customtkinter.CTkLabel(addFriend_frame, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
+        addFriend_text.grid(row=0, column=0, sticky = N, pady = (50,20), padx = 350)
+
+        # create entry box
+        username_entry = customtkinter.CTkEntry(addFriend_frame, placeholder_text="Enter your friend's username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        username_entry.grid(column=0, row=1, pady=20)
+
+        # create profile
+        profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(250, 250))
+        profile = customtkinter.CTkLabel(addFriend_frame, text="", image=profile_logo)
+        profile.grid(row = 2, column = 0, pady = (20,0))
+        name = customtkinter.CTkLabel(addFriend_frame, text="Takeshiii", font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+        name.grid(row = 3, column = 0, pady = (10,10))
+
+        # add button
+        add_btn = customtkinter.CTkButton(addFriend_frame, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=self.chat)
+        add_btn.grid(column=0, row=4, pady = (20,50), padx = 350)
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
