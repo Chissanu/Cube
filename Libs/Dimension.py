@@ -3,12 +3,13 @@ import cv2
 import torch
 import time
 
-class Detect:
+class Detection:
 	def __init__(self):
 		# This dictionary stores emotions count detected by the A.I
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 	
 	# Input the emotion and it returns how many times the A.I detected these emotions according to the emotion_table.
+	# If no input is taken, it returns the whole dictionary
 	def getEmotionData(self, key=None):
 		if key:
 			return [key, self.emotion_table[key]]
@@ -16,7 +17,7 @@ class Detect:
 		else:
 			return self.emotion_table
 
-	# (WIP) Get the most occuring emotion at a given interval
+	# Get the most occuring emotion at a given interval
 	def getMostOccuringEmotion(self):
 		operator = self.emotion_table
 		max_value = max(self.emotion_table, key=lambda x:operator[x])
@@ -51,16 +52,17 @@ class Detect:
 			# read next frame
 			success, img = vid.read()
 
+
 # Test run codes. Will be removed in the final iteration of this script.
 
-# test = Detect()
-# test.timedDetection("http://10.100.9.1:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\model_201.pt", 5)
+test = Detection()
+test.timedDetection("http://10.100.9.1:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\model_201.pt", 5)
 
-# while True:
-# 	query = str(input("Choices: [None, data]?:" ))
-# 	if query == 'data':
-# 		print(test.getEmotionData())
+while True:
+	query = str(input("Choices: [None, data]?:" ))
+	if query == 'data':
+		print(test.getEmotionData())
 
-# 	else:
-# 		print(test.getMostOccuringEmotion())
+	else:
+		print(test.getMostOccuringEmotion())
 		
