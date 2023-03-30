@@ -31,9 +31,8 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
-        # self.addFriend()
-        self.main_menu()
-
+        self.chat()
+        # self.main_menu()
 
     def login(self):  
         """
@@ -141,21 +140,28 @@ class app:
         # create chat frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
         friendList_frame.grid(row=0, column=1, sticky="nsew")	
-        name = "P'Oak"	
-        for i in range(20):	
-            friendChat = customtkinter.CTkButton(friendList_frame, image=shutdown_logo, text="  "+ str(i), font=("Inter", 40), anchor=W, width=500, height=100, fg_color=FRIEND_LIST, command=lambda: self.chatScreen(str(i)))	
-            friendChat.grid(row=i, column=0, sticky="nsew")	
-            # profile = customtkinter.CTkLabel(friendChat, image=shutdown_logo, text="  "+"P'Oak", font=("Inter", 40), anchor=W)	
-            # profile.grid(row=0, column=0, sticky=W)
 
-    def chatScreen(self, name):
-        # create top bar	
-        print(name)
-        # topbar_frame = customtkinter.CTkFrame(self.master, width=1320, height=75, corner_radius=0, fg_color=WHITE)	
-        # topbar_frame.grid(row=0, column=2, sticky=N)	
-        # name = customtkinter.CTkLabel(topbar_frame, text=name, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
-        # name.grid(row=0, column=0, sticky="nsew")	
-        
+        friendListBtn = {
+        "P'Oak": "You clicked Button 1!",
+        "Putt": "You clicked Button 2!",
+        "Most": "You clicked Button 3!",
+        "Ruj": "You clicked Button 4!"
+        }
+        for i, button_name in enumerate(friendListBtn):	
+            friendBtn = customtkinter.CTkButton(friendList_frame, image=shutdown_logo, text="  "+ button_name, font=("Inter", 40), anchor=W, width=500, height=100, fg_color=FRIEND_LIST, command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
+            friendBtn.grid(row=i, column=0, sticky="nsew")	
+
+        # create topbar
+        self.topbar_frame = customtkinter.CTkFrame(self.master, width=1320, height=75, corner_radius=0, fg_color=WHITE)
+        self.topbar_frame.grid(row=0, column=2, sticky=N)
+
+    # Function to display output message
+    def display_chat(self, message):
+        print(message)
+        for i in self.topbar_frame.winfo_children():
+            i.destroy()	
+        name = customtkinter.CTkLabel(self.topbar_frame, text=message, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
+        name.grid(row=0, column=0, pady = 15, padx = (10,1000), sticky=W)	
 
     def addFriend(self):
 
@@ -185,7 +191,7 @@ class app:
         shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
 
         # create addFriend frame
-        addFriend_frame = customtkinter.CTkFrame(self.master, corner_radius=0, fg_color=WHITE)
+        addFriend_frame = customtkinter.CTkFrame(self.master, corner_radius=50, fg_color=WHITE)
         addFriend_frame.grid(row=0, column=1)
 
         # create "add friend" label
