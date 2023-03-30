@@ -6,12 +6,6 @@ from threading import Thread
 
 class Chat:
     def __init__(self, username):
-        cred = credentials.Certificate("db_key.json")
-
-        # Initialize the app with a service account, granting admin privileges
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/'
-        })
 
         self.ref = db.reference('/')
         self.username = username

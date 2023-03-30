@@ -1,4 +1,4 @@
-import Database as dbb
+from Libs import Database as dbb
 
 class chat_test:
     def __init__(self):
