@@ -4,6 +4,7 @@ import tkinter as tk
 import customtkinter
 import os
 from PIL import Image, ImageTk
+from Libs.Database import Database
 
 CURRENT_PATH = os.getcwd()
 
@@ -24,6 +25,8 @@ class app:
         # get the screen dimension
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
+        
+        self.db = Database()
 
         # find the center point
         center_x = int(screen_width/2 - window_width / 2)
@@ -101,9 +104,12 @@ class app:
 
         confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         confirm_entry.grid(column=1, row=5, pady=(15,0))
+        
+        #self.db.createAccount(username_entry,name_entry,password_entry)
 
         # Register button
-        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
+        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
+                                          command= lambda : self.registerDB(username_entry.get(),name_entry.get(),password_entry.get(),confirm_entry.get()))
         reg_btn.grid(column=1, row=6, sticky = "s", pady=(200,100))
 
     def chat(self):  
@@ -269,7 +275,7 @@ class app:
         img_label.grid(column=1, row=1)
 
         # Menu texts/ three buttons: Login, Register, & Quit
-        tk.Label(self.master, text="Welcome\nglad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, padx=1, pady=10, rowspan=2, sticky=tk.N)
+        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, padx=1, pady=10, rowspan=2, sticky=tk.N)
 
         btn1 = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.login)
         btn1.grid(column=1, row=3, pady=100)
@@ -279,6 +285,15 @@ class app:
 
         btn3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
         btn3.grid(column=1, row=4)
+    
+    
+    """
+    Backend Code
+    """
+    def registerDB(self,username,name,password,confirm):
+        if password == confirm:
+            self.db.createAccount(username,name,password)
+        
         
     def quit(self,e):
         self.destroy()
