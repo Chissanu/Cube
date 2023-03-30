@@ -34,8 +34,8 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
-        self.chat()
-        # self.main_menu()
+        #self.chat()
+        self.main_menu()
 
     def login(self):  
         """
@@ -62,11 +62,12 @@ class app:
         username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         username_entry.grid(column=1, row=2, sticky = N, pady=(50, 40))
 
-        entry_2 = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        entry_2.grid(column=1, row=3, sticky = N)
+        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        password_entry.grid(column=1, row=3, sticky = N)
 
         # Login button
-        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60, command=self.chat)
+        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
+                                          command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=4, sticky = "s", pady=(100,100))
 
 
@@ -104,8 +105,6 @@ class app:
 
         confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         confirm_entry.grid(column=1, row=5, pady=(15,0))
-        
-        #self.db.createAccount(username_entry,name_entry,password_entry)
 
         # Register button
         reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
@@ -207,7 +206,6 @@ class app:
         name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)	
 
     def addFriend(self):
-
         Grid.columnconfigure(root,1,weight=1)
 
         for i in self.master.winfo_children():
@@ -290,9 +288,23 @@ class app:
     """
     Backend Code
     """
+    def loginDB(self,username,password):
+        print("Logging in...")
+        err = self.db.login(username,password)
+        if type(err) == Exception:
+            print(err)
+        else:
+            self.chat()
+    
+    
     def registerDB(self,username,name,password,confirm):
         if password == confirm:
-            self.db.createAccount(username,name,password)
+            print("Creating Account...")
+            err = self.db.createAccount(username,name,password)
+        if type(err) == Exception:
+            print(err)
+        else:
+            self.chat()
         
         
     def quit(self,e):
