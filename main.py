@@ -144,14 +144,13 @@ class app:
 
         # create friendlist frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=450, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
-        friendList_frame.grid(row=0, column=1, sticky="nsew")	
-        friendListBtn = {
-        "P'Oak": "P'Oak profile",
-        "Putt": "Putt profile",
-        "Most": "Most profile",
-        "Ruj": "Ruj profile"
-        }
-        for i, button_name in enumerate(friendListBtn):	
+        friendList_frame.grid(row=0, column=1, sticky="nsew")
+        
+        tempFriends = {}
+        for val in self.db.showFriendList('c1'):
+            tempFriends[val] = 'Nothing here'
+        
+        for i, button_name in enumerate(tempFriends):	
             friendBtn = customtkinter.CTkButton(friendList_frame, 
                                                 image=shutdown_logo, 
                                                 text="  "+ button_name, 
@@ -159,8 +158,25 @@ class app:
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
+                                                command=lambda message=tempFriends[button_name]: self.display_chat(message))	
             friendBtn.grid(row=i, column=0, sticky="nsew")	
+        
+        # friendListBtn = {
+        # "P'Oak": "P'Oak profile",
+        # "Putt": "Putt profile",
+        # "Most": "Most profile",
+        # "Ruj": "Ruj profile"
+        # }
+        # for i, button_name in enumerate(friendListBtn):	
+        #     friendBtn = customtkinter.CTkButton(friendList_frame, 
+        #                                         image=shutdown_logo, 
+        #                                         text="  "+ button_name, 
+        #                                         font=("Inter", 40), 
+        #                                         anchor=W, 
+        #                                         width=500, height=100, 
+        #                                         fg_color=FRIEND_LIST, 
+        #                                         command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
+        #     friendBtn.grid(row=i, column=0, sticky="nsew")	
 
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)

@@ -180,4 +180,12 @@ class Features:
                     'pending' : targetUserPending
                 })
                 return "Success"
+    
+    def showFriendList(self, user):
+        # Format user to lowercase
+        user = user.lower()
+        
+        # Query current user data
+        currUserRef = self.ref.child('users').child(user)
+        return currUserRef.get()['friends']
         

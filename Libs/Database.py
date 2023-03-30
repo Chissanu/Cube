@@ -93,6 +93,9 @@ class Database:
     def rejectFriendRequest(self, user, target):
         return self.features.rejectFriendRequest(user, target)
     
+    def showFriendList(self,user):
+        return self.features.showFriendList(user)
+        
     def createChatroom(self, friend):
         return self.chat.createChatroom(friend)
     
