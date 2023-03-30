@@ -17,7 +17,7 @@ class Database:
         self.ref = db.reference('/')
         
         self.features = Features(self.ref)
-        self.chat = Chat(self.ref)
+        #self.chat = Chat(self.ref)
 
     def createAccount(self, username, name, password):
         username = username.lower()
