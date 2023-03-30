@@ -137,31 +137,68 @@ class app:
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
         shutdown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 25))
 
-        # create chat frame	
-        friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=500, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
+        # create friendlist frame	
+        friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=450, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
         friendList_frame.grid(row=0, column=1, sticky="nsew")	
-
         friendListBtn = {
-        "P'Oak": "You clicked Button 1!",
-        "Putt": "You clicked Button 2!",
-        "Most": "You clicked Button 3!",
-        "Ruj": "You clicked Button 4!"
+        "P'Oak": "P'Oak profile",
+        "Putt": "Putt profile",
+        "Most": "Most profile",
+        "Ruj": "Ruj profile"
         }
         for i, button_name in enumerate(friendListBtn):	
-            friendBtn = customtkinter.CTkButton(friendList_frame, image=shutdown_logo, text="  "+ button_name, font=("Inter", 40), anchor=W, width=500, height=100, fg_color=FRIEND_LIST, command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
+            friendBtn = customtkinter.CTkButton(friendList_frame, 
+                                                image=shutdown_logo, 
+                                                text="  "+ button_name, 
+                                                font=("Inter", 40), 
+                                                anchor=W, 
+                                                width=500, height=100, 
+                                                fg_color=FRIEND_LIST, 
+                                                command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
             friendBtn.grid(row=i, column=0, sticky="nsew")	
 
+        # create chat frame
+        self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
+        self.chat_frame.grid(row=0, column=2, sticky="nsew")
+
         # create topbar
-        self.topbar_frame = customtkinter.CTkFrame(self.master, width=1320, height=75, corner_radius=0, fg_color=WHITE)
-        self.topbar_frame.grid(row=0, column=2, sticky=N)
+        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=75, corner_radius=0, fg_color=WHITE)
+        self.topbar_subframe.grid(row=0, column=0)
+        self.topbar_subframe.grid_propagate(0)
+
+        # create a message boxes container
+        self.boxes_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
+        self.boxes_subframe.grid(row=1, column=0)
+        self.boxes_subframe.grid_propagate(0)
+
+        # create chat box and emoji btn
+        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
+        tool_subframe.grid(row=2, column=0)
+        tool_subframe.grid_propagate(0)
+
+        other_logo = customtkinter.CTkImage(Image.open("logostorage\Other_btn.png"), size=(40, 40))
+        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
+        other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
+
+        chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
+        chat_entry.grid(row=0, column=1)
+
+        sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
+        sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
+        sticker_label.grid(row = 0, column = 2, padx = 30, pady = 30)
+
+        emoji_logo = customtkinter.CTkImage(Image.open("logostorage\Emoji_btn.png"), size=(40, 40))
+        emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
+        emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
     # Function to display output message
     def display_chat(self, message):
         print(message)
-        for i in self.topbar_frame.winfo_children():
+        # create name in topbar
+        for i in self.topbar_subframe.winfo_children():
             i.destroy()	
-        name = customtkinter.CTkLabel(self.topbar_frame, text=message, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
-        name.grid(row=0, column=0, pady = 15, padx = (10,1000), sticky=W)	
+        name = customtkinter.CTkLabel(self.topbar_subframe, text=message, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
+        name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)	
 
     def addFriend(self):
 
