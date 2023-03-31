@@ -11,8 +11,8 @@ class chat_test:
         self.chat = None
         self.ref = "/"
         self.database = dbb.Database()
-        self.features = dbb.Features()
         #self.chat = dbb.Chat()
+        self.userRef = None
         
     def register(self):
         self.database.createAccount(self.username, self.name, self.password)
@@ -21,16 +21,19 @@ class chat_test:
     def login(self):
         self.ref = self.database.login(self.username, self.password)
         print(self.ref)
+        self.userRef = self.ref
+        
+    def chatroom(self):
+        return self.database.Chatroom(self.userRef)
         
     def createChatroom(self):
-        self.chat = Chat.Chat(self.username)
         try:
-            self.chat.loadchat(self.friendUsername)
+            self.database.loadchat(self.friendUsername)
         except:
-            self.chat.createChatroom(self.friendUsername)
+            self.database.createChatroom(self.friendUsername)
             
     def enterChatRoom(self):
-        thread = Chat.CustomThread(self.friendUsername, self.chat)
+        thread = self.database.CustomThread(self.friendUsername, self.chat)
         thread.start()
         while True:
             message = input("Enter message: ")
@@ -39,7 +42,8 @@ class chat_test:
 test = chat_test()
 #test.register()
 test.login()
-#test.createChatroom()
-#test.enterChatRoom()
+test.chatroom()
+test.createChatroom()
+test.enterChatRoom()
         
         

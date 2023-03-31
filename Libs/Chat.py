@@ -5,10 +5,11 @@ import time
 from threading import Thread
 
 class Chat:
-    def __init__(self, username):
+    def __init__(self, userRef):
 
         self.ref = db.reference('/')
-        self.username = username
+        print(userRef.get())
+        self.username = userRef
         self.currentFriend = ""
     
     def createChatroom(self, friend): # Create Chatroom when there is no chatroom
