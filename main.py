@@ -34,8 +34,8 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
-        #self.chat()
-        self.main_menu()
+        self.chat()
+        # self.main_menu()
 
     def login(self):  
         """
@@ -158,27 +158,34 @@ class app:
             i.destroy()
 
         # create sidebar
-        sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
+        sidebar_frame = customtkinter.CTkFrame(self.master, width=75, height=1080, corner_radius=0, fg_color=BUTTON)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
+        sidebar_frame.grid_propagate(0)
 
-        chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_selected.png"), size=(50, 50))
+        Grid.columnconfigure(sidebar_frame, index = 0, weight = 1)
+
+        chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_selected.png"), size=(40, 40))
         chat_label = customtkinter.CTkLabel(sidebar_frame, image=chat_logo, text="")
-        chat_label.grid(row = 0, column = 0, padx = 25, pady = (30, 25))
+        chat_label.grid(row = 0, column = 0, pady = (30, 25))
 
-        addFriend_logo = customtkinter.CTkImage(Image.open("logostorage\AddFriend_btn.png"), size=(50, 50))
+        addFriend_logo = customtkinter.CTkImage(Image.open("logostorage\AddFriend_btn.png"), size=(40, 40))
         addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=50, fg_color=BUTTON, command=self.addFriend)
-        addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
+        addFriend_label.grid(row = 1, column = 0, pady = (30, 25))
 
-        logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(50, 50))
+        notification_logo = customtkinter.CTkImage(Image.open("logostorage\\Notifications_btn.png"), size=(40, 40))
+        notification_label = customtkinter.CTkButton(sidebar_frame, image=notification_logo, text="", width=50, fg_color=BUTTON, command=self.addFriend)
+        notification_label.grid(row = 2, column = 0, pady = (30, 25))
+
+        logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(40, 40))
         logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=50, fg_color=BUTTON, command=self.main_menu)
-        logout_label.grid(row = 2, column = 0, padx = 25, pady = (665, 25))
+        logout_label.grid(row = 3, column = 0, pady = (600, 25))
 
-        shutdown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
+        shutdown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(40, 40))
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
-        shutdown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 25))
+        shutdown_label.grid(row = 4, column = 0, pady = (30, 25))
 
         # create friendlist frame	
-        friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=450, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
+        friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=480, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
         friendList_frame.grid(row=0, column=1, sticky="nsew")
         
         tempFriends = {}
@@ -263,24 +270,32 @@ class app:
             i.destroy()
 
         # create sidebar
-        sidebar_frame = customtkinter.CTkFrame(self.master, width=100, height=1080, corner_radius=0, fg_color=BUTTON)
+        sidebar_frame = customtkinter.CTkFrame(self.master, width=75, height=1080, corner_radius=0, fg_color=BUTTON)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
+        sidebar_frame.grid_propagate(0)
 
-        chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_btn.png"), size=(50, 50))
+        # setting side bar 
+        Grid.columnconfigure(sidebar_frame, index = 0, weight = 1)
+
+        chat_logo = customtkinter.CTkImage(Image.open("logostorage\Chat_btn.png"), size=(40, 40))
         chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=50, fg_color=BUTTON, command=self.chat)
-        chat_label.grid(row = 0, column = 0, padx = 25, pady = (25, 25))
+        chat_label.grid(row = 0, column = 0, pady = (25, 25))
 
-        addFriend_logo = customtkinter.CTkImage(Image.open("logostorage\AddFriend_selected.png"), size=(50, 50))
+        addFriend_logo = customtkinter.CTkImage(Image.open("logostorage\AddFriend_selected.png"), size=(40, 40))
         addFriend_label = customtkinter.CTkLabel(sidebar_frame, image=addFriend_logo, text="")
-        addFriend_label.grid(row = 1, column = 0, padx = 25, pady = (30, 25))
+        addFriend_label.grid(row = 1, column = 0, pady = (30, 25))
 
-        logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(50, 50))
+        notification_logo = customtkinter.CTkImage(Image.open("logostorage\\Notifications_btn.png"), size=(40, 40))
+        notification_label = customtkinter.CTkButton(sidebar_frame, image=notification_logo, text="", width=50, fg_color=BUTTON, command=self.addFriend)
+        notification_label.grid(row = 2, column = 0, pady = (35, 25))
+
+        logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(40, 40))
         logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=50, fg_color=BUTTON, command=self.main_menu)
-        logout_label.grid(row = 2, column = 0, padx = 25, pady = (670, 25))
+        logout_label.grid(row = 3, column = 0, pady = (600, 25))
 
-        shutDown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(50, 50))
+        shutDown_logo = customtkinter.CTkImage(Image.open("logostorage\ShutDown_btn.png"), size=(40, 40))
         shutDown_label = customtkinter.CTkButton(sidebar_frame, image=shutDown_logo, text="", width=50, fg_color=BUTTON, command=root.destroy)
-        shutDown_label.grid(row = 3, column = 0, padx = 25, pady = (30, 30))
+        shutDown_label.grid(row = 4, column = 0, pady = (30, 30))
 
         # create addFriend frame
         addFriend_frame = customtkinter.CTkFrame(self.master, corner_radius=50, fg_color=WHITE)
