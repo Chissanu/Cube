@@ -59,17 +59,29 @@ class app:
         tk.Label(self.master, text="Login", font=("Inter", 40), bg= BG_COLOR).grid(column=1, row=1, pady=5, sticky=tk.N)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
-        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        username_entry.grid(column=1, row=2, sticky = N, pady=(50, 40))
+        username_label = customtkinter.CTkLabel(self.master, text="Username", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=2, pady=(20,0), padx=(250,0), sticky=SW)
+        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Put your Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        username_entry.grid(column=1, row=3, sticky = N)
 
-        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        password_entry.grid(column=1, row=3, sticky = N)
+        username_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
+        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Put the Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        password_entry.grid(column=1, row=5, sticky = N)
+
+        # create error frame
+        self.errLogin_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG_COLOR)
+        self.errLogin_frame.grid(row=6, column=1)
+        self.errLogin_frame.grid_propagate(0)
+
+        # setting up error frame 
+        Grid.columnconfigure(self.errLogin_frame,0,weight=1)
+        Grid.rowconfigure(self.errLogin_frame,0,weight=1)
 
         # Login button
         log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
-        log_btn.grid(column=1, row=4, sticky = "s", pady=(100,100))
-
+        log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
 
     def register(self):  
         """
@@ -78,6 +90,9 @@ class app:
         Grid.columnconfigure(root, index = 0, weight = 1)
         Grid.rowconfigure(root, 0, weight = 1)
         """
+
+        Grid.rowconfigure(root,3,weight=0)
+        Grid.rowconfigure(root,4,weight=0)
 
         for i in self.master.winfo_children():
             i.destroy()
@@ -94,22 +109,43 @@ class app:
         tk.Label(self.master, text="Register", font=("Inter", 40), bg=BG_COLOR).grid(column=1, row=1, pady=5)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
+        username_label = customtkinter.CTkLabel(self.master, text="Name", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=2, pady=(50,0), padx=(250,0), sticky=SW)
         name_entry = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        name_entry.grid(column=1, row=2, pady=(50,20))
+        name_entry.grid(column=1, row=3)
 
+        username_label = customtkinter.CTkLabel(self.master, text="Username", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
         username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        username_entry.grid(column=1, row=3)
+        username_entry.grid(column=1, row=5)
 
+        username_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=6, pady=(20,0), padx=(250,0), sticky=SW)
         password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        password_entry.grid(column=1, row=4)
+        password_entry.grid(column=1, row=7)
 
+        username_label = customtkinter.CTkLabel(self.master, text="Confirm password", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=8, pady=(20,0), padx=(250,0), sticky=SW)
         confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        confirm_entry.grid(column=1, row=5, pady=(15,0))
+        confirm_entry.grid(column=1, row=9)
+
+        # create error frame
+        self.errReg_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG_COLOR)
+        self.errReg_frame.grid(row=10, column=1, rowspan=2)
+        self.errReg_frame.grid_propagate(0)
+
+        # setting up error frame 
+        Grid.columnconfigure(self.errReg_frame,0,weight=1)
+        Grid.rowconfigure(self.errReg_frame,0,weight=1)
 
         # Register button
         reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
                                           command= lambda : self.registerDB(username_entry.get(),name_entry.get(),password_entry.get(),confirm_entry.get()))
-        reg_btn.grid(column=1, row=6, sticky = "s", pady=(200,100))
+        reg_btn.grid(column=1, row=12, sticky = "s", pady=50)
+
+        # create error label
+        # error_label = customtkinter.CTkLabel(self.master, text="Wrong Password or Account not found", font=("Inter", 20), text_color="red")
+        # error_label.grid(column=1, row=10, pady=(20,0))
 
     def chat(self):  
         # Setting up grid and frame for button widgets/ texts
@@ -117,7 +153,6 @@ class app:
         Grid.columnconfigure(root, index = 0, weight = 0)
         Grid.columnconfigure(root, index = 1, weight = 0)
         Grid.columnconfigure(root, index = 2, weight = 0)
-        Grid.rowconfigure(root, 0, weight = 0)
 
         for i in self.master.winfo_children():
             i.destroy()
@@ -275,8 +310,6 @@ class app:
         Grid.columnconfigure(root,0,weight=1)
         Grid.columnconfigure(root,1,weight=1)
         Grid.columnconfigure(root,2,weight=1)
-        Grid.rowconfigure(root,3,weight=1)
-        Grid.rowconfigure(root,4,weight=1)
 
         for i in self.master.winfo_children():
             i.destroy()
@@ -289,16 +322,34 @@ class app:
         img_label.grid(column=1, row=1)
 
         # Menu texts/ three buttons: Login, Register, & Quit
-        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, padx=1, pady=10, rowspan=2, sticky=tk.N)
+        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, pady=20, sticky=tk.N)
 
         btn1 = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.login)
-        btn1.grid(column=1, row=3, pady=100)
+        btn1.grid(column=1, row=2, pady=(70,0))
 
         btn2 = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.register)
-        btn2.grid(column=1, row=2, rowspan=2, sticky=tk.S, pady=30)
+        btn2.grid(column=1, row=3)
 
         btn3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
-        btn3.grid(column=1, row=4)
+        btn3.grid(column=1, row=4, pady=100)
+
+        # btn4 = customtkinter.CTkButton(self.master, text="popup", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=lambda : self.popup("popup"))
+        # btn4.grid(column=1, row=5)
+
+    # popup frame
+    def popup(self, msg):
+        popup_window = tk.Toplevel(root)
+        popup_window.geometry("400x300+750+350")
+        popup_window.configure(bg="#DCE9F6")
+
+        Grid.columnconfigure(popup_window,0,weight=1)
+        Grid.rowconfigure(popup_window,0,weight=1)  
+
+        label = customtkinter.CTkLabel(popup_window, text=msg, text_color=GENERAL_TEXT, font=("Inter", 40))
+        label.grid(column = 0, row = 0)
+        button = customtkinter.CTkButton(popup_window, text="Close", font=("Inter", 25), command=popup_window.destroy)
+        button.grid(column = 0, row = 1, pady=20)
+        popup_window.wait_window()
     
     
     """
@@ -308,17 +359,21 @@ class app:
         print("Logging in...")
         err = self.db.login(username,password)
         if type(err) == Exception:
-            print(err)
+            # create error label
+            error_label = customtkinter.CTkLabel(self.errLogin_frame, text=err, font=("Inter", 20), text_color="red")
+            error_label.grid(column=0, row=0)
         else:
             self.chat()
-    
+
     
     def registerDB(self,username,name,password,confirm):
         if password == confirm:
             print("Creating Account...")
             err = self.db.createAccount(username,name,password)
         if type(err) == Exception:
-            print(err)
+            # create error label
+            error_label = customtkinter.CTkLabel(self.errReg_frame, text=err, font=("Inter", 20), text_color="red")
+            error_label.grid(column=0, row=0)
         else:
             self.chat()
         

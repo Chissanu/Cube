@@ -1,37 +1,31 @@
 import tkinter as tk
 
+def validate_input():
+    # get user input from Entry widget
+    input_text = entry.get()
+    
+    # check if input is valid
+    if input_text.isdigit():
+        # input is valid, do something with it
+        print(f"Valid input: {input_text}")
+    else:
+        # input is not valid, show error label
+        error_label.config(text="Invalid input!")
+        
+# create the main window
 root = tk.Tk()
 
-# Define button properties
-button_width = 10
-button_height = 2
-button_bg = "white"
-button_fg = "black"
-button_font = ("Arial", 12)
+# create the input Entry widget
+entry = tk.Entry(root)
+entry.pack()
 
-# Define button names and corresponding output messages
-button_info = {
-    "Button 1": "You clicked Button 1!",
-    "Button 2": "You clicked Button 2!",
-    "Button 3": "You clicked Button 3!",
-    "Button 4": "You clicked Button 4!"
-}
+# create the error Label widget (hidden by default)
+error_label = tk.Label(root, text="", fg="red")
+error_label.pack()
 
-# Function to display output message
-def display_output(message):
-    output_label.config(text=message)
+# create the submit button
+submit_button = tk.Button(root, text="Submit", command=validate_input)
+submit_button.pack()
 
-# Function to generate button commands
-def generate_button_command(button_name):
-    return lambda message=button_info[button_name]: display_output(message)
-
-# Loop to create buttons
-for i, button_name in enumerate(button_info.keys()):
-    button = tk.Button(root, text=button_name, width=button_width, height=button_height, bg=button_bg, fg=button_fg, font=button_font, command=generate_button_command(button_name))
-    button.grid(row=i, column=0, padx=5, pady=5)
-
-# Label to display output message
-output_label = tk.Label(root, text="")
-output_label.grid(row=len(button_info), column=0, padx=5, pady=5)
-
+# start the main event loop
 root.mainloop()
