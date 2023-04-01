@@ -19,6 +19,7 @@ class Database:
         self.features = Features(self.ref)
         
         self.chat = None
+        self.username = None
         #self.thread = None
 
     def createAccount(self, username, name, password):
@@ -65,6 +66,7 @@ class Database:
         try:
             for user in users.keys():
                 if user == username and users[user]['password'] == password:
+                    self.username = username
                     return db.reference("/users/" + username)
             return Exception("Wrong password or Account not found!")
         except:
@@ -97,10 +99,10 @@ class Database:
         return self.features.showFriendList(user)
     
     def Chatroom(self, ref):
-        return Chat(ref)
+        self.chat = Chat(ref)
     
     def createChatroom(self, friend):
-        return self.chat.createChatroom(friend)
+        return self.chat.createChatroom(self.username, friend)
     
     def send(self, message, friend):
         return self.chat.send(message, friend)

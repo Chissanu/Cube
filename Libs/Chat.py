@@ -11,12 +11,19 @@ class Chat:
         print(userRef.get())
         self.username = userRef
         self.currentFriend = ""
+        
+    def getPrev(self, reference):
+        for key, value in reference.get().items():
+            if val == value:
+                return key
     
-    def createChatroom(self, friend): # Create Chatroom when there is no chatroom
+    def createChatroom(self, username, friend): # Create Chatroom when there is no chatroom
         ref = db.reference("/Chatrooms")
-        nameLs = [self.username, friend.lower()]
+        
+        print(username)
+        nameLs = [username, friend.lower()]
         nameLs.sort()
-        name = str(nameLs[0] + nameLs[1])
+        name = str(nameLs[0] + "-" + nameLs[1])
         ref.child(name).set({
             "message": {
                 "start": {
@@ -32,7 +39,7 @@ class Chat:
     def send(self, message, friend): #send message to a friend
         nameLs = [self.username, friend.lower()]
         nameLs.sort()
-        chat = db.reference("/Chatrooms/" + nameLs[0] + nameLs[1] +"/message")
+        chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         sentText = chat.push()
         sentText.set({
             "text": message,
@@ -45,7 +52,7 @@ class Chat:
     def loadchat(self, friend): #load chat from the chatroom
         nameLs = [self.username, friend.lower()]
         nameLs.sort()
-        chat = db.reference("/Chatrooms/" + nameLs[0] + nameLs[1] +"/message")
+        chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
         keys = message.keys()
         for i in keys:
@@ -58,7 +65,7 @@ class Chat:
     def countMessage(self, friend): #count the total message in the chatroom
         nameLs = [self.username, friend.lower()]
         nameLs.sort()
-        chat = db.reference("/Chatrooms/" + nameLs[0] + nameLs[1] +"/message")
+        chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
         keys = message.keys()
         return len(keys)

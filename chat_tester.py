@@ -2,11 +2,11 @@ from Libs import Database as dbb
 
 class chat_test:
     def __init__(self):
-        self.username = "Tonkhaow"
-        self.name = "Ton"
+        self.username = "MiaKhalifa"
+        self.name = "Mia"
         self.password = "1234"
-        self.friendUsername = "Nigger"
-        self.friendName = "Nigg"
+        self.friendUsername = "JordiElnino"
+        self.friendName = "Jordi"
         self.friendPassword = "1234"
         self.chat = None
         self.ref = "/"
