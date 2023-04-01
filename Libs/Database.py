@@ -100,6 +100,7 @@ class Database:
     
     def Chatroom(self, ref):
         self.chat = Chat(ref)
+        return self.chat
     
     def createChatroom(self, friend):
         return self.chat.createChatroom(self.username, friend)
@@ -115,6 +116,7 @@ class Database:
     
     def customThread(self, friend, chatroom):
         self.thread = CustomThread(friend, chatroom)
+        self.thread.start()
 # class Chat:
 #     def __init__(self, username):
 #         self.ref = db.reference("/")
