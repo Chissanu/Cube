@@ -99,7 +99,7 @@ class Database:
         return self.features.showFriendList(user)
     
     def Chatroom(self, ref):
-        self.chat = Chat(ref)
+        self.chat = Chat(ref, self.username)
         return self.chat
     
     def createChatroom(self, friend):

@@ -5,23 +5,16 @@ import time
 from threading import Thread
 
 class Chat:
-    def __init__(self, userRef):
+    def __init__(self, userRef, username):
 
         self.ref = db.reference('/')
         print(userRef.get())
-        self.username = userRef
+        self.username = username
         self.currentFriend = ""
-        
-    def getPrev(self, reference):
-        for key, value in reference.get().items():
-            if val == value:
-                return key
     
-    def createChatroom(self, username, friend): # Create Chatroom when there is no chatroom
+    def createChatroom(self, friend): # Create Chatroom when there is no chatroom
         ref = db.reference("/Chatrooms")
-        
-        print(username)
-        nameLs = [username, friend.lower()]
+        nameLs = [self.username, friend.lower()]
         nameLs.sort()
         name = str(nameLs[0] + "-" + nameLs[1])
         ref.child(name).set({
@@ -81,7 +74,7 @@ class CustomThread(Thread): #Threading to constantly track change in database
     def run(self):
         while True:
             if self.chatroom.countMessage(self.friend) != self.noOfMessage:
-                self.chatroom.loadChat(self.friend)
+                self.chatroom.loadchat(self.friend)
                 self.noOfMessage = self.chatroom.countMessage(self.friend)
             time.sleep(1)
     
