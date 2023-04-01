@@ -86,35 +86,35 @@ class Database:
     """"
     Function to call Features.py fuctions
     """
-    def addFriend(self, curr, user):
+    def addFriend(self, curr, user): # Function to add friend
         return self.features.addFriend(curr,user)
     
-    def acceptFriendRequest(self, user, target):
+    def acceptFriendRequest(self, user, target): # Function to accept friend request
         return self.features.acceptFriendRequest(user,target)
     
-    def rejectFriendRequest(self, user, target):
+    def rejectFriendRequest(self, user, target): # Function to reject friend request
         return self.features.rejectFriendRequest(user, target)
     
-    def showFriendList(self,user):
+    def showFriendList(self,user): #list friendlist
         return self.features.showFriendList(user)
     
-    def Chatroom(self, ref):
+    def Chatroom(self, ref): #initialize chatroom so that you can use other functions
         self.chat = Chat(ref, self.username)
         return self.chat
     
-    def createChatroom(self, friend):
+    def createChatroom(self, friend): #create chatroom
         return self.chat.createChatroom(self.username, friend)
     
-    def send(self, message, friend):
+    def send(self, message, friend): # send message
         return self.chat.send(message, friend)
     
-    def loadchat(self, friend):
+    def loadchat(self, friend): # load chat
         return self.chat.loadchat(friend)
     
-    def countMessage(self, friend):
+    def countMessage(self, friend): # count number of message in the database
         return self.chat.countMessage(friend)
     
-    def customThread(self, friend, chatroom):
+    def customThread(self, friend, chatroom): #create thread to look constantly read the number of messages
         self.thread = CustomThread(friend, chatroom)
         self.thread.start()
 # class Chat:
