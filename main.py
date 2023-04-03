@@ -443,11 +443,11 @@ class app:
 if __name__ == '__main__':
     try:
         from ctypes import windll
-
         windll.shcore.SetProcessDpiAwareness(1)
+        
     finally:
         root = Tk()
-        # root = customtkinter.CTk()                    # TO DO: may change the app from using Tk to customtkinterCTk as app frame instead
+        # root = customtkinter.CTk()                    
         root.attributes('-fullscreen', True)
         app(root)
         root.mainloop()
