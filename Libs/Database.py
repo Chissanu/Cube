@@ -66,7 +66,7 @@ class Database:
         try:
             for user in users.keys():
                 if user == username and users[user]['password'] == password:
-                    self.username = username
+                    self.username = user
                     return db.reference("/users/" + username)
             return Exception("Wrong password or Account not found!")
         except:

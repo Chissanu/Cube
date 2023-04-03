@@ -8,7 +8,6 @@ class Chat:
     def __init__(self, userRef, username):
 
         self.ref = db.reference('/')
-        print(userRef.get())
         self.username = username
         self.currentFriend = ""
     
