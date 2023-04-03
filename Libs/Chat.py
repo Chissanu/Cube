@@ -22,7 +22,8 @@ class Chat:
                 "start": {
                     "text": " ",
                     "time": " ",
-                    "name": " " 
+                    "name": " " ,
+                    "emotion": " "
                 }
             }
             }
@@ -37,7 +38,8 @@ class Chat:
         sentText.set({
             "text": message,
             "time": time.time(),
-            "name": self.username
+            "name": self.username,
+            "emotion": " "
         })
         self.currentFriend = nameLs[1]
         return nameLs[0] + nameLs[1]
@@ -62,6 +64,12 @@ class Chat:
         message = chat.get()
         keys = message.keys()
         return len(keys)
+    
+    def changeEmotion(self, emotion, friend):
+        nameLs = [self.username, friend.lower()]
+        nameLs.sort()
+        chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
+        chat.child("emotions").update({"emotions": emotion})
     
 class CustomThread(Thread): #Threading to constantly track change in database
     def __init__(self, friend, chatroom):
