@@ -117,23 +117,5 @@ class Database:
     def customThread(self, friend, chatroom): #create thread to look constantly read the number of messages
         self.thread = CustomThread(friend, chatroom)
         self.thread.start()
-# class Chat:
-#     def __init__(self, username):
-#         self.ref = db.reference("/")
-#         self.chat = chat.Chat(username, self.ref)
-#         self.thread = None
         
-#     def createChatroom(self, friend):
-#         return self.chat.createChatroom(self, friend)
     
-#     def send(self, message, friend):
-#         return self.chat.send(message, friend)
-    
-#     def loadchat(self, friend):
-#         return self.chat.loadchat(friend)
-    
-#     def countMessage(self, friend):
-#         return self.chat.countMessage(friend)
-    
-#     def customThread(self, friend, chatroom):
-#         self.thread = chat.CustomThread(friend, chatroom)
