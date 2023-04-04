@@ -39,7 +39,8 @@ class Detection:
 				results = model(img)
 
 			try:
-				self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
+				emotion = results.pandas().xyxy[0].name[0]
+				self.emotion_table[emotion] += 1
 				current = time.time()
 				if current - initial >= duration:
 					print(current - initial)
@@ -53,6 +54,8 @@ class Detection:
 
 			# read next frame
 			success, img = vid.read()
+		
+		return self.emotion_table
 
 
 	def untimedDetection(self, source, model_path):
@@ -84,22 +87,50 @@ class Detection:
 
 # This class contains every processing algorithms for the emotions data
 class Processing:
-	def __init__(self, data):
-		self.data = data
+	# def __init__(self, duration, table):
+	# 	self.duration = duration
+	# 	self.table = table
 
-	def getDominantEmotion():
-		pass
+	def getDominantEmotion(self,table):
+		hmultiplier = 4
+		smultiplier = 2
+		nmultiplier = 1
+		amultiplier = 3
+		dmultiplier = 8
+		sumultiplier = 8
+		mullist = [hmultiplier,smultiplier,nmultiplier,amultiplier,dmultiplier,sumultiplier]
+		emolist = ["happy","sad","neutral","angry","disgust","surprise"]
+
+		for i in range(6):
+			table[emolist[i]]*=mullist[i]
+
+		print(table)
+		return table
+	
+	def getMostOccuringEmotion(self,table):
+		operator = table
+		max_value = max(table, key=lambda x:operator[x])
+		print(max_value)
+		return max_value
+
+
+
+		
+
 
 # Test run codes. Will be removed in the final iteration of this script.
 
+#random text for now, will get from backend later
+wordcount = 0
+text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
+for i in text:
+	if i == " ":
+		wordcount +=1
+#human reading rate is 4 words/sec, detection time is average read time + 25%
+d = (wordcount/4) + (wordcount/8)
 test = Detection()
-test.timedDetection("http://10.100.9.1:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\model_201.pt", 5)
+t = test.timedDetection(0, "C:/Users/ACER/Documents/KMITL/cognitive/proj/model_201.pt", 5)
 
-while True:
-	query = str(input("Choices: [None, data]?:" ))
-	if query == 'data':
-		print(test.getEmotionData())
-
-	else:
-		print(test.getMostOccuringEmotion())
-		
+trueemotion = Processing()
+t = trueemotion.getDominantEmotion(t)
+trueemotion.getMostOccuringEmotion(t)
