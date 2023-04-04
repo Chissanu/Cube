@@ -48,6 +48,7 @@ class Chat:
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
+        print(message)
         self.currentFriend = nameLs[1]
         return message
     
