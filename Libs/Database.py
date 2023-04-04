@@ -98,6 +98,16 @@ class Database:
     def showFriendList(self,user): #list friendlist
         return self.features.showFriendList(user)
     
+    def findFriend(self,user):
+        return self.features.findFriend(user)
+    
+    def getIncoming(self, user):
+        return self.features.showIncoming(user)
+    
+    """
+    Function to call Chat.py functions
+    """
+    
     def Chatroom(self, ref): #initialize chatroom so that you can use other functions
         self.chat = Chat(ref, self.username)
         return self.chat
