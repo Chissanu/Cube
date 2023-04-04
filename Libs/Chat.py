@@ -48,13 +48,8 @@ class Chat:
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
-        keys = message.keys()
-        for i in keys:
-            current = message[i]
-            if current["name"] != " ":
-                print(current["name"] + ": " + current["text"])
         self.currentFriend = nameLs[1]
-        return nameLs[0] + nameLs[1]
+        return message
     
     def countMessage(self, friend): #count the total message in the chatroom
         nameLs = [self.username, friend.lower()]
