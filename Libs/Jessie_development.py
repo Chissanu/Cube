@@ -1,3 +1,10 @@
+"""
+For regular use case, Jessie.py is sufficient. This code contains the developing tools that was used for the followings:
+1. Testing Purposes: Test the trained A.I at a given parameter.
+2. Model Training Purposes: Used to gather data for the Sci-Kit Learn Decision Tree
+"""
+
+
 # Import the required libraries
 import cv2
 import torch
@@ -91,7 +98,6 @@ class Detection:
 		file = open(csv_path, "a", encoding = "UTF8", newline='')
 		writer = csv.writer(file)
 		# writer.writerow(header)
-
 		
 		for x in range(epochs):
 			result = self.timedDetection(source, model_path, 5)
@@ -170,7 +176,6 @@ class Detection:
 # This class contains every processing algorithms for the emotions data
 class Processing:
 	def __init__(self):
-		self.result = ""
 		self.conversion_table = {0: 'happy', 1: 'sad', 2: 'neutral', 3: 'angry', 4: 'disgust', 5: 'surprise'}
 
 	# Experimental, AI powered prediction from the custom gathered dataset. (Used Decision Tree). Result returns the absolute emotion value.
