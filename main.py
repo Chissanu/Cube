@@ -5,6 +5,7 @@ import customtkinter
 import os
 from PIL import Image, ImageTk
 from Libs.Database import Database
+from Libs.FriendList import FriendList
 
 CURRENT_PATH = os.getcwd()
 
@@ -34,9 +35,12 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
+
+        # self.username = None
+
         # self.chat()
-        # self.addFriend()
-        self.main_menu()
+        self.addFriend()
+        # self.main_menu()
 
     def login(self):  
         """
@@ -181,23 +185,6 @@ class app:
                                                 fg_color=FRIEND_LIST, 
                                                 command=lambda message=tempFriends[button_name]: self.display_chat(message))	
             friendBtn.grid(row=i, column=0, sticky="nsew")	
-        
-        # friendListBtn = {
-        # "P'Oak": "P'Oak profile",
-        # "Putt": "Putt profile",
-        # "Most": "Most profile",
-        # "Ruj": "Ruj profile"
-        # }
-        # for i, button_name in enumerate(friendListBtn):	
-        #     friendBtn = customtkinter.CTkButton(friendList_frame, 
-        #                                         image=shutdown_logo, 
-        #                                         text="  "+ button_name, 
-        #                                         font=("Inter", 40), 
-        #                                         anchor=W, 
-        #                                         width=500, height=100, 
-        #                                         fg_color=FRIEND_LIST, 
-        #                                         command=lambda message=friendListBtn[button_name]: self.display_chat(message))	
-        #     friendBtn.grid(row=i, column=0, sticky="nsew")	
 
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
@@ -254,35 +241,40 @@ class app:
         
         profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(80, 80))
 
-        tempFriends = {}
-        for val in self.db.showFriendList('c1'):
-            tempFriends[val] = 'Nothing here'
-        
-        for i, button_name in enumerate(tempFriends):	
-            friendBtn = customtkinter.CTkButton(requestList_frame, 
-                                                image=profile_logo, 
-                                                text="  "+ button_name, 
-                                                font=("Inter", 40), 
-                                                anchor=W, 
-                                                width=300, height=100,
-                                                text_color=GENERAL_TEXT,
-                                                fg_color=WHITE, 
-                                                command=lambda message=tempFriends[button_name]: NONE)	
-            friendBtn.grid(row=i, column=0, sticky="nsew")	
+        curUser = 'c1'
+        tempFriends = []
+        try:
+            for val in self.db.getIncoming(curUser):
+                tempFriends.append(val)
+        except:
+            pass
 
-            # create tickbox
-            tickbox_subframe = customtkinter.CTkFrame(requestList_frame, width=180, height=100, corner_radius=0, fg_color=WHITE)	
-            tickbox_subframe.grid(row=i, column=1)
+        try:
+            for i, button_name in enumerate(tempFriends):
+                friend_subframe = customtkinter.CTkFrame(requestList_frame, width=480, height=100, corner_radius=0, fg_color=WHITE)
+                friend_subframe.grid(row=i, column=0, sticky="nsew")
+                friend_subframe.grid_propagate(0)
+                friendBtn = customtkinter.CTkButton(friend_subframe, 
+                                                    image=profile_logo, 
+                                                    text="  "+ tempFriends[i], 
+                                                    font=("Inter", 40),   
+                                                    anchor=W, 
+                                                    width=300, height=100,
+                                                    text_color=GENERAL_TEXT,
+                                                    fg_color=WHITE, 
+                                                    command="")	
+                friendBtn.grid(row=0, column=0, sticky="nsew")	
+                
+                accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
+                accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=button_name, frame=friend_subframe, i=i: self.acceptBtn(curUser, name, frame, i))
+                accept_btn.grid(row = 0, column = 1)
 
-            accept_logo =  customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
-            accept_btn = customtkinter.CTkButton(tickbox_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=NONE)
-            accept_btn.grid(row = 0, column = 0)
-
-            reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
-            reject_btn = customtkinter.CTkButton(tickbox_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command=NONE)
-            reject_btn.grid(row = 0, column = 2, padx=(30,0))
-
-        
+                reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
+                reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
+                reject_btn.grid(row = 0, column = 2, padx=(30,0))
+        except Exception as e:
+            print(e)
+            pass
 
         # create addFriend frame
         addFriend_frame = customtkinter.CTkFrame(self.master, corner_radius=50, fg_color=WHITE)
@@ -308,7 +300,12 @@ class app:
         # add button
         add_btn = customtkinter.CTkButton(addFriend_frame, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=self.chat)
         add_btn.grid(column=0, row=4, pady = (20,50), padx = 350)
-        
+
+    def acceptBtn(self, curUser, name, frame, i):
+        print(name)
+        print(i)
+        self.db.acceptFriendRequest(curUser, name)
+        frame.destroy()  
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
@@ -428,6 +425,8 @@ class app:
         if password == confirm:
             print("Creating Account...")
             err = self.db.createAccount(username,name,password)
+        else:
+            err = Exception("Password do not match")
         if type(err) == Exception:
             # create error label
             error_label = customtkinter.CTkLabel(self.errReg_frame, text=err, font=("Inter", 20), text_color="red")

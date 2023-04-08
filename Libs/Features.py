@@ -85,6 +85,34 @@ class Features:
         except Exception as e:
             print(e)
     
+    def findFriend(self, user):
+        # Convert to lowercase
+        user = user.lower()
+        
+        # Query users
+        userList = self.ref.child('users').get()
+        
+        # Check if user exist in users db
+        if user in userList:
+            return "Found"
+        else:
+            return Exception("Not found")
+     
+    def showIncoming(self,user):
+        # Convert to lowercase
+        user = user.lower()
+        
+        # Query current user data
+        userRef = self.ref.child('users').child(user)
+        
+        userIncomingReq = userRef.get()['incoming']
+        
+        # Check if user has any incoming requests
+        if userIncomingReq[0] == "":
+            return None
+        else:
+            return userIncomingReq
+    
     """
     This function will accept friend request by query user and target data
     and check if possible or not then update data in DB
@@ -118,15 +146,22 @@ class Features:
                 
                 # Append to friend list
                 currUserFriends = self.removeNull(currUserFriends)
-                currUserFriends.append(target)
+                tempDict = {}
+                count = 0
+                for index, value in enumerate(currUserFriends):
+                    count += 1
+                    tempDict[index] = value
                 
+                tempDict[count] = val
+
+                print(tempDict)
                 # Check if list is empty
                 currUserIncoming = self.addNull(currUserIncoming)
                 
                 # Update current user friend list 
                 currUserRef.update({
                     'incoming' : currUserIncoming,
-                    'friends'  : currUserFriends
+                    'friends'  : tempDict
                 })
                 
                 # Remove empty string and append to target friend list
