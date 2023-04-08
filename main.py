@@ -208,10 +208,10 @@ class app:
         self.topbar_subframe.grid(row=0, column=0)
         self.topbar_subframe.grid_propagate(0)
 
-        # create a message boxes container
-        self.boxes_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
-        self.boxes_subframe.grid(row=1, column=0)
-        self.boxes_subframe.grid_propagate(0)
+        # create a message boxes container  /   change to textbox: chat conver list would displayed. To decorate later
+        self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
+        self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        # self.boxes_subframe.grid_propagate(0)
 
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
