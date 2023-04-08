@@ -41,8 +41,8 @@ class app:
         # self.username = None
 
         # self.chat()
-        self.addFriend()
-        # self.main_menu()
+        # self.addFriend()
+        self.main_menu()
 
     def login(self):  
         """
@@ -175,7 +175,7 @@ class app:
         
         tempFriends = {}
         for val in self.db.showFriendList('c1'):
-            tempFriends[val] = 'Nothing here'
+            tempFriends[val] = val
         
         for i, button_name in enumerate(tempFriends):	
             friendBtn = customtkinter.CTkButton(friendList_frame, 
