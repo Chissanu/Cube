@@ -421,6 +421,8 @@ class app:
         if password == confirm:
             print("Creating Account...")
             err = self.db.createAccount(username,name,password)
+        else:
+            err = Exception("Password do not matched")
         if type(err) == Exception:
             # create error label
             error_label = customtkinter.CTkLabel(self.errReg_frame, text=err, font=("Inter", 20), text_color="red")
