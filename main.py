@@ -243,33 +243,36 @@ class app:
 
         curUser = 'c1'
         tempFriends = {}
-        for val in self.db.showFriendList(curUser):
+        for val in self.db.getIncoming(curUser):
             tempFriends[val] = 'Nothing here'
-  
-        print(tempFriends)
-        for i, button_name in enumerate(tempFriends):
-            friendBtn = customtkinter.CTkButton(requestList_frame, 
-                                                image=profile_logo, 
-                                                text="  "+ button_name, 
-                                                font=("Inter", 40),   
-                                                anchor=W, 
-                                                width=300, height=100,
-                                                text_color=GENERAL_TEXT,
-                                                fg_color=WHITE, 
-                                                command=lambda message=tempFriends[button_name]: NONE)	
-            friendBtn.grid(row=i, column=0, sticky="nsew")	
 
-            # create tickbox
-            tickbox_subframe = customtkinter.CTkFrame(requestList_frame, width=180, height=100, corner_radius=0, fg_color=WHITE)	
-            tickbox_subframe.grid(row=i, column=1)
+        try:
+            for i, button_name in enumerate(tempFriends):
+                friendBtn = customtkinter.CTkButton(requestList_frame, 
+                                                    image=profile_logo, 
+                                                    text="  "+ button_name, 
+                                                    font=("Inter", 40),   
+                                                    anchor=W, 
+                                                    width=300, height=100,
+                                                    text_color=GENERAL_TEXT,
+                                                    fg_color=WHITE, 
+                                                    command=lambda message=tempFriends[button_name]: NONE)	
+                friendBtn.grid(row=i, column=0, sticky="nsew")	
 
-            accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
-            accept_btn = customtkinter.CTkButton(tickbox_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda button_name = button_name:self.acceptBtn(curUser, button_name, friendBtn, tickbox_subframe))
-            accept_btn.grid(row = 0, column = 0)
+                # create tickbox
+                tickbox_subframe = customtkinter.CTkFrame(requestList_frame, width=180, height=100, corner_radius=0, fg_color=WHITE)	
+                tickbox_subframe.grid(row=i, column=1)
 
-            reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
-            reject_btn = customtkinter.CTkButton(tickbox_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
-            reject_btn.grid(row = 0, column = 2, padx=(30,0))
+                accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
+                accept_btn = customtkinter.CTkButton(tickbox_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda button_name = button_name:self.acceptBtn(curUser, button_name, friendBtn, tickbox_subframe))
+                accept_btn.grid(row = 0, column = 0)
+
+                reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
+                reject_btn = customtkinter.CTkButton(tickbox_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
+                reject_btn.grid(row = 0, column = 2, padx=(30,0))
+        except:
+            print("Friends not found")
+            pass
 
         # create addFriend frame
         addFriend_frame = customtkinter.CTkFrame(self.master, corner_radius=50, fg_color=WHITE)
@@ -422,7 +425,7 @@ class app:
             print("Creating Account...")
             err = self.db.createAccount(username,name,password)
         else:
-            err = Exception("Password do not matched")
+            err = Exception("Password do not match")
         if type(err) == Exception:
             # create error label
             error_label = customtkinter.CTkLabel(self.errReg_frame, text=err, font=("Inter", 20), text_color="red")
