@@ -242,9 +242,12 @@ class app:
         profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(80, 80))
 
         curUser = 'c1'
-        tempFriends = {}
-        for val in self.db.getIncoming(curUser):
-            tempFriends[val] = 'Nothing here'
+        tempFriends = []
+        try:
+            for val in self.db.getIncoming(curUser):
+                tempFriends.append(val)
+        except:
+            pass
 
         try:
             for i, button_name in enumerate(tempFriends):
@@ -253,13 +256,13 @@ class app:
                 friend_subframe.grid_propagate(0)
                 friendBtn = customtkinter.CTkButton(friend_subframe, 
                                                     image=profile_logo, 
-                                                    text="  "+ button_name, 
+                                                    text="  "+ tempFriends[i], 
                                                     font=("Inter", 40),   
                                                     anchor=W, 
                                                     width=300, height=100,
                                                     text_color=GENERAL_TEXT,
                                                     fg_color=WHITE, 
-                                                    command=lambda message=tempFriends[button_name]: NONE)	
+                                                    command="")	
                 friendBtn.grid(row=0, column=0, sticky="nsew")	
                 
                 accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
@@ -269,8 +272,8 @@ class app:
                 reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
                 reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
                 reject_btn.grid(row = 0, column = 2, padx=(30,0))
-        except:
-            print("Friends not found")
+        except Exception as e:
+            print(e)
             pass
 
         # create addFriend frame

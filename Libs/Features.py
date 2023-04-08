@@ -146,15 +146,22 @@ class Features:
                 
                 # Append to friend list
                 currUserFriends = self.removeNull(currUserFriends)
-                currUserFriends.append(target)
+                tempDict = {}
+                count = 0
+                for index, value in enumerate(currUserFriends):
+                    count += 1
+                    tempDict[index] = value
                 
+                tempDict[count] = val
+
+                print(tempDict)
                 # Check if list is empty
                 currUserIncoming = self.addNull(currUserIncoming)
                 
                 # Update current user friend list 
                 currUserRef.update({
                     'incoming' : currUserIncoming,
-                    'friends'  : currUserFriends
+                    'friends'  : tempDict
                 })
                 
                 # Remove empty string and append to target friend list
