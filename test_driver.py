@@ -28,13 +28,13 @@ def testDatabase():
 def testFeatures():
     db = Database()
     #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
-    curUser = "c2"
+    curUser = "c3"
     name = input("Whats friend ID? >")
     err = db.addFriend(curUser,name)
     #err = db.acceptFriendRequest(curUser, name)
     #err = db.rejectFriendRequest(curUser,name)
     #err = db.findFriend(name)
-    #err = db.getIncoming(name)
+    # err = db.getIncoming(name)
     if err:
         print(err)
 

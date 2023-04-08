@@ -248,7 +248,10 @@ class app:
 
         try:
             for i, button_name in enumerate(tempFriends):
-                friendBtn = customtkinter.CTkButton(requestList_frame, 
+                friend_subframe = customtkinter.CTkFrame(requestList_frame, width=480, height=100, corner_radius=0, fg_color=WHITE)
+                friend_subframe.grid(row=i, column=0, sticky="nsew")
+                friend_subframe.grid_propagate(0)
+                friendBtn = customtkinter.CTkButton(friend_subframe, 
                                                     image=profile_logo, 
                                                     text="  "+ button_name, 
                                                     font=("Inter", 40),   
@@ -257,18 +260,14 @@ class app:
                                                     text_color=GENERAL_TEXT,
                                                     fg_color=WHITE, 
                                                     command=lambda message=tempFriends[button_name]: NONE)	
-                friendBtn.grid(row=i, column=0, sticky="nsew")	
-
-                # create tickbox
-                tickbox_subframe = customtkinter.CTkFrame(requestList_frame, width=180, height=100, corner_radius=0, fg_color=WHITE)	
-                tickbox_subframe.grid(row=i, column=1)
-
+                friendBtn.grid(row=0, column=0, sticky="nsew")	
+                
                 accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
-                accept_btn = customtkinter.CTkButton(tickbox_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda button_name = button_name:self.acceptBtn(curUser, button_name, friendBtn, tickbox_subframe))
-                accept_btn.grid(row = 0, column = 0)
+                accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=button_name, frame=friend_subframe, i=i: self.acceptBtn(curUser, name, frame, i))
+                accept_btn.grid(row = 0, column = 1)
 
                 reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
-                reject_btn = customtkinter.CTkButton(tickbox_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
+                reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
                 reject_btn.grid(row = 0, column = 2, padx=(30,0))
         except:
             print("Friends not found")
@@ -286,7 +285,7 @@ class app:
         username_entry = customtkinter.CTkEntry(addFriend_frame, placeholder_text="Enter your friend's username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         username_entry.grid(row=1, column=0, pady=20)
 
-        # create profileclear
+        # create profile
         profile_subframe = customtkinter.CTkFrame(addFriend_frame, width=300, height=300, corner_radius=0, fg_color=WHITE)	
         profile_subframe.grid(row=2, column=0)
         profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(250, 250))
@@ -299,12 +298,11 @@ class app:
         add_btn = customtkinter.CTkButton(addFriend_frame, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=self.chat)
         add_btn.grid(column=0, row=4, pady = (20,50), padx = 350)
 
-    def acceptBtn(self, curUser, name, frame1, frame2):
+    def acceptBtn(self, curUser, name, frame, i):
         print(name)
+        print(i)
         self.db.acceptFriendRequest(curUser, name)
-        frame1.destroy()
-        frame2.destroy()
-        
+        frame.destroy()  
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
