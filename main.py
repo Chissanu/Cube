@@ -7,6 +7,8 @@ from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.FriendList import FriendList
 
+# from chat_tester import chat_test
+
 CURRENT_PATH = os.getcwd()
 
 # color palatte
@@ -195,7 +197,7 @@ class app:
         self.topbar_subframe.grid(row=0, column=0)
         self.topbar_subframe.grid_propagate(0)
 
-        # create a message boxes container  /   change to textbox: chat conver list would displayed. To decorate later
+        # create a message boxes container  /   change to textbox: chat conver list
         self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         # self.boxes_subframe.grid_propagate(0)
