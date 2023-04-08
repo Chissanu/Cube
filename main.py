@@ -247,7 +247,7 @@ class app:
             tempFriends[val] = 'Nothing here'
   
         print(tempFriends)
-        for i, button_name in enumerate(tempFriends):	
+        for i, button_name in enumerate(tempFriends):
             friendBtn = customtkinter.CTkButton(requestList_frame, 
                                                 image=profile_logo, 
                                                 text="  "+ button_name, 
@@ -264,7 +264,7 @@ class app:
             tickbox_subframe.grid(row=i, column=1)
 
             accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
-            accept_btn = customtkinter.CTkButton(tickbox_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda:self.acceptBtn(curUser, button_name, friendBtn, tickbox_subframe))
+            accept_btn = customtkinter.CTkButton(tickbox_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda button_name = button_name:self.acceptBtn(curUser, button_name, friendBtn, tickbox_subframe))
             accept_btn.grid(row = 0, column = 0)
 
             reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
