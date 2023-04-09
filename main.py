@@ -41,11 +41,13 @@ class app:
         self.master['bg'] = BG_COLOR
         self.tempframe = None
         self.curUser = 'c1'
+        self.profilePic = "profilePic\\1.png"
 
         # self.username = None
 
         # self.chat()
-        self.addFriend()
+        # self.addFriend()
+        self.myProfile()
         # self.main_menu()
 
     def login(self):  
@@ -171,7 +173,7 @@ class app:
         # create sidebar
         self.sidebar("chat")
 
-        profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(80, 80))
+        profile_logo = customtkinter.CTkImage(Image.open(self.profilePic), size=(80, 80))
 
         # create friendlist frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=480, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
@@ -206,6 +208,8 @@ class app:
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         # self.boxes_subframe.grid_propagate(0)
 
+        # self.boxes_subframe.bind('<Return>',print("You hit return."))
+
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
         tool_subframe.grid(row=2, column=0)
@@ -217,6 +221,8 @@ class app:
 
         chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         chat_entry.grid(row=0, column=1)
+
+        chat_entry.bind('<Return>',chat_entry.delete(1,"end"))
 
         sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
@@ -247,7 +253,7 @@ class app:
         requestList_frame = customtkinter.CTkScrollableFrame(container_frame, width=480, height=1030, corner_radius=0, fg_color=WHITE)	
         requestList_frame.grid(row=1, column=0, sticky="nsew")
         
-        profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(80, 80))
+        profile_logo = customtkinter.CTkImage(Image.open(self.profilePic), size=(80, 80))
 
         # create addFriend frame
         addFriend_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, fg_color=BG_COLOR)
@@ -327,6 +333,49 @@ class app:
         search_btn = customtkinter.CTkButton(search_subframe, image=search_logo, text="", width=0, fg_color=WHITE, command=lambda: self.showProfile(username_entry.get()))
         search_btn.grid(row = 1, column = 1, sticky=W)
 
+    def myProfile(self):
+        Grid.columnconfigure(root,0,weight=0)
+        Grid.columnconfigure(root,1,weight=1)
+
+        for i in self.master.winfo_children():
+            i.destroy()
+
+        # create sidebar
+        self.sidebar("myProfile")
+
+        # create frame
+        profile_frame = customtkinter.CTkFrame(self.master, width=1850, height=1080, fg_color=LIGHT_BG)
+        profile_frame.grid(row=0, column=1, sticky="nsew")
+        profile_frame.grid_propagate(0)
+        Grid.columnconfigure(profile_frame,0,weight=1)
+        Grid.columnconfigure(profile_frame,1,weight=1)
+        Grid.rowconfigure(profile_frame,0,weight=1)
+
+        # profile logo
+        profile_image = customtkinter.CTkImage(Image.open(self.profilePic), size=(400, 400))
+        profile_label = customtkinter.CTkButton(profile_frame, text="", image=profile_image, width=0, fg_color=WHITE, corner_radius=20, command=lambda: self.popup("hay"))
+        profile_label.grid(row=0, column=0, padx=50, sticky=E)
+
+        # information box subframe
+        info_subframe = customtkinter.CTkFrame(profile_frame, width=910, height=800, fg_color=BG_COLOR)
+        info_subframe.grid(row=0, column=1)
+        info_subframe.grid_propagate(0)
+        Grid.columnconfigure(info_subframe,0,weight=1)
+        Grid.rowconfigure(info_subframe,0,weight=1)
+        Grid.rowconfigure(info_subframe,1,weight=1)
+        Grid.rowconfigure(info_subframe,2,weight=1)
+
+        # create infoBox
+        infobox_img = customtkinter.CTkImage(Image.open("logostorage\profile_box.png"), size=(910, 800))
+        infobox_bg = customtkinter.CTkLabel(info_subframe, text="",image=infobox_img, width=0)
+        infobox_bg.grid(row=0, column=0, rowspan = 3, sticky=W)
+
+        # create information in infobox
+        name_text = customtkinter.CTkLabel(info_subframe, text="name", font=("Inter", 50), text_color=GENERAL_TEXT)
+        name_text.grid(row=0, column=0)
+        bio_text = customtkinter.CTkLabel(info_subframe, text="bio", font=("Inter", 50), text_color=GENERAL_TEXT)
+        bio_text.grid(row=1, column=0)
+
     def acceptBtn(self, name, frame):
         self.db.acceptFriendRequest(self.curUser, name)
         frame.destroy()
@@ -334,13 +383,13 @@ class app:
     def showProfile(self, name):
         # create variable
         profile = self.db.findFriend(name)
-        picture = "logostorage\profile_pic.png"
+        picture = self.profilePic
         name = str(profile['name'])
         bio = profile['bio']
         
         # destroy and gen tempframe
         self.tempframe.destroy()
-        self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=+600, fg_color=LIGHT_BG)
+        self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
         self.tempframe.grid(row=0, column=0)
         self.tempframe.grid_propagate(0)
         Grid.columnconfigure(self.tempframe,0,weight=1)
@@ -422,6 +471,9 @@ class app:
             addFriend_img = "logostorage\AddFriend_btn.png"
             addFriend_command = self.addFriend
             addFriend_hover = True
+            myProfile_img = self.profilePic
+            myProfile_command = self.myProfile
+            myProfile_hover = True
         elif page == "addFriend":
             chat_img = "logostorage\Chat_btn.png"
             chat_command = self.chat
@@ -429,6 +481,19 @@ class app:
             addFriend_img = "logostorage\AddFriend_selected.png"
             addFriend_command = None
             addFriend_hover = False
+            myProfile_img = self.profilePic
+            myProfile_command = self.myProfile
+            myProfile_hover = True
+        elif page == "myProfile":
+            chat_img = "logostorage\Chat_btn.png"
+            chat_command = self.chat
+            chat_hover = True
+            addFriend_img = "logostorage\AddFriend_btn.png"
+            addFriend_command = self.addFriend
+            addFriend_hover = True
+            myProfile_img = self.profilePic
+            myProfile_command = None
+            myProfile_hover = False
 
         # create sidebar
         sidebar_frame = customtkinter.CTkFrame(self.master, width=70, height=1080, corner_radius=0, fg_color=BUTTON)
@@ -445,13 +510,13 @@ class app:
         addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=0, hover=addFriend_hover, fg_color=BUTTON, command=addFriend_command)
         addFriend_label.grid(row = 1, column = 0, pady = (30, 25))
 
-        # notification_logo = customtkinter.CTkImage(Image.open("logostorage\\Notifications_btn.png"), size=(40, 40))
-        # notification_label = customtkinter.CTkButton(sidebar_frame, image=notification_logo, text="", width=0, fg_color=BUTTON, command=NONE)
-        # notification_label.grid(row = 2, column = 0, pady = (30, 25))
+        myProfile_logo = customtkinter.CTkImage(Image.open(myProfile_img), size=(40, 40))
+        myProfile_label = customtkinter.CTkButton(sidebar_frame, image=myProfile_logo, text="", width=0, hover=myProfile_hover, fg_color=BUTTON, command=myProfile_command)
+        myProfile_label.grid(row = 2, column = 0, pady = (600, 25))
 
         logout_logo = customtkinter.CTkImage(Image.open("logostorage\LogOut_btn.png"), size=(40, 40))
         logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=0, fg_color=BUTTON, command=self.main_menu)
-        logout_label.grid(row = 3, column = 0, pady = (700, 25))
+        logout_label.grid(row = 3, column = 0, pady = (30, 25))
 
         shutdown_logo = customtkinter.CTkImage(Image.open("logostorage\Shutdown_btn.png"), size=(40, 40))
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=0, fg_color=BUTTON, command=root.destroy)
@@ -489,6 +554,20 @@ class app:
     def quit(self,e):
         self.destroy()
 
+# custom button class
+class MyButton(customtkinter.CTkButton):
+    def __init__(self, master, image_path, **kwargs):
+        # Open the image file and convert it to a PhotoImage object
+        self.photo = customtkinter.CTkImage(Image.open(image_path), size=(70, 70))
+
+        # Call the parent constructor to create the button
+        customtkinter.CTkButton.__init__(self, master, image=self.photo, bd=0, highlightthickness=0, **kwargs)
+
+        # Set the button size to match the image size
+        self.config(width=self.photo.width(), height=self.photo.height())
+
+        # Use the image as the button background
+        self.configure(image=self.photo, compound="center")
 
 if __name__ == '__main__':
     try:
