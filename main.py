@@ -203,12 +203,19 @@ class app:
         self.topbar_subframe.grid(row=0, column=0)
         self.topbar_subframe.grid_propagate(0)
 
+        # Remove texts after hitting enter to send a message
+        def temp_text():
+            name = chat_entry.get("1.0","end-1c")
+            print(name)
+            self.boxes_subframe.insert(tk.END,name)
+            # self.boxes_subframe.insert(0, '') # Insert blank for user input
+
         # create a message boxes container  /   change to textbox: chat conver list
         self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         # self.boxes_subframe.grid_propagate(0)
 
-        # self.boxes_subframe.bind('<Return>',print("You hit return."))
+        # self.boxes_subframe.bind('<Return>',temp_text)
 
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
@@ -216,13 +223,19 @@ class app:
         tool_subframe.grid_propagate(0)
 
         other_logo = customtkinter.CTkImage(Image.open("logostorage\Other_btn.png"), size=(40, 40))
-        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
+        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=lambda:temp_text())
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
         chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         chat_entry.grid(row=0, column=1)
-
-        chat_entry.bind('<Return>',chat_entry.delete(1,"end"))
+        
+        # # functioning message sender
+        # def get_input():
+        #     name = chat_entry.get("1.0","end-1c")
+        #     print(name)
+        #     self.boxes_subframe.insert(tk.END,name)
+        
+        # self.boxes_subframe.bind('<Return>',get_input())
 
         sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
@@ -231,6 +244,9 @@ class app:
         emoji_logo = customtkinter.CTkImage(Image.open("logostorage\Emoji_btn.png"), size=(40, 40))
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
+
+    def work_chat(self):
+        pass
 
     def addFriend(self):
 
