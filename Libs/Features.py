@@ -57,17 +57,29 @@ class Features:
         currUserPending = currUser['pending']
         currUserPending = self.removeNull(currUserPending)
         
+        currUserIncoming = currUser['incoming']
+        currUserIncoming = self.removeNull(currUserIncoming)
+        
+        currUserFriend = currUser['friends']
+        currUserFriend = self.removeNull(currUserFriend)
+        
         #Update database to show sending request on current user and incoming on receiver
         try:
             for user in users.keys():
                 if user == username:
-                    # Check if user alreadt add this friend
+                    # Check if user already add this friend
                     if username not in currUserPending:
                         currUserPending.append(username)
+                        
+                    if username in currUserIncoming:
+                        currUserFriend.append(username)
+                        currUserIncoming.remove(username)
                     
                     # Update value to DB
                     currUserRef.update({
-                        'pending' : currUserPending
+                        'pending' : currUserPending,
+                        'friends' : currUserFriend,
+                        'incoming': currUserIncoming
                     })
                     
                     # Set reference to friend data
