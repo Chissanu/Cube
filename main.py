@@ -433,7 +433,7 @@ class app:
         bio.grid(row = 2, column = 0, pady = (20,0))
 
         # create add button
-        add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=lambda: self.db.addFriend(self.curUser, name))
+        add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=lambda: self.afterAdd(name))
         add_btn.grid(row=3, column=0, sticky=S, pady = (50,50), padx = 350)
 
     def main_menu(self):
@@ -524,6 +524,11 @@ class app:
     def afterChangeProfile(self):
         self.popup_window.destroy()
         self.myProfile()
+    
+    # after press add button in addFriend page
+    def afterAdd(self, name):
+        self.db.addFriend(self.curUser, name)
+        self.chat()
 
     # function to create sidepar 
     def sidebar(self, page):
