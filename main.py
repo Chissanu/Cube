@@ -206,6 +206,8 @@ class app:
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         # self.boxes_subframe.grid_propagate(0)
 
+        # self.boxes_subframe.bind('<Return>',print("You hit return."))
+
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
         tool_subframe.grid(row=2, column=0)
@@ -217,6 +219,8 @@ class app:
 
         chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         chat_entry.grid(row=0, column=1)
+
+        chat_entry.bind('<Return>',chat_entry.delete(1,"end"))
 
         sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
