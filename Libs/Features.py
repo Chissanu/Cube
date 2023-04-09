@@ -92,9 +92,17 @@ class Features:
         # Query users
         userList = self.ref.child('users').get()
         
+        
         # Check if user exist in users db
         if user in userList:
-            return "Found"
+            data = userList[user]
+            friendData = {
+                'name' : data['name'],
+                'profileImage' : data['profileImage'],
+                'bio' : data['bio'],
+                'emotions' : data['emotions']  
+            }
+            return friendData
         else:
             return Exception("Not found")
      
