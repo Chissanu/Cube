@@ -349,7 +349,7 @@ class app:
 
         # profile logo
         profile_image = customtkinter.CTkImage(Image.open(self.profilePic), size=(400, 400))
-        profile_label = customtkinter.CTkButton(profile_frame, text="", image=profile_image, width=10, height=10, fg_color=LIGHT_BG, corner_radius=500, command=lambda: self.popup(profile_frame))
+        profile_label = customtkinter.CTkButton(profile_frame, text="", image=profile_image, width=10, height=10, fg_color=LIGHT_BG, corner_radius=500, command=lambda: self.popup())
         profile_label.grid(row=0, column=0, padx=(0,20), sticky=E)
 
         # information box subframe
@@ -448,9 +448,6 @@ class app:
         btn3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
         btn3.grid(column=1, row=4, pady=100)
 
-        # btn4 = customtkinter.CTkButton(self.master, text="popup", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=lambda : self.popup("popup"))
-        # btn4.grid(column=1, row=5)
-
     # Function to display output message
     def display_chat(self, message):
         print(message)
@@ -461,7 +458,7 @@ class app:
         name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)	
 
     # popup frame
-    def popup(self, frame):
+    def popup(self):
         self.popup_window = tk.Toplevel(root)
         self.popup_window.geometry("1200x800+360+140")
         self.popup_window.configure(bg=BG_COLOR)
@@ -492,7 +489,7 @@ class app:
         for i in range(len(profileImageDict)):
             image = f"profilePic\\{i}.png"
             choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
-            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=WHITE, corner_radius=0, command=lambda newProfile = image: self.changeProfile(newProfile, frame))
+            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=WHITE, corner_radius=0, command=lambda newProfile = image: self.changeProfile(newProfile))
             choose_label.grid(row=row, column=col, padx=10, pady=10)
             col += 1
             if col > 4:
@@ -502,16 +499,15 @@ class app:
         self.popup_window.wait_window()
     
     # create confirm button
-    def changeProfile(self, newProfile, frame):
+    def changeProfile(self, newProfile):
         self.profilePic = newProfile
-        button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), command=lambda:self.afterChangeProfile(frame))
+        button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), command=lambda:self.afterChangeProfile())
         button.grid(column = 0, row = 2, pady=20)
 
     # change profile and refresh it
-    def afterChangeProfile(self, frame):
+    def afterChangeProfile(self):
         self.popup_window.destroy()
-        frame.update()
-        # self.myProfile()
+        self.myProfile()
 
     # function to create sidepar 
     def sidebar(self, page):
