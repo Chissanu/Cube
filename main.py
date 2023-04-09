@@ -39,12 +39,13 @@ class app:
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
         self.master['bg'] = BG_COLOR
+        self.tempframe = None
 
         # self.username = None
 
         # self.chat()
-        # self.addFriend()
-        self.main_menu()
+        self.addFriend()
+        # self.main_menu()
 
     def login(self):  
         """
@@ -266,6 +267,45 @@ class app:
         
         profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(80, 80))
 
+        # create addFriend frame
+        addFriend_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, fg_color=BG_COLOR)
+        addFriend_frame.grid(row=0, column=2, sticky='nsew')
+        addFriend_frame.grid_propagate(0)
+        Grid.columnconfigure(addFriend_frame,0,weight=1)
+
+        # create serch bar subframe
+        search_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=200, corner_radius=50, fg_color=BG_COLOR)	
+        search_subframe.grid(row=0, column=0, pady = (0, 50))
+        search_subframe.grid_propagate(0)
+        Grid.columnconfigure(search_subframe,0,weight=0)
+        Grid.columnconfigure(search_subframe,1,weight=1)
+        Grid.rowconfigure(search_subframe,0,weight=1)
+        Grid.rowconfigure(search_subframe,1,weight=1)
+
+        # create "add friend" label
+        addFriend_text = customtkinter.CTkLabel(search_subframe, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
+        addFriend_text.grid(row=0, column=0, columnspan = 2, sticky= N, pady = (50,20))
+
+        # create entry box
+        username_entry = customtkinter.CTkEntry(search_subframe, placeholder_text="Enter your friend's username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        username_entry.grid(row=1, column=0, padx=(230,0))
+
+        # create profile subframe
+        profile_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=700, corner_radius=50, fg_color=LIGHT_BG)	
+        profile_subframe.grid(row=2, column=0)
+        profile_subframe.grid_propagate(0)
+        Grid.columnconfigure(profile_subframe,0,weight=1)
+        Grid.rowconfigure(profile_subframe,0,weight=1)
+
+        # create tempframe in profile subframe
+        if self.tempframe == None:
+            self.tempframe = customtkinter.CTkFrame(profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
+            self.tempframe.grid(row=0, column=0)
+        else: 
+            self.tempframe.destroy()
+            self.tempframe = customtkinter.CTkFrame(profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
+            self.tempframe.grid(row=0, column=0)
+
         curUser = 'c1'
         tempFriends = []
         try:
@@ -300,26 +340,11 @@ class app:
         except Exception as e:
             print(e)
             pass
-
-        # create addFriend frame
-        addFriend_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, fg_color=BG_COLOR)
-        addFriend_frame.grid(row=0, column=2, sticky='nsew')
-        addFriend_frame.grid_propagate(0)
-        Grid.columnconfigure(addFriend_frame,0,weight=1)
-
-        # create "add friend" label
-        addFriend_text = customtkinter.CTkLabel(addFriend_frame, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
-        addFriend_text.grid(row=0, column=0, sticky= N, pady = (50,20))
-
-        # create entry box
-        username_entry = customtkinter.CTkEntry(addFriend_frame, placeholder_text="Enter your friend's username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
-        username_entry.grid(row=1, column=0, pady=20)
-
-        # create profile
-        profile_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=700, corner_radius=50, fg_color=WHITE)	
-        profile_subframe.grid(row=2, column=0)
-        profile_subframe.grid_propagate(0)
-        Grid.columnconfigure(profile_subframe,0,weight=1)
+        
+        # create search btn
+        search_logo = customtkinter.CTkImage(Image.open("logostorage\\search_btn.png"), size=(40, 40))
+        search_btn = customtkinter.CTkButton(search_subframe, image=search_logo, text="", width=0, fg_color=WHITE, command=lambda profile=username_entry.get(), frame=profile_subframe: self.showProfile(profile, frame))
+        search_btn.grid(row = 1, column = 1, sticky=W)
 
         # add button
         add_btn = customtkinter.CTkButton(addFriend_frame, text="add", font=("Inter", 40), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=250, height=60, command=self.chat)
@@ -328,19 +353,29 @@ class app:
     def acceptBtn(self, curUser, name, frame):
         print(name)
         self.db.acceptFriendRequest(curUser, name)
-        frame.destroy() 
+        frame.destroy()
 
     def showProfile(self, profile, frame):
-        frame.delete(profile)
-        frame.delete(name_text)
-        frame.delete(bio)
-        profile_logo = customtkinter.CTkImage(Image.open("logostorage\profile_pic.png"), size=(250, 250))
-        profile = customtkinter.CTkLabel(frame, text="", image=profile_logo)
+        # create variable
+        picture = "logostorage\profile_pic.png"
+        name = str(profile['name'])
+        bio = profile['bio']
+        
+        # destroy and gen tempframe
+        self.tempframe.destroy()
+        self.tempframe = customtkinter.CTkFrame(frame, width=1000, height=+600, fg_color=LIGHT_BG)
+        self.tempframe.grid(row=0, column=0)
+        self.tempframe.grid_propagate(0)
+        Grid.columnconfigure(self.tempframe,0,weight=1)
+
+        # show profile info in tempframe
+        profile_logo = customtkinter.CTkImage(Image.open(picture), size=(250, 250))
+        profile = customtkinter.CTkLabel(self.tempframe, text="", image=profile_logo)
         profile.grid(row = 0, column = 0, pady = (20,0))
-        name_text = customtkinter.CTkLabel(frame, text=profile["name"], font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+        name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
         name_text.grid(row = 1, column = 0, pady = (10,10))
-        bio = customtkinter.CTkLabel(frame, text=profile["bio"], font=("Inter", 40), text_color=GENERAL_TEXT)
-        bio.grid(row = 2, column = 0, pady = (20,0)) 
+        bio = customtkinter.CTkLabel(self.tempframe, text=bio, font=("Inter", 40), text_color=GENERAL_TEXT)
+        bio.grid(row = 2, column = 0, pady = (20,0))
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
