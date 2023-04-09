@@ -54,6 +54,9 @@ class Database:
             'pending'  : [""],
             'incoming' : [""],
             'friends'  : [""],
+            'bio'      : [""],
+            'emotions' : [""],
+            'profileImage' : [""],
             'created'  : date_time
         })
 

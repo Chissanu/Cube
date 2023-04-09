@@ -30,13 +30,13 @@ def testFeatures():
     #userInput = int(input("1) Send friend request\n2) Remove friend request\n> "))
     curUser = "c4"
     name = input("Whats friend ID? >")
-    err = db.addFriend(curUser,name)
+    #err = db.addFriend(curUser,name)
     #err = db.acceptFriendRequest(curUser, name)
     #err = db.rejectFriendRequest(curUser,name)
-    #err = db.findFriend(name)
+    err = db.findFriend(name)
     # err = db.getIncoming(name)
-    # if err:
-    #     print(err)
+    if err:
+        print(err)
 
 def addMultiple():
     db = Database()
@@ -46,6 +46,6 @@ def addMultiple():
         db.addFriend(users[i],curr)
         
 #genUser()
-addMultiple()
+#addMultiple()
 #testDatabase()
-#testFeatures()
+testFeatures()
