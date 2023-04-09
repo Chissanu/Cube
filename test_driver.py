@@ -45,7 +45,7 @@ def addMultiple():
     for i in range(4):
         db.addFriend(users[i],curr)
         
-#genUser()
-# addMultiple()
+# genUser()
+addMultiple()
 #testDatabase()
-testFeatures()
+# testFeatures()
