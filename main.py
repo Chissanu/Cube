@@ -41,17 +41,17 @@ class app:
         self.master['bg'] = BG_COLOR
         self.tempframe = None
 
-        self.curUser = 'c1'
-        self.name = 'c1'
-        self.bio = "Blablalbalblblla"
-        self.profilePic = "profilePic\\1.png"
+        # self.curUser = 'c1'
+        # self.name = 'c1'
+        # self.bio = "Blablalbalblblla"
+        # self.profilePic = 0
 
         # self.username = None
 
         # self.chat()
-        self.addFriend()
+        # self.addFriend()
         # self.myProfile()
-        # self.main_menu()
+        self.main_menu()
 
     def login(self):  
         """
@@ -176,17 +176,17 @@ class app:
         # create sidebar
         self.sidebar("chat")
 
-        profile_logo = customtkinter.CTkImage(Image.open(self.profilePic), size=(80, 80))
+        profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(80, 80))
 
         # create friendlist frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=480, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
         friendList_frame.grid(row=0, column=1, sticky="nsew")
         
         tempFriends = {}
-        for val in self.db.showFriendList('c1'):
+        for val in self.db.showFriendList(self.curUser):
             tempFriends[val] = val
         
-        for i, button_name in enumerate(tempFriends):	
+        for i, button_name in enumerate(tempFriends):
             friendBtn = customtkinter.CTkButton(friendList_frame, 
                                                 image=profile_logo, 
                                                 text="  "+ button_name, 
@@ -271,7 +271,7 @@ class app:
         requestList_frame = customtkinter.CTkScrollableFrame(container_frame, width=480, height=1030, corner_radius=0, fg_color=WHITE)	
         requestList_frame.grid(row=1, column=0, sticky="nsew")
         
-        profile_logo = customtkinter.CTkImage(Image.open(self.profilePic), size=(80, 80))
+        # profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(80, 80))
 
         # create serch bar subframe
         self.search_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=250, fg_color=BG_COLOR)	
@@ -279,6 +279,9 @@ class app:
         self.search_subframe.grid_propagate(0)
         Grid.columnconfigure(self.search_subframe,0,weight=0)
         Grid.columnconfigure(self.search_subframe,1,weight=1)
+
+        # declaire the error_label before configure it in the showProfile() function
+        self.error_label = customtkinter.CTkLabel(self.search_subframe, text="", font=("Inter", 25), text_color=BG_COLOR)
 
         # create "add friend" label
         addFriend_text = customtkinter.CTkLabel(self.search_subframe, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
@@ -307,7 +310,8 @@ class app:
         tempFriends = []
         try:
             for val in self.db.getIncoming(self.curUser):
-                tempFriends.append(val)
+                profile = self.db.findFriend(val)
+                tempFriends.append(profile)
         except:
             pass
         
@@ -320,15 +324,20 @@ class app:
                     friend_subframe = customtkinter.CTkFrame(requestList_frame, width=480, height=100, corner_radius=0, fg_color=WHITE)
                     friend_subframe.grid(row=i, column=0, sticky="nsew")
                     friend_subframe.grid_propagate(0)
+
+                    profile_pic = customtkinter.CTkImage(Image.open(f"profilePic\\{tempFriends[i]['profileImage']}.png"), size=(80, 80))
+                    profile_name = tempFriends[i]['name']
+                    # print(tempFriends[i])
+
                     friendBtn = customtkinter.CTkButton(friend_subframe, 
-                                                        image=profile_logo, 
-                                                        text="  "+ tempFriends[i], 
+                                                        image= profile_pic, 
+                                                        text="  "+ profile_name, 
                                                         font=("Inter", 40),   
                                                         anchor=W, 
                                                         width=300, height=100,
                                                         text_color=GENERAL_TEXT,
                                                         fg_color=WHITE, 
-                                                        command=lambda profile=tempFriends[i]: self.showProfile(profile))	
+                                                        command=lambda profile=profile_name: self.showProfile(profile))	
                     friendBtn.grid(row=0, column=0, sticky="nsew")	
                     
                     accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
@@ -340,6 +349,7 @@ class app:
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
+                print('here')
                 pass
         
         # create search btn
@@ -366,7 +376,7 @@ class app:
         Grid.rowconfigure(profile_frame,0,weight=1)
 
         # profile logo
-        profile_image = customtkinter.CTkImage(Image.open(self.profilePic), size=(400, 400))
+        profile_image = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(400, 400))
         profile_label = customtkinter.CTkButton(profile_frame, text="", image=profile_image, width=10, height=10, fg_color=BG_COLOR, corner_radius=50, command=lambda: self.popup())
         profile_label.grid(row=0, column=0, padx=(0,20), sticky=E)
 
@@ -423,6 +433,7 @@ class app:
     
     def edited_bio(self, event):
         self.bio = self.bio_text.get("0.0", "end")
+        self.db.changeBio(self.curUser, self.bio)
         self.bio_text.configure(state="disabled")
         
     def edit_name(self):
@@ -446,12 +457,15 @@ class app:
         # create variable
         try:
             profile = self.db.findFriend(name)
+            self.error_label.grid(row=2, column=0, columnspan=2, padx=350, pady=10, sticky=W)
+
             if type(profile) == Exception:
                 # error label
-                error_label = customtkinter.CTkLabel(self.search_subframe, text="This user does not exist", font=("Inter", 25), text_color='red')
-                error_label.grid(row=2, column=0, columnspan=2, padx=350, pady=10, sticky=W)
-                
-            picture = self.profilePic
+                self.error_label.configure(text="This user does not exist", text_color='red')
+            else:
+                self.error_label.configure(text="")
+            
+            picture = f"profilePic\\{profile['profileImage']}.png"
             name = str(profile['name'])
             bio = str(profile['bio'])
             
@@ -477,10 +491,9 @@ class app:
             # create add button
             add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=WHITE, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(name))
             add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
-        except:
+        except Exception as e:
             print("Profile not found")
         
-
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
         Grid.columnconfigure(root,0,weight=1)
@@ -550,7 +563,7 @@ class app:
         for i in range(len(profileImageDict)):
             image = f"profilePic\\{i}.png"
             choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
-            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda newProfile = image: self.changeProfile(newProfile))
+            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda newProfile = i: self.changeProfile(newProfile))
             choose_label.grid(row=row, column=col, padx=0, pady=15)
             col += 1
             if col > 4:
@@ -561,6 +574,7 @@ class app:
     
     # create confirm button
     def changeProfile(self, newProfile):
+        self.db.changeProfilePic(self.curUser, newProfile)
         self.profilePic = newProfile
         button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), text_color=BUTTON, fg_color=LIGHT_BG, command=lambda:self.afterChangeProfile())
         button.grid(column = 0, row = 2, pady=20)
@@ -584,7 +598,7 @@ class app:
             addFriend_img = "logostorage\AddFriend_btn.png"
             addFriend_command = self.addFriend
             addFriend_hover = True
-            myProfile_img = self.profilePic
+            myProfile_img = f"profilePic\\{self.profilePic}.png"
             myProfile_command = self.myProfile
             myProfile_hover = True
         elif page == "addFriend":
@@ -594,7 +608,7 @@ class app:
             addFriend_img = "logostorage\AddFriend_selected.png"
             addFriend_command = None
             addFriend_hover = False
-            myProfile_img = self.profilePic
+            myProfile_img = f"profilePic\\{self.profilePic}.png"
             myProfile_command = self.myProfile
             myProfile_hover = True
         elif page == "myProfile":
@@ -604,7 +618,7 @@ class app:
             addFriend_img = "logostorage\AddFriend_btn.png"
             addFriend_command = self.addFriend
             addFriend_hover = True
-            myProfile_img = self.profilePic
+            myProfile_img = f"profilePic\\{self.profilePic}.png"
             myProfile_command = None
             myProfile_hover = False
 
@@ -647,22 +661,30 @@ class app:
             error_label = customtkinter.CTkLabel(self.errLogin_frame, text=data, font=("Inter", 20), text_color="red")
             error_label.grid(column=0, row=0)
         else:
-            print(data.get())
-            self.chat()
+            self.curUser = data.get()['username']
+            self.name = data.get()['name']
+            self.bio = data.get()['bio']
+            self.profilePic = data.get()['profileImage']
+            self.myProfile()
 
     
     def registerDB(self,username,name,password,confirm):
         if password == confirm:
             print("Creating Account...")
-            err = self.db.createAccount(username,name,password)
+            data = self.db.createAccount(username,name,password)
         else:
-            err = Exception("Password do not match")
-        if type(err) == Exception:
+            data = Exception("Password do not match")
+        if type(data) == Exception:
             # create error label
-            error_label = customtkinter.CTkLabel(self.errReg_frame, text=err, font=("Inter", 20), text_color="red")
+            error_label = customtkinter.CTkLabel(self.errReg_frame, text=data, font=("Inter", 20), text_color="red")
             error_label.grid(column=0, row=0)
         else:
-            self.chat()
+            print("here")
+            # self.curUser = data.get()['username']
+            # self.name = data.get()['name']
+            # self.bio = data.get()['bio']
+            # self.profilePic = data.get()['profileImage']
+            # self.myProfile()
         
         
     def quit(self,e):

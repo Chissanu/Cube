@@ -64,6 +64,6 @@ def deleteMultiple():
         
 #deleteMultiple()       
 #genUser()
-#addMultiple()
-testDatabase()
+addMultiple()
+# testDatabase()
 #testFeatures()
