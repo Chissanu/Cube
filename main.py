@@ -443,38 +443,43 @@ class app:
         frame.destroy()
 
     def showProfile(self, name):
-        # error label
-        error_label = customtkinter.CTkLabel(self.search_subframe, text="This user does not exist", font=("Inter", 25), text_color='red')
-        error_label.grid(row=2, column=0, columnspan=2, padx=350, pady=10, sticky=W)
-
         # create variable
-        profile = self.db.findFriend(name)
-        picture = self.profilePic
-        name = str(profile['name'])
-        bio = str(profile['bio'])
+        try:
+            profile = self.db.findFriend(name)
+            if type(profile) == Exception:
+                # error label
+                error_label = customtkinter.CTkLabel(self.search_subframe, text="This user does not exist", font=("Inter", 25), text_color='red')
+                error_label.grid(row=2, column=0, columnspan=2, padx=350, pady=10, sticky=W)
+                
+            picture = self.profilePic
+            name = str(profile['name'])
+            bio = str(profile['bio'])
+            
+            # destroy and gen tempframe
+            self.tempframe.destroy()
+            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
+            self.tempframe.grid(row=0, column=0)
+            self.tempframe.grid_propagate(0)
+            Grid.columnconfigure(self.tempframe,0,weight=1)
+            Grid.rowconfigure(self.tempframe,2,weight=1)
+
+            # show profile info in tempframe
+            profile_logo = customtkinter.CTkImage(Image.open(picture), size=(250, 250))
+            profile = customtkinter.CTkLabel(self.tempframe, text="", image=profile_logo)
+            profile.grid(row = 0, column = 0, pady = (20,0))
+            name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+            name_text.grid(row = 1, column = 0, pady = (10,10))
+            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE)
+            bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
+            bio_text.insert("0.0", text=bio)
+            bio_text.configure(state="disabled")
+
+            # create add button
+            add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=WHITE, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(name))
+            add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
+        except:
+            print("Profile not found")
         
-        # destroy and gen tempframe
-        self.tempframe.destroy()
-        self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
-        self.tempframe.grid(row=0, column=0)
-        self.tempframe.grid_propagate(0)
-        Grid.columnconfigure(self.tempframe,0,weight=1)
-        Grid.rowconfigure(self.tempframe,2,weight=1)
-
-        # show profile info in tempframe
-        profile_logo = customtkinter.CTkImage(Image.open(picture), size=(250, 250))
-        profile = customtkinter.CTkLabel(self.tempframe, text="", image=profile_logo)
-        profile.grid(row = 0, column = 0, pady = (20,0))
-        name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
-        name_text.grid(row = 1, column = 0, pady = (10,10))
-        bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE)
-        bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
-        bio_text.insert("0.0", text=bio)
-        bio_text.configure(state="disabled")
-
-        # create add button
-        add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=WHITE, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(name))
-        add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
@@ -636,12 +641,13 @@ class app:
     """
     def loginDB(self,username,password):
         print("Logging in...")
-        err = self.db.login(username,password)
-        if type(err) == Exception:
+        data = self.db.login(username,password)
+        if type(data) == Exception:
             # create error label
-            error_label = customtkinter.CTkLabel(self.errLogin_frame, text=err, font=("Inter", 20), text_color="red")
+            error_label = customtkinter.CTkLabel(self.errLogin_frame, text=data, font=("Inter", 20), text_color="red")
             error_label.grid(column=0, row=0)
         else:
+            print(data.get())
             self.chat()
 
     

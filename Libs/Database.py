@@ -50,6 +50,7 @@ class Database:
         # Create User in DB
         new_user_ref.set({
             'name' : name,
+            'username' : username,
             'password' : password,
             'pending'  : [""],
             'incoming' : [""],
@@ -74,6 +75,11 @@ class Database:
             return Exception("Wrong password or Account not found!")
         except:
             return Exception("No account found in DB!")
+        
+    def deleteUser(self,user):
+        user_ref = self.ref.child('users').child(user)
+        user_ref.delete()
+        return
         
     def enterDir(self, currentDir, targetDir):
         try:

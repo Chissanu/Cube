@@ -63,6 +63,21 @@ class Features:
         currUserFriend = currUser['friends']
         currUserFriend = self.removeNull(currUserFriend)
         
+                            
+        # Set reference to friend data
+        friendIncomingRef = self.ref.child('users').child(username)
+        
+        # Query friends of friend
+        friendFriends = friendIncomingRef.get()['friends']
+        
+        friendFriends = self.removeNull(friendFriends)
+        
+        # Query incoming friend request of the friend
+        friendIncoming = friendIncomingRef.get()['incoming']
+        
+        # Query pending friend request of the friend
+        friendPending = friendIncomingRef.get()['pending']
+        
         #Update database to show sending request on current user and incoming on receiver
         try:
             for user in users.keys():
@@ -70,27 +85,36 @@ class Features:
                     # Check if user already add this friend
                     if username not in currUserPending:
                         currUserPending.append(username)
-                        
+                    
                     if username in currUserIncoming:
                         currUserFriend.append(username)
                         currUserIncoming.remove(username)
+                        friendFriends.append(curr)
+                        friendPending.remove(curr)
+                        currUserPending.remove(username)
+                    else:
+                        friendIncoming = self.removeNull(friendIncoming)
+                        friendIncoming.append(curr) 
                     
+                    # It will add empty string to array if the list is empty
+                    currUserFriend = self.addNull(currUserFriend)
+                    currUserIncoming = self.addNull(currUserIncoming)
+                    currUserPending = self.addNull(currUserPending)
                     # Update value to DB
                     currUserRef.update({
                         'pending' : currUserPending,
                         'friends' : currUserFriend,
-                        'incoming': currUserIncoming
+                        'incoming': currUserIncoming,
                     })
                     
-                    # Set reference to friend data
-                    friendIncomingRef = self.ref.child('users').child(username)
-                    
-                    # Query incoming friend request of the friend
-                    friendIncoming = friendIncomingRef.get()['incoming']
-                    friendIncoming = self.removeNull(friendIncoming)
-                    friendIncoming.append(curr)
+                    friendIncoming = self.addNull(friendIncoming)
+                    friendPending = self.addNull(friendPending)
+                    friendFriends = self.addNull(friendFriends)
+                                
                     friendIncomingRef.update({
-                        'incoming' : friendIncoming
+                        'friends'  : friendFriends,
+                        'incoming' : friendIncoming,
+                        'pending'  : friendPending
                     })
                     return "Success"
             return Exception("No user with that ID")
