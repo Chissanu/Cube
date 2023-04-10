@@ -50,6 +50,7 @@ class Database:
         # Create User in DB
         new_user_ref.set({
             'name' : name,
+            'username' : username,
             'password' : password,
             'pending'  : [""],
             'incoming' : [""],
