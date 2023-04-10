@@ -49,8 +49,8 @@ class app:
         # self.username = None
 
         # self.chat()
-        # self.addFriend()
-        self.myProfile()
+        self.addFriend()
+        # self.myProfile()
         # self.main_menu()
 
     def login(self):  
@@ -454,7 +454,7 @@ class app:
         profile = self.db.findFriend(name)
         picture = self.profilePic
         name = str(profile['name'])
-        bio = profile['bio']
+        bio = str(profile['bio'])
         
         # destroy and gen tempframe
         self.tempframe.destroy()
@@ -470,15 +470,14 @@ class app:
         profile.grid(row = 0, column = 0, pady = (20,0))
         name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
         name_text.grid(row = 1, column = 0, pady = (10,10))
-        bio = customtkinter.CTkLabel(self.tempframe, text=bio, font=("Inter", 20), text_color=GENERAL_TEXT)
-        bio.grid(row = 2, column = 0, pady = (20,0), sticky=N)
-        # bio = customtkinter.CTkTextbox(self.tempframe, width=400, corner_radius=0, font=("Inter", 20), text_color=GENERAL_TEXT)
-        # bio.grid(row = 2, column = 0, pady = (20,0), sticky=N)
-        # bio.insert(bio)
+        bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE)
+        bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
+        bio_text.insert("0.0", text=bio)
+        bio_text.configure(state="disabled")
 
         # create add button
         add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=WHITE, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(name))
-        add_btn.grid(row=3, column=0, sticky=S, pady = (50,50), padx = 350)
+        add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
 
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
@@ -532,7 +531,7 @@ class app:
         label.grid(column = 0, row = 0, pady = 20)
 
         # create scrollable frame
-        image_frame = customtkinter.CTkScrollableFrame(self.popup_window, width=480, height=300, corner_radius=0, fg_color=BG_COLOR)	
+        image_frame = customtkinter.CTkScrollableFrame(self.popup_window, width=480, height=300, corner_radius=0, fg_color=LIGHT_BG)	
         image_frame.grid(row=1, column=0, sticky="nsew")
         Grid.columnconfigure(image_frame,0,weight=1)
         Grid.columnconfigure(image_frame,1,weight=1)
@@ -549,7 +548,7 @@ class app:
         for i in range(len(profileImageDict)):
             image = f"profilePic\\{i}.png"
             choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
-            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=BG_COLOR, corner_radius=20, command=lambda newProfile = image: self.changeProfile(newProfile))
+            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda newProfile = image: self.changeProfile(newProfile))
             choose_label.grid(row=row, column=col, padx=0, pady=15)
             col += 1
             if col > 4:
