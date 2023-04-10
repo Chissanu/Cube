@@ -11,7 +11,7 @@ def genUser():
         
 def testDatabase():
     db = Database()
-    userInput = int(input("1) Login \n2) Register \n3) Delete \n> "))
+    userInput = int(input("1) Login \n2) Register \n3) Delete \n4) Change Pic \n5) Change Bio \n> "))
 
     if userInput == 1:
         username = input("Whats username? >")
@@ -20,6 +20,14 @@ def testDatabase():
     elif userInput == 3:
         name = input("Name >")
         err = db.deleteUser(name)
+    elif userInput == 4:
+        name = input("Name >")
+        num = int(input("Picture no. >"))
+        err = db.changeProfilePic(name,num)
+    elif userInput == 5:
+        name = input("Name >")
+        msg = input("Enter your bio")
+        err = db.changeBio(name,msg)
     else:
         name = input("What is your name? >")
         username = input("Whats username? >")

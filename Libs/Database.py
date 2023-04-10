@@ -57,7 +57,7 @@ class Database:
             'friends'  : [""],
             'bio'      : [""],
             'emotions' : [""],
-            'profileImage' : [""],
+            'profileImage' : 0,
             'created'  : date_time
         })
 
@@ -65,8 +65,8 @@ class Database:
         username = username.lower()
         password = str(password)
         # Set pointer to users table
-        user_ref = self.ref.child('users')
-        users = user_ref.get()
+        userRef = self.ref.child('users')
+        users = userRef.get()
         try:
             for user in users.keys():
                 if user == username and users[user]['password'] == password:
@@ -76,9 +76,23 @@ class Database:
         except:
             return Exception("No account found in DB!")
         
+    def changeProfilePic(self,user,target):
+        userRef = self.ref.child('users').child(user)
+        userRef.update({
+            'profileImage' : target
+        })
+        return
+    
+    def changeBio(self, user, message):
+        userRef = self.ref.child('users').child(user)
+        userRef.update({
+            'bio' : message
+        })
+        return
+        
     def deleteUser(self,user):
-        user_ref = self.ref.child('users').child(user)
-        user_ref.delete()
+        userRef = self.ref.child('users').child(user)
+        userRef.delete()
         return
         
     def enterDir(self, currentDir, targetDir):
