@@ -339,7 +339,7 @@ class app:
                     accept_btn.grid(row = 0, column = 1)
 
                     reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
-                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda: NONE)
+                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda name=button_name, frame=friend_subframe: self.rejectBtn(name, frame))
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
@@ -390,58 +390,59 @@ class app:
         infobox_bg.grid(row=0, column=0, rowspan = 3, columnspan=3, sticky=W)
 
         # create information in infobox
+        # name
         self.padName = (50,10)
         name_label = customtkinter.CTkLabel(self.info_subframe, text="Name:     ", font=("Inter", 35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         name_label.grid(row=0, column=0, pady=self.padName, padx=(150, 0), sticky='w')
-        self.name_text = customtkinter.CTkLabel(self.info_subframe, text=self.name, font=("Inter", 40), width=0, corner_radius=0, text_color=GENERAL_TEXT, fg_color=WHITE)
-        self.name_text.grid(row=0, column=1, pady=self.padName, padx=(0, 0), sticky='w')
+        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=60, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
+        self.name_text.grid(row=0, column=1, padx=(0, 0), pady=self.padName, sticky='w')
+        self.name_text.insert("0.0", text=self.name)
+        self.name_text.configure(state="disabled")
 
         edit_image = customtkinter.CTkImage(Image.open("logostorage\\editText.png"), size=(30, 30))
         editName_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=WHITE, corner_radius=0, command=lambda: self.edit_name())
         editName_label.grid(row=0, column=2, pady=self.padName, padx=(10,20), sticky='e')
-
+        
+        # bio
         bio_label = customtkinter.CTkLabel(self.info_subframe, text="Bio:         ", font=("Inter",35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         bio_label.grid(row=1, column=0, padx=(150, 0), pady=5, sticky='n')
-        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=BG_COLOR)
+        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
         self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
         self.bio_text.insert("0.0", text=self.bio)
-
+        self.bio_text.configure(state="disabled")
+        
         editBio_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=WHITE, corner_radius=0, command=lambda: self.edit_bio())
         editBio_label.grid(row=1, column=2, padx=(10,20), sticky='ne')
 
+        # emotion
         emotion_subframe = customtkinter.CTkFrame(self.info_subframe, width=700, height=400, fg_color=LIGHT_BG)
         emotion_subframe.grid(row=2, column=0, columnspan=3, padx=50, sticky=E)
         emotion_subframe.grid_propagate(0)
+
+    def edit_bio(self):
+        self.bio_text.configure(state="normal")
+        self.bio_text.insert("0.0", text='')
+        self.bio_text.bind("<Return>", self.edited_bio)
     
+    def edited_bio(self, event):
+        self.bio = self.bio_text.get("0.0", "end")
+        self.bio_text.configure(state="disabled")
+        
     def edit_name(self):
-        self.name_text.destroy()
-        self.name_text = customtkinter.CTkEntry(self.info_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=0, text_color=GENERAL_TEXT, fg_color=WHITE, width=550, height=45)
-        self.name_text.grid(row=0, column=1, pady=self.padName, padx=(0, 0))
+        self.name_text.configure(state="normal")
+        self.name_text.insert("0.0", text='')
         self.name_text.bind("<Return>", self.edited_name)
  
     def edited_name(self, event):
-        self.name = self.name_text.get()
-        print(self.name)
-        self.name_text.destroy()
-        self.name_text = customtkinter.CTkLabel(self.info_subframe, text=self.name, font=("Inter", 40), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
-        self.name_text.grid(row=0, column=1, pady=self.padName, padx=(0, 0))
-
-    def edit_bio(self):
-        self.bio_text.destroy()
-        self.bio_text = customtkinter.CTkEntry(self.info_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=0, text_color=GENERAL_TEXT, fg_color=WHITE, width=550, height=45)
-        self.bio_text.grid(row=1, column=1, padx=(0, 0), pady=(0,155))
-        self.bio_text.bind("<Return>", self.edited_bio)
-
-    def edited_bio(self, event):
-        self.bio = self.bio_text.get()
-        print(self.bio)
-        self.bio_text.destroy()
-        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=BG_COLOR)
-        self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
-        self.bio_text.insert("0.0", text=self.bio)
+        self.name = self.name_text.get("0.0", "end")
+        self.name_text.configure(state="disabled")
 
     def acceptBtn(self, name, frame):
         self.db.acceptFriendRequest(self.curUser, name)
+        frame.destroy()
+
+    def rejectBtn(self, name, frame):
+        self.db.rejectFriendRequest(self.curUser,name)
         frame.destroy()
 
     def showProfile(self, name):
