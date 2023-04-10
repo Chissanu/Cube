@@ -75,6 +75,11 @@ class Database:
         except:
             return Exception("No account found in DB!")
         
+    def deleteUser(self,user):
+        user_ref = self.ref.child('users').child(user)
+        user_ref.delete()
+        return
+        
     def enterDir(self, currentDir, targetDir):
         try:
             a = currentDir.reference(targetDir)
