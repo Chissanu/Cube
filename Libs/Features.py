@@ -134,6 +134,7 @@ class Features:
             data = userList[user]
             friendData = {
                 'name' : data['name'],
+                'username' : data['username'],
                 'profileImage' : data['profileImage'],
                 'bio' : data['bio'],
                 'emotions' : data['emotions']  
