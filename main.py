@@ -214,16 +214,19 @@ class app:
         def clear_text(e):
             chat_entry.delete("1.0","end")
 
-        # Display texts from chat_entry on text box
+        # # Display texts from chat_entry on text box
         def temp_text(e):
             inp = chat_entry.get(1.0, "end-1c")
-            self.boxes_subframe.insert(END,inp)
+            # self.boxes_subframe.insert(END,inp)
             # messagebox.delete(0,"end")
+            return inp
+        
 
         # create a message boxes container  /   display text on frame (to be in chat form later)
-        self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
+        # self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
+        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
-        self.boxes_subframe.grid_propagate(0)
+        # self.boxes_subframe.grid_propagate(0)
 
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
@@ -231,14 +234,21 @@ class app:
         tool_subframe.grid_propagate(0)
 
         other_logo = customtkinter.CTkImage(Image.open("logostorage\Other_btn.png"), size=(40, 40))
-        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=lambda:temp_text())
+        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=BG_COLOR)
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
         # chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         chat_entry = customtkinter.CTkTextbox(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         # chat_entry = Text(tool_subframe, font=("Inter", 19), borderwidth=2, bd=0.5, fg=GENERAL_TEXT, width=69, height=1)
         chat_entry.grid(row=0, column=1)
-        chat_entry.bind("<Return>", temp_text)
+        # chat_entry.bind("<Return>", temp_text)
+        # chat_entry.bind("<Return>", clear_text)
+
+        # Message display as label
+        self.ch_subframe = customtkinter.CTkLabel(self.boxes_subframe, text=chat_entry, corner_radius=0, fg_color=WHITE)
+        self.ch_subframe.grid(row=1, column=0, sticky='nsew')
+        self.ch_subframe.grid_propagate(0)
+
         chat_entry.bind("<Return>", clear_text)
 
         sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
