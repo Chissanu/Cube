@@ -324,10 +324,15 @@ class app:
                     friend_subframe = customtkinter.CTkFrame(requestList_frame, width=480, height=100, corner_radius=0, fg_color=WHITE)
                     friend_subframe.grid(row=i, column=0, sticky="nsew")
                     friend_subframe.grid_propagate(0)
+                    Grid.columnconfigure(friend_subframe,0,weight=1)
+                    Grid.columnconfigure(friend_subframe,1,weight=1)
+                    Grid.columnconfigure(friend_subframe,2,weight=1)
 
                     profile_pic = customtkinter.CTkImage(Image.open(f"profilePic\\{tempFriends[i]['profileImage']}.png"), size=(80, 80))
                     profile_name = tempFriends[i]['name']
-                    # profile_user = tempFriends[i]['username']
+                    if len(profile_name) > 5:
+                        profile_name = profile_name[:5] + '...'
+                    profile_user = tempFriends[i]['username']
                     # print(tempFriends[i])
 
                     friendBtn = customtkinter.CTkButton(friend_subframe, 
@@ -338,16 +343,16 @@ class app:
                                                         width=300, height=100,
                                                         text_color=GENERAL_TEXT,
                                                         fg_color=WHITE, 
-                                                        command=lambda profile=profile_name: self.showProfile(profile))	
+                                                        command=lambda profile=profile_user: self.showProfile(profile))	
                     friendBtn.grid(row=0, column=0, sticky="nsew")	
+                    friendBtn.grid_propagate(0)
                     
                     accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
-                    print(button_name)
-                    accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=profile_name, frame=friend_subframe: self.acceptBtn(name, frame))
+                    accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=profile_user, frame=friend_subframe: self.acceptBtn(name, frame))
                     accept_btn.grid(row = 0, column = 1)
 
                     reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
-                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda name=profile_name, frame=friend_subframe: self.rejectBtn(name, frame))
+                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda name=profile_user, frame=friend_subframe: self.rejectBtn(name, frame))
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
@@ -403,7 +408,7 @@ class app:
         self.padName = (50,10)
         name_label = customtkinter.CTkLabel(self.info_subframe, text="Name:     ", font=("Inter", 35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         name_label.grid(row=0, column=0, pady=self.padName, padx=(150, 0), sticky='w')
-        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=60, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
+        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
         self.name_text.grid(row=0, column=1, padx=(0, 0), pady=self.padName, sticky='w')
         self.name_text.insert("0.0", text=self.name)
         self.name_text.configure(state="disabled")
@@ -445,6 +450,7 @@ class app:
  
     def edited_name(self, event):
         self.name = self.name_text.get("0.0", "end")
+        self.db.changeName(self.curUser, self.name)
         self.name_text.configure(state="disabled")
 
     def acceptBtn(self, name, frame):

@@ -51,7 +51,7 @@ def testFeatures():
 
 def addMultiple():
     db = Database()
-    curr = "c1"
+    curr = "c3"
     users = ['c2','c3','c4','c5']
     for i in range(4):
         db.addFriend(users[i],curr)
@@ -64,6 +64,6 @@ def deleteMultiple():
         
 # deleteMultiple()       
 # genUser()
-# addMultiple()
+addMultiple()
 # testDatabase()
 #testFeatures()
