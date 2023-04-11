@@ -145,14 +145,18 @@ class app:
         confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
         confirm_entry.grid(column=1, row=9)
 
-        # create error
-        self.errReg_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG_COLOR)
-        self.errReg_frame.grid(row=10, column=1, rowspan=2)
-        self.errReg_frame.grid_propagate(0)
+        # create error frame
+        errReg_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG_COLOR)
+        errReg_frame.grid(row=10, column=1, rowspan=2)
+        errReg_frame.grid_propagate(0)
 
         # setting up error frame 
-        Grid.columnconfigure(self.errReg_frame,0,weight=1)
-        Grid.rowconfigure(self.errReg_frame,0,weight=1)
+        Grid.columnconfigure(errReg_frame,0,weight=1)
+        Grid.rowconfigure(errReg_frame,0,weight=1)
+
+        # declaire the error_label before configure it in the showProfile() function
+        self.errorReg = customtkinter.CTkLabel(errReg_frame, text="", font=("Inter", 20), text_color="red")
+        self.errorReg.grid(column=0, row=0)
 
         # Register button
         reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
@@ -281,7 +285,7 @@ class app:
         Grid.columnconfigure(self.search_subframe,1,weight=1)
 
         # declaire the error_label before configure it in the showProfile() function
-        self.error_label = customtkinter.CTkLabel(self.search_subframe, text="", font=("Inter", 25), text_color=BG_COLOR)
+        self.errorAddFriend = customtkinter.CTkLabel(self.search_subframe, text="", font=("Inter", 25), text_color=BG_COLOR)
 
         # create "add friend" label
         addFriend_text = customtkinter.CTkLabel(self.search_subframe, text="ADD FRIEND", font=("Inter", 50), text_color=GENERAL_TEXT)
@@ -465,13 +469,13 @@ class app:
         # create variable
         try:
             profile = self.db.findFriend(name)
-            self.error_label.grid(row=2, column=0, columnspan=2, padx=350, pady=10, sticky=W)
+            self.errorAddFriend.grid(row=2, column=0, columnspan=2, padx=350, pady=10, sticky=W)
 
             if type(profile) == Exception:
                 # error label
-                self.error_label.configure(text="This user does not exist", text_color='red')
+                self.errorAddFriend.configure(text="This user does not exist", text_color='red')
             else:
-                self.error_label.configure(text="")
+                self.errorAddFriend.configure(text="")
             
             picture = f"profilePic\\{profile['profileImage']}.png"
             name = str(profile['name'])
@@ -684,16 +688,17 @@ class app:
             data = Exception("Password do not match")
         if type(data) == Exception:
             # create error label
-            error_label = customtkinter.CTkLabel(self.errReg_frame, text=data, font=("Inter", 20), text_color="red")
-            error_label.grid(column=0, row=0)
+            print('error')  
+            self.errorReg.configure(text=data)
+
         else:
-            print("here")
-            # self.curUser = data.get()['username']
-            # self.name = data.get()['name']
-            # self.bio = data.get()['bio']
-            # self.profilePic = data.get()['profileImage']
-            # self.myProfile()
-        
+            print('here')
+            print(data)
+            self.curUser = data.get()['username']
+            self.name = data.get()['name']
+            self.bio = data.get()['bio']
+            self.profilePic = data.get()['profileImage']
+            self.myProfile()
         
     def quit(self,e):
         self.destroy()

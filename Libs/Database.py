@@ -43,7 +43,7 @@ class Database:
         try:
             for user in users.keys():
                 if users[user]['username'] == username:
-                    return "User already existed!"
+                    return Exception("User already existed")
         except:
             pass
         
