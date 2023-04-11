@@ -60,6 +60,7 @@ class Database:
             'profileImage' : 0,
             'created'  : date_time
         })
+        return new_user_ref
 
     def login(self, username, password):
         username = username.lower()
