@@ -89,6 +89,13 @@ class Database:
             'bio' : message
         })
         return
+    
+    def changeName(self, user, name):
+        userRef = self.ref.child('users').child(user)
+        userRef.update({
+            'name' : name
+        })
+        return
         
     def deleteUser(self,user):
         userRef = self.ref.child('users').child(user)
