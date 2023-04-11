@@ -566,13 +566,17 @@ class app:
         Grid.columnconfigure(image_frame,3,weight=1)
         Grid.columnconfigure(image_frame,4,weight=1)
 
-        profileImageDict = {
-            0:"bla", 1:"bla", 2:"bla", 3:"bla", 4:"bla", 5:"bla", 6:"bla", 7:"bla", 8:"bla"
-        }
+        folder_path = 'profilePic'
+        num_files = len([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
+
+        # profileImageDict = {
+        #     0:"bla", 1:"bla", 2:"bla", 3:"bla", 4:"bla", 5:"bla", 6:"bla", 7:"bla", 8:"bla"
+        # }
+        
         # create buttons
         row = 0
         col = 0
-        for i in range(len(profileImageDict)):
+        for i in range(num_files):
             image = f"profilePic\\{i}.png"
             choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
             choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda newProfile = i: self.changeProfile(newProfile))
