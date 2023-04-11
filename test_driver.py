@@ -62,8 +62,8 @@ def deleteMultiple():
     for i in range(5):
         db.deleteUser(users[i])
         
-#deleteMultiple()       
-#genUser()
-addMultiple()
+# deleteMultiple()       
+# genUser()
+# addMultiple()
 # testDatabase()
 #testFeatures()

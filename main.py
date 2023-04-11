@@ -327,6 +327,7 @@ class app:
 
                     profile_pic = customtkinter.CTkImage(Image.open(f"profilePic\\{tempFriends[i]['profileImage']}.png"), size=(80, 80))
                     profile_name = tempFriends[i]['name']
+                    # profile_user = tempFriends[i]['username']
                     # print(tempFriends[i])
 
                     friendBtn = customtkinter.CTkButton(friend_subframe, 
@@ -341,11 +342,12 @@ class app:
                     friendBtn.grid(row=0, column=0, sticky="nsew")	
                     
                     accept_logo = customtkinter.CTkImage(Image.open("logostorage\\accept_btn.png"), size=(40, 40))
-                    accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=button_name, frame=friend_subframe: self.acceptBtn(name, frame))
+                    print(button_name)
+                    accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=profile_name, frame=friend_subframe: self.acceptBtn(name, frame))
                     accept_btn.grid(row = 0, column = 1)
 
                     reject_logo =  customtkinter.CTkImage(Image.open("logostorage\\reject_btn.png"), size=(40, 40))
-                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda name=button_name, frame=friend_subframe: self.rejectBtn(name, frame))
+                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda name=profile_name, frame=friend_subframe: self.rejectBtn(name, frame))
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
