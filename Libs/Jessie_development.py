@@ -2,10 +2,10 @@
 For regular use case, Jessie.py is sufficient. This code contains the developing tools that was used for the followings:
 1. Testing Purposes: Test the trained A.I at a given parameter.
 2. Model Training Purposes: Used to gather data for the Sci-Kit Learn Decision Tree
+3. Development of a much more complex and optimized codes.
 """
 
-
-# Import the required libraries
+# Import the required libraries (Some libraries will not be import here)
 import cv2
 import torch
 import time
@@ -90,7 +90,36 @@ class Detection:
 			# read next frame
 			success, img = vid.read()
 
-	# This function is used to make the test data for the upcoming AI
+	# This special method is used on videos it takes the same arguements as the two methods.
+	# It also takes two additional methods "mode" and "video", the "mode" specifies the format of the video and the "video" specifies the path/link.
+	# If the mode is 0, the video is a normal video file (mp4, mjpeg, mpeg, mov). If it is 1, it is a youtube link.
+	# This method will call the "timedDetection" method according to the video duration.
+	# Note: From testing the video link duration will be slightly greater since there is also the duration of ADs.
+
+	def timedDetectionVideo(self, source, model_path, video, mode):
+		if mode == 0:
+			capture_video = cv2.VideoCapture(video)
+			video_duration = capture_video.get(cv2.CAP_PROP_POS_MSEC)
+			print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
+
+		# This piece of this code can only be ran around 5000 times per day. Please don't over use this method
+		elif mode == 1:
+			import googleapiclient.discovery
+			import isodate
+
+			# This is a Google API key. This key belongs to my account
+			api_key = "AIzaSyC96RuGTW8FpllPXsIXa7uxmQmwk9M1T3I"
+			video_id = video.split("v=")[1]
+			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+			# This part extract the duration of the video
+			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
+			duration = video_response["items"][0]["contentDetails"]["duration"]
+			video_duration = isodate.parse_duration(duration).total_seconds()
+			print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
+
+	# This method is used to make the test data for the decision tree AI. Only intended for development purposes.
 	def collectData(self, source, model_path, csv_path, epochs): #
 		self.clearEmotionData()
 		header = list(self.emotion_table.keys())
@@ -118,7 +147,7 @@ class Detection:
 				self.giveEmotionLabel(choice, choice_list, csv_path)
 				break
 
-	# Another function used to create video data. This is WIP (Working in Progress) only intended for development only.
+	# Another method used to create video data. Only intended for development only.
 	def collectVideoData(self, source, model_path, csv_path):
 		self.clearEmotionData()
 		vid = cv2.VideoCapture(source)
@@ -130,7 +159,6 @@ class Detection:
 		initial = time.time()
 
 		while success:
-			
 			if fno % 32 == 0:
 				results = model(img)
 
@@ -141,8 +169,8 @@ class Detection:
 					result = self.emotion_table
 					file = open(csv_path, "a", encoding = "UTF8", newline='')
 					writer = csv.writer(file)
-					operator = [result[header[0]], result[header[1]], result[header[2]], result[header[3]], result[header[4]], result[header[5]], 3]
-					if operator[3] <= 2:
+					operator = [result[header[0]], result[header[1]], result[header[2]], result[header[3]], result[header[4]], result[header[5]], 4]
+					if operator[4] <= 2:
 						print("Skip!")
 						self.clearEmotionData()
 						initial = time.time()
@@ -176,6 +204,7 @@ class Detection:
 # This class contains every processing algorithms for the emotions data
 class Processing:
 	def __init__(self):
+		self.result = ""
 		self.conversion_table = {0: 'happy', 1: 'sad', 2: 'neutral', 3: 'angry', 4: 'disgust', 5: 'surprise'}
 
 	# Experimental, AI powered prediction from the custom gathered dataset. (Used Decision Tree). Result returns the absolute emotion value.
@@ -183,12 +212,11 @@ class Processing:
 		from joblib import load
 
 		# Load the model from a file using joblib
-		model = load('jacob_1.joblib')
+		model = load('jacob_2.joblib')
 		header = list(data.values())
 		result = model.predict([header])
 		result = self.conversion_table[result[0]]
 		return result
-
 	
 	# Traditional method of logical prediction. Manually coded from common sense.
 	def getDominantEmotion(self):
@@ -198,11 +226,15 @@ class Processing:
 
 test = Detection()
 
-emote = test.timedDetection("http://10.100.9.1:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
+# test.timedDetectionVideo("http://192.168.1.112:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "https://www.youtube.com/watch?v=nkh9VGCY8as", 1)
+
+emote = test.timedDetection("http://192.168.1.112:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
 
 process = Processing()
 
 processed_emotion = process.getPredictedEmotion(emote)
 
 print(processed_emotion)
-		
+
+# test.collectData("http://10.100.9.1:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\datasets\\experiment_data.csv", 150)
+# test.collectVideoData("C:\\Users\\Firesoft\\Downloads\\Disgust_2.mp4", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\datasets\\experiment_data.csv", )

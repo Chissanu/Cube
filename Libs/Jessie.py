@@ -96,8 +96,8 @@ class Processing:
 		smultiplier = 2
 		nmultiplier = 1
 		amultiplier = 3
-		dmultiplier = 8
-		sumultiplier = 8
+		dmultiplier = 10
+		sumultiplier = 8 
 		mullist = [hmultiplier,smultiplier,nmultiplier,amultiplier,dmultiplier,sumultiplier]
 		emolist = ["happy","sad","neutral","angry","disgust","surprise"]
 
@@ -113,15 +113,14 @@ class Processing:
 		print(max_value)
 		return max_value
 
-
-
-		
-
+''' 
+A Piece of history
 print("hello world")
 print("hello world")
 print("hello world")
 print("hello world")
 print("hello world")
+'''
 # Test run codes. Will be removed in the final iteration of this script.
 
 #random text for now, will get from backend later
@@ -133,7 +132,7 @@ for i in text:
 #human reading rate is 4 words/sec, detection time is average read time + 25%
 d = (wordcount/4) + (wordcount/8)
 test = Detection()
-t = test.timedDetection(0, "C:/Users/ACER/Documents/KMITL/cognitive/proj/model_201.pt", 5)
+t = test.timedDetection("http://192.168.1.101:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
 
 trueemotion = Processing()
 t = trueemotion.getDominantEmotion(t)
