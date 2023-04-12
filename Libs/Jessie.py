@@ -75,8 +75,8 @@ class Detection:
 			import googleapiclient.discovery
 			import isodate
 
-			# This is a Google API key. This key belongs to my account
-			api_key = "AIzaSyC96RuGTW8FpllPXsIXa7uxmQmwk9M1T3I"
+			# This is a Google API key. This key will be filled later.
+			api_key = "temp_key"
 			video_id = video.split("v=")[1]
 			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
 			# This part extract the duration of the video
