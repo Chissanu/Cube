@@ -1,9 +1,7 @@
-### Note: These models are for testing purposes only and more advanced and tailored versions will be updated later.
 
 # Download the models here:
-## OneDrive - https://kmitlthailand-my.sharepoint.com/:f:/g/personal/64011532_kmitl_ac_th/Eu1vFiHfwXFGqmF67tWw_ogBKCKi1wPFEpRUrqMYaoFldw?e=QEIieH
 
-## Download the CUDA Support for NVIDIA GPUs here: https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11
+## OneDrive - https://kmitlthailand-my.sharepoint.com/:f:/g/personal/64011532_kmitl_ac_th/Eu1vFiHfwXFGqmF67tWw_ogBKCKi1wPFEpRUrqMYaoFldw?e=QEIieH
 
 # Testing the model via command line
 
@@ -13,14 +11,6 @@
 pip3 install torch --index-url https://download.pytorch.org/whl/cu118
 pip3 install torchvision --index-url https://download.pytorch.org/whl/cu118
 pip3 install torchaudio --index-url https://download.pytorch.org/whl/cu118
-```
-
-## Step 1: Install the Pytorch libraries (Others) (Low Performance).
-
-```shell
-pip3 install torch
-pip3 install torchvision
-pip3 install torchaudio
 ```
 
 ## Step 2: Clone the YOLOv5 repository.
@@ -46,19 +36,19 @@ pip3 install -qr requirements.txt
 ## Picture:
 
 ```shell
-python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source <your_picture_directory>
+python detect.py --weights <model_location> --img 416 --conf 0.5 --source <your_picture_directory>
 ```
 
 ## Video:
 
 ```shell
-python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source <your_video_directory>
+python detect.py --weights <model_location> --img 416 --conf 0.5 --source <your_video_directory>
 ```
 
 ## Webcam (Live Video Feed):
 
 ```shell
-python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source 0
+python detect.py --weights <model_location> --img 416 --conf 0.5 --source 0
 ```
 
 ### Note: Other than the webcam detection, the video and picture detection can provide an output with drawn landmarks. The directory of that file will be shown in the command line output.
@@ -67,4 +57,5 @@ python detect.py --weights <your_model_directory> --img 416 --conf 0.5 --source 
 
 * Model 101 - Simplest model and the first working prototype. (Not recommend)
 * Model 102 - The most stable model and resonably accurate prototype.
-* Model 106 (Newest) - The tailored version of the Model 102. It is the most accurate one so far.
+* Model 106 - The tailored version of the Model 102. It is the most accurate one so far.
+* Model 201 (Jessie_1) - The most advaced model of the bunch. Can detect up to 6 emotions.

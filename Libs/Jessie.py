@@ -57,6 +57,34 @@ class Detection:
 		
 		return self.emotion_table
 
+	# This special method is used on videos it takes the same arguements as the two methods.
+	# It also takes two additional methods "mode" and "video", the "mode" specifies the format of the video and the "video" specifies the path/link.
+	# If the mode is 0, the video is a normal video file (mp4, mjpeg, mpeg, mov). If it is 1, it is a youtube link.
+	# This method will call the "timedDetection" method according to the video duration.
+	# Note: From testing the video link duration will be slightly greater since there is also the duration of ADs.
+
+	def timedDetectionVideo(self, source, model_path, video, mode):
+		if mode == 0:
+			capture_video = cv2.VideoCapture(video)
+			video_duration = capture_video.get(cv2.CAP_PROP_POS_MSEC)
+			print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
+
+		# This piece of this code can only be ran around 5000 times per day. Please don't over use this method
+		elif mode == 1:
+			import googleapiclient.discovery
+			import isodate
+
+			# This is a Google API key. This key belongs to my account
+			api_key = "AIzaSyC96RuGTW8FpllPXsIXa7uxmQmwk9M1T3I"
+			video_id = video.split("v=")[1]
+			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+			# This part extract the duration of the video
+			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
+			duration = video_response["items"][0]["contentDetails"]["duration"]
+			video_duration = isodate.parse_duration(duration).total_seconds()
+			print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
 
 	def untimedDetection(self, source, model_path):
 		self.clearEmotionData()
@@ -107,11 +135,16 @@ class Processing:
 		print(table)
 		return table
 	
-	def getMostOccuringEmotion(self,table):
-		operator = table
-		max_value = max(table, key=lambda x:operator[x])
-		print(max_value)
-		return max_value
+	# AI powered prediction from the custom gathered dataset. Result returns the absolute emotion value as a string
+	def getPredictedEmotion(self, data):
+		from joblib import load
+
+		# Load the model from a file using joblib
+		model = load('jacob_2.joblib')
+		header = list(data.values())
+		result = model.predict([header])
+		result = self.conversion_table[result[0]]
+		return result
 
 ''' 
 A Piece of history
