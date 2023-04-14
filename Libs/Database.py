@@ -20,7 +20,7 @@ class Database:
         
         self.chat = None
         self.username = None
-        #self.thread = None
+        self.thread = None
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -159,4 +159,6 @@ class Database:
         self.thread = CustomThread(friend, chatroom)
         self.thread.start()
         
-    
+    # def runit(self):
+    #     reff = db.reference('Chatrooms')
+    #     print(reff.get()) 
