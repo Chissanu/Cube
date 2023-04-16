@@ -4,6 +4,7 @@ from firebase_admin import db
 from datetime import datetime
 from Libs.Features import Features
 from Libs.Chat import Chat, CustomThread
+from firebase_admin import storage
 
 class Database:
     def __init__(self):
@@ -12,7 +13,8 @@ class Database:
 
         # Initialize the app with a service account, granting admin privileges
         firebase_admin.initialize_app(cred, {
-            'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/'
+            'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/',
+            'storageBucket': 'cube-bc9c8.appspot.com/'
         })
         self.ref = db.reference('/')
         
