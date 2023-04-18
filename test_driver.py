@@ -61,6 +61,8 @@ def deleteMultiple():
     users = ['c1','c2','c3','c4','c5']
     for i in range(5):
         db.deleteUser(users[i])
+
+
         
 # deleteMultiple()       
 # genUser()

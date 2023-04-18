@@ -19,7 +19,8 @@ class Database:
         self.ref = db.reference('/')
         
         self.features = Features(self.ref)
-        
+        self.chat = Chat(self.ref, self.username)
+
         self.chat = None
         self.username = None
         self.thread = None
@@ -141,9 +142,9 @@ class Database:
     Function to call Chat.py functions
     """
     
-    def Chatroom(self, ref): #initialize chatroom so that you can use other functions
-        self.chat = Chat(ref, self.username)
-        return self.chat
+    # def Chatroom(self, ref): #initialize chatroom so that you can use other functions
+    #     self.chat = Chat(ref, self.username)
+    #     return self.chat
     
     def createChatroom(self, friend): #create chatroom
         return self.chat.createChatroom(self.username, friend)
