@@ -23,9 +23,9 @@ class chat_test:
         print(self.ref)
         self.userRef = self.ref
         
-    def chatroom(self):
-        self.chat = self.database.Chatroom(self.userRef)
-        return self.chat
+    # def chatroom(self):
+    #     self.chat = self.database.Chatroom(self.userRef)
+    #     return self.chat
         
     def createChatroom(self):
         try:
@@ -42,7 +42,7 @@ class chat_test:
 test = chat_test()
 #test.register()
 test.login()
-test.chatroom()
+#test.chatroom()
 test.createChatroom()
 test.enterChatRoom()
         
