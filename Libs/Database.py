@@ -19,7 +19,6 @@ class Database:
         self.ref = db.reference('/')
         
         self.features = Features(self.ref)
-        self.chat = Chat(self.ref, self.username)
 
         self.chat = None
         self.username = None
@@ -63,6 +62,7 @@ class Database:
             'profileImage' : 0,
             'created'  : date_time
         })
+        self.chat = Chat(self.ref, self.username)
         return new_user_ref
 
     def login(self, username, password):
@@ -75,6 +75,7 @@ class Database:
             for user in users.keys():
                 if user == username and users[user]['password'] == password:
                     self.username = user
+                    self.chat = Chat(self.ref, self.username)
                     return db.reference("/users/" + username)
             return Exception("Wrong password or Account not found!")
         except:
