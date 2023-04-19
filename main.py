@@ -213,12 +213,7 @@ class app:
 
         # Remove texts after hitting enter to send a message
         def send_text(e):
-            to_append = []
-
-            for i, j in enumerate(self.db.loadchat(e)):
-                to_append.append(i)
-            print(to_append)
-
+            
             msg = str(chat_entry.get())
             print(f"Message sent to {self.curChatFriend} with {msg}")
             msgLabel = customtkinter.CTkLabel(self.boxes_subframe, text=msg, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)
@@ -264,6 +259,12 @@ class app:
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
+    # def display_chat(self):
+    #     for key, j in enumerate(chat_history):
+            
+    #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[j].values(), bg_color="#f1f1f1")
+    #         self.messages.grid(row=key, column=0, padx=32, pady=2, sticky="w")
+
     # Function to display output message
     def display_chat(self, friend):
         self.curChatFriend = friend
@@ -276,15 +277,19 @@ class app:
         # Load Chat
         chat_history = self.db.loadchat(friend)
 
+        self.messages = customtkinter.CTkLabel(self.boxes_subframe, text="", bg_color="#f1f1f1")
+        # detect if theres anything in boxes subframe, then clear all out before grid in new ones
+        if self.messages.winfo_exists():
+            self.boxes_subframe.destroy()
         for key, j in enumerate(chat_history):
-            # print(chat_history[key].values())
             self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[j].values(), bg_color="#f1f1f1")
             self.messages.grid(row=key, column=0, padx=32, pady=2, sticky="w")
 
-
+                
+        # for key in chat_history:
+        #     print(chat_history[key].values())
         # Create chatbox in chat frame
-        # self.message_history_frame = customtkinter.CTkScrollableFrame(self.chat_frame, width=1290, height=850, fg_color="#e9f2b9")
-        # self.message_history_frame.grid(row=1, column=0, padx=10, pady=20)
+
 
         
 
