@@ -38,7 +38,7 @@ class chat_test:
             self.database.createChatroom(self.friendUsername)
             
     def enterChatRoom(self):
-        thread = self.database.customThread(self.friendUsername, self.chat)
+        #thread = self.database.customThread(self.friendUsername, self.chat)
         while True:
             message = input("Enter message: ")
             self.chat.send(message, self.friendUsername)

@@ -54,8 +54,6 @@ class Chat:
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
-        for key in message:
-            print(message[key].values())
         self.currentFriend = nameLs[1]
         return message
     

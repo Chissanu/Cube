@@ -41,17 +41,17 @@ class app:
         self.master['bg'] = BG_COLOR
         self.tempframe = None
 
-        # self.curUser = 'c1'
-        # self.name = 'c1'
-        # self.bio = "Blablalbalblblla"
-        # self.profilePic = 0
+        self.curUser = 'c1'
+        self.name = 'c1'
+        self.bio = "Blablalbalblblla"
+        self.profilePic = 0
 
         # self.username = None
 
-        # self.chat()
+        self.chat()
         # self.addFriend()
         # self.myProfile()
-        self.main_menu()
+        #self.main_menu()
 
     def login_menu(self):  
         """
@@ -202,25 +202,18 @@ class app:
             friendBtn.grid(row=i, column=0, sticky="nsew")	
 
         # create chat frame
-        self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
+        self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color="#333633")
         self.chat_frame.grid(row=0, column=2, sticky="nsew")
 
         # create topbar
-        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=75, corner_radius=0, fg_color=WHITE)
+        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=75, corner_radius=0, fg_color="#b70849")
         self.topbar_subframe.grid(row=0, column=0)
         self.topbar_subframe.grid_propagate(0)
 
         # Remove texts after hitting enter to send a message
-        def clear_text(e):
+        def send_text(e):
+            print(chat_entry.get(1.0, "end-1c"))
             chat_entry.delete("1.0","end")
-
-        # # Display texts from chat_entry on text box
-        def temp_text(e):
-            inp = chat_entry.get(1.0, "end-1c")
-            # self.boxes_subframe.insert(END,inp)
-            # messagebox.delete(0,"end")
-            return inp
-        
 
         # create a message boxes container  /   display text on frame (to be in chat form later)
         # self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
@@ -229,7 +222,7 @@ class app:
         # self.boxes_subframe.grid_propagate(0)
 
         # create chat box and emoji btn
-        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
+        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=BG_COLOR)
         tool_subframe.grid(row=2, column=0)
         tool_subframe.grid_propagate(0)
 
@@ -241,15 +234,13 @@ class app:
         chat_entry = customtkinter.CTkTextbox(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         # chat_entry = Text(tool_subframe, font=("Inter", 19), borderwidth=2, bd=0.5, fg=GENERAL_TEXT, width=69, height=1)
         chat_entry.grid(row=0, column=1)
-        # chat_entry.bind("<Return>", temp_text)
-        # chat_entry.bind("<Return>", clear_text)
 
         # Message display as label
-        self.ch_subframe = customtkinter.CTkLabel(self.boxes_subframe, text=chat_entry, corner_radius=0, fg_color=WHITE)
-        self.ch_subframe.grid(row=1, column=0, sticky='nsew')
-        self.ch_subframe.grid_propagate(0)
+        # self.ch_subframe = customtkinter.CTkLabel(self.boxes_subframe, text=chat_entry, corner_radius=0, fg_color=WHITE)
+        # self.ch_subframe.grid(row=1, column=0, sticky='nsew')
+        # self.ch_subframe.grid_propagate(0)
 
-        chat_entry.bind("<Return>", clear_text)
+        chat_entry.bind("<Return>", send_text)
 
         sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
@@ -370,7 +361,6 @@ class app:
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
-                print('here')
                 pass
         
         # create search btn
@@ -550,12 +540,20 @@ class app:
 
     # Function to display output message
     def display_chat(self, message):
-        print(message)
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
         name = customtkinter.CTkLabel(self.topbar_subframe, text=message, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
-        name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)	
+        name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)
+
+        # Load Chat
+        chat_history = self.db.loadchat(message)
+
+        for key in chat_history:
+            print(chat_history[key].values())
+            
+
+
 
     # popup frame
     def popup(self):
