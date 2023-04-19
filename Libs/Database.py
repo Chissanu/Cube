@@ -146,6 +146,9 @@ class Database:
     # def Chatroom(self, ref): #initialize chatroom so that you can use other functions
     #     self.chat = Chat(ref, self.username)
     #     return self.chat
+
+    def getChat(self):
+        return self.chat
     
     def createChatroom(self, friend): #create chatroom
         return self.chat.createChatroom(friend)

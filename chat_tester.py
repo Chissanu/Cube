@@ -3,10 +3,10 @@ from Libs import Database as dbb
 class chat_test:
     def __init__(self):
         self.username = "c1"
-        self.name = "Mia"
+        self.name = "c1"
         self.password = "1"
-        self.friendUsername = "Ruj3146"
-        self.friendName = "ruj3146"
+        self.friendUsername = "c2"
+        self.friendName = "c2"
         self.friendPassword = "1234"
         self.chat = None
         self.ref = "/"
@@ -26,6 +26,10 @@ class chat_test:
     # def chatroom(self):
     #     self.chat = self.database.Chatroom(self.userRef)
     #     return self.chat
+
+    def chatroom(self):
+        self.chat = self.database.getChat()
+        print(self.chat)
         
     def createChatroom(self):
         try:
@@ -42,7 +46,7 @@ class chat_test:
 test = chat_test()
 #test.register()
 test.login()
-#test.chatroom()
+test.chatroom()
 test.createChatroom()
 test.enterChatRoom()
         
