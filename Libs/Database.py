@@ -148,7 +148,7 @@ class Database:
     #     return self.chat
     
     def createChatroom(self, friend): #create chatroom
-        return self.chat.createChatroom(self.username, friend)
+        return self.chat.createChatroom(friend)
     
     def send(self, message, friend): # send message
         return self.chat.send(message, friend)

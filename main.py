@@ -53,7 +53,7 @@ class app:
         # self.myProfile()
         self.main_menu()
 
-    def login(self):  
+    def login_menu(self):  
         """
         Setting up grid and frame for button widgets/ texts
         comment these out for now, as they messed with the alignment of widgets for tkinter
@@ -99,7 +99,7 @@ class app:
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
 
-    def register(self):  
+    def register_menu(self):  
         """
         Setting up grid and frame for button widgets/ texts
         comment these out for now, as they messed with the alignment of widgets for tkinter
@@ -469,6 +469,10 @@ class app:
 
     def acceptBtn(self, name, frame):
         self.db.acceptFriendRequest(self.curUser, name)
+        try:
+            self.db.loadchat(name)
+        except:
+            self.db.createChatroom(name)
         frame.destroy()
 
     def rejectBtn(self, name, frame):
@@ -535,14 +539,14 @@ class app:
         # Menu texts/ three buttons: Login, Register, & Quit
         tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, pady=20, sticky=tk.N)
 
-        btn1 = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.login)
-        btn1.grid(column=1, row=2, pady=(70,0))
+        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.login_menu)
+        log_btn.grid(column=1, row=2, pady=(70,0))
 
-        btn2 = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.register)
-        btn2.grid(column=1, row=3)
+        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.register_menu)
+        reg_btn.grid(column=1, row=3)
 
-        btn3 = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
-        btn3.grid(column=1, row=4, pady=100)
+        exit_btn = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
+        exit_btn.grid(column=1, row=4, pady=100)
 
     # Function to display output message
     def display_chat(self, message):
