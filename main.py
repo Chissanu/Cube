@@ -213,6 +213,12 @@ class app:
 
         # Remove texts after hitting enter to send a message
         def send_text(e):
+            to_append = []
+
+            for i, j in enumerate(self.db.loadchat(e)):
+                to_append.append(i)
+            print(to_append)
+
             msg = str(chat_entry.get())
             print(f"Message sent to {self.curChatFriend} with {msg}")
             msgLabel = customtkinter.CTkLabel(self.boxes_subframe, text=msg, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)
@@ -222,8 +228,9 @@ class app:
             chat_entry.delete(0, END)
 
         # create a message boxes container  /   display text on frame (to be in chat form later)
+
         # self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
-        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
+        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color="#e9f2b9")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         # self.boxes_subframe.grid_propagate(0)
 
@@ -269,8 +276,15 @@ class app:
         # Load Chat
         chat_history = self.db.loadchat(friend)
 
-        # for key in chat_history:
-        #     print(chat_history[key].values())
+        for key, j in enumerate(chat_history):
+            # print(chat_history[key].values())
+            self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[j].values(), bg_color="#f1f1f1")
+            self.messages.grid(row=key, column=0, padx=32, pady=2, sticky="w")
+
+
+        # Create chatbox in chat frame
+        # self.message_history_frame = customtkinter.CTkScrollableFrame(self.chat_frame, width=1290, height=850, fg_color="#e9f2b9")
+        # self.message_history_frame.grid(row=1, column=0, padx=10, pady=20)
 
         
 
