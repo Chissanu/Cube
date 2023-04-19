@@ -46,6 +46,7 @@ class Chat:
             "name": self.username,
             "emotion": " "
         })
+
         self.currentFriend = nameLs[1]
         return nameLs[0] + nameLs[1]
     
