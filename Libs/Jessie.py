@@ -2,12 +2,14 @@
 import cv2
 import torch
 import time
+import threading
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
 	def __init__(self):
 		# This dictionary stores emotions count detected by the A.I
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
+
 	
 	# Input the emotion and it returns how many times the A.I detected these emotions according to the emotion_table.
 	# If no input is taken, it returns the whole dictionary
@@ -71,20 +73,20 @@ class Detection:
 			self.timedDetection(self, source, model_path, video_duration)
 
 		# This piece of this code can only be ran around 5000 times per day. Please don't over use this method
-		elif mode == 1:
-			import googleapiclient.discovery
-			import isodate
+		# elif mode == 1:
+		# 	import googleapiclient.discovery
+		# 	import isodate
 
-			# This is a Google API key. This key will be filled later.
-			api_key = "temp_key"
-			video_id = video.split("v=")[1]
-			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
-			# This part extract the duration of the video
-			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
-			duration = video_response["items"][0]["contentDetails"]["duration"]
-			video_duration = isodate.parse_duration(duration).total_seconds()
-			print(video_duration)
-			self.timedDetection(self, source, model_path, video_duration)
+		# 	# This is a Google API key. This key will be filled later.
+		# 	api_key = "temp_key"
+		# 	video_id = video.split("v=")[1]
+		# 	youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+		# 	# This part extract the duration of the video
+		# 	video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
+		# 	duration = video_response["items"][0]["contentDetails"]["duration"]
+		# 	video_duration = isodate.parse_duration(duration).total_seconds()
+		# 	print(video_duration)
+		# 	self.timedDetection(self, source, model_path, video_duration)
 
 	def untimedDetection(self, source, model_path):
 		self.clearEmotionData()
@@ -94,8 +96,12 @@ class Detection:
 		success, img = vid.read()
 		initial = time.time()
 
-		while success:
-	
+
+		while success and buttonclick == True:
+			
+			if buttonclick == False:
+				break
+
 			if fno % 32 == 0:
 				results = model(img)
 
@@ -109,6 +115,7 @@ class Detection:
 
 			# read next frame
 			success, img = vid.read()
+			
 
 	def clearEmotionData(self):
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
@@ -146,6 +153,16 @@ class Processing:
 		result = self.conversion_table[result[0]]
 		return result
 
+
+def getbutton():
+	key = input("break: ")
+	global buttonclick
+	if key == "a":
+		buttonclick = True
+	if key == "b":
+		buttonclick = False
+	if key == "c":
+		buttonclick = "end"
 ''' 
 A Piece of history
 print("hello world")
@@ -157,16 +174,25 @@ print("hello world")
 # Test run codes. Will be removed in the final iteration of this script.
 
 #random text for now, will get from backend later
-wordcount = 0
-text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
-for i in text:
-	if i == " ":
-		wordcount +=1
-#human reading rate is 4 words/sec, detection time is average read time + 25%
-d = (wordcount/4) + (wordcount/8)
-test = Detection()
-t = test.timedDetection("http://192.168.1.101:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
+# def timeword():
+# 	wordcount = 0
+# 	text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
+# 	for i in text:
+# 		if i == " ":
+# 			wordcount +=1
+# 	#human reading rate is 4 words/sec, detection time is average read time + 25%
+# 	d = (wordcount/4) + (wordcount/8)
+# 	test = Detection()
+# 	t = test.timedDetection("http://192.168.1.101:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
+# 	trueemotion = Processing()
+# 	t = trueemotion.getDominantEmotion(t)
+# 	trueemotion.getMostOccuringEmotion(t)
 
-trueemotion = Processing()
-t = trueemotion.getDominantEmotion(t)
-trueemotion.getMostOccuringEmotion(t)
+test = Detection()
+thread1 = threading.Thread(target=getbutton)
+thread2 = threading.Thread(target=test.untimedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt"))
+getbutton()
+thread1.start()
+thread2.start()
+
+
