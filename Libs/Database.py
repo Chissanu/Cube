@@ -140,6 +140,9 @@ class Database:
     def getIncoming(self, user):
         return self.features.showIncoming(user)
     
+    def getFriendPic(self,user):
+        return self.features.getTargetProfilePic(user)
+    
     """
     Function to call Chat.py functions
     """

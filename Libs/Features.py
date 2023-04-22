@@ -142,6 +142,15 @@ class Features:
             return friendData
         else:
             return Exception("Not found")
+        
+    def getTargetProfilePic(self,target):
+        # Convert to lowercase
+        target = target.lower()
+        
+        # Set pointer
+        targetRef = self.ref.child('users').child(target)
+        
+        return targetRef.get()['profileImage']
      
     def showIncoming(self,user):
         # Convert to lowercase
