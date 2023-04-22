@@ -279,11 +279,29 @@ class app:
 
         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text="", bg_color="#f1f1f1")
         # detect if theres anything in boxes subframe, then clear all out before grid in new ones
-        if self.messages.winfo_exists():
-            self.boxes_subframe.destroy()
-        for key, j in enumerate(chat_history):
-            self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[j].values(), bg_color="#f1f1f1")
-            self.messages.grid(row=key, column=0, padx=32, pady=2, sticky="w")
+        # if self.messages.winfo_exists():
+        #     self.boxes_subframe.destroy()
+        
+        myChat = []
+        friendChat = []
+        for index, key in enumerate(chat_history):
+            if chat_history[key]["name"] == self.curUser:
+                myChat.append(chat_history[key])
+            else:
+                friendChat.append(chat_history[key])
+        
+        print(myChat)
+        print("====")
+        print(friendChat)
+
+        # for index, key in enumerate(chat_history):
+        #     print(chat_history[key])
+        #     for val in key:
+        #         if chat_history[val]:
+        #             print("here")
+            
+            # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key].values(), bg_color="#f1f1f1")
+            # self.messages.grid(row=index, column=0, padx=32, pady=2, sticky="w")
 
                 
         # for key in chat_history:
@@ -708,7 +726,6 @@ class app:
     Backend Code
     """
     def loginDB(self,username,password):
-        print("Logging in...")
         data = self.db.login(username,password)
         if type(data) == Exception:
             # create error label
@@ -719,6 +736,7 @@ class app:
             self.name = data.get()['name']
             self.bio = data.get()['bio']
             self.profilePic = data.get()['profileImage']
+            print(f"Logged In as {self.curUser}")
             self.myProfile()
 
     
