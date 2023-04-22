@@ -167,8 +167,8 @@ class Database:
         self.thread = CustomThread(friend, chatroom)
         self.thread.start()
 
-    def uploadPic(self, picDir):
-        blob = self.bucket.blob(picDir)
+    def uploadPic(self, picDir, type, name):
+        blob = self.bucket.blob(type + "/" + name)
         blob.upload_from_filename(picDir)
         blob.make_public()
         return blob.public_url
