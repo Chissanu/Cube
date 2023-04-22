@@ -14,7 +14,7 @@ class Database:
         # Initialize the app with a service account, granting admin privileges
         firebase_admin.initialize_app(cred, {
             'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/',
-            'storageBucket': 'cube-bc9c8.appspot.com/'
+            'storageBucket': 'cube-bc9c8.appspot.com'
         })
         self.ref = db.reference('/')
         
@@ -23,6 +23,7 @@ class Database:
         self.chat = None
         self.username = None
         self.thread = None
+        self.bucket = storage.bucket()
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -165,6 +166,12 @@ class Database:
     def customThread(self, friend, chatroom): #create thread to look constantly read the number of messages
         self.thread = CustomThread(friend, chatroom)
         self.thread.start()
+
+    def uploadPic(self, picDir):
+        blob = self.bucket.blob(picDir)
+        blob.upload_from_filename(picDir)
+        blob.make_public()
+        return blob.public_url
         
     # def runit(self):
     #     reff = db.reference('Chatrooms')
