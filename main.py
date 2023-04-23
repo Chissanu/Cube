@@ -7,6 +7,7 @@ from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
 import tkinter.font as tkfont
+from datetime import datetime
 
 # from chat_tester import chat_test
 
@@ -221,25 +222,33 @@ class app:
 
             msg = str(chat_entry.get())
             print(f"Message sent to {self.curChatFriend} with {msg}")
-            
-            # font = tkfont.Font(family="Inter", size=30)
-            # text_width = font.measure(msg)
-            # print('The width of the text is:', text_width)
+    
+            # Current Date and Time
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
 
-            msgLabel = customtkinter.CTkLabel(self.boxes_subframe, text=msg, font=("Inter", 30), bg_color="#DCE9F6" ,text_color=GENERAL_TEXT, wraplength=1100)
-            msgLabel.grid(row=row_num, column=1, padx=32, pady=25, sticky="e")
+            chatObject = {
+            "text": msg,
+            "time": date_time,
+            "name": self.curUser,
+            "emotion": " "
+        }
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, fg_color = "gray")
+            msgBox.grid_propagate(0)
+            msgBox.grid(row=self.index,column=0, ipady=10)
+            Grid.columnconfigure(msgBox,0,weight=50)
+            Grid.columnconfigure(msgBox,1,weight=0)
+            Grid.columnconfigure(msgBox,2,weight=1)
 
             self.db.send(str(msg),self.curChatFriend)
 
             timeLabel = ""      # TO INCLUDE IN TIME LABEL OF NEWLY SENT MESSAGE
 
             chat_entry.delete(0, END) 
-            row_num += 1
+            self.index += 1
 
-        # self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
-        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color="#e9f2b9")
+        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color="#e9f2b9", scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
-        # self.boxes_subframe.grid_propagate(0)
 
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=BG_COLOR)
@@ -294,15 +303,26 @@ class app:
         
         chatbox_color = "#DCE9F6"
         
-        # Display chat history
-        global row_num
-        row_num = 0     # keep track of number of rows update latest, so that new message label would be append right below the latest one
-        
         chatFrameList = []
-        for index, key in enumerate(chat_history):
-            msgBox = ChatFrame(self.boxes_subframe,chat_history[key])
-            chatFrameList.append(msgBox)
-            msgBox.grid(row=0,column=0)
+        self.index = 0
+        try:
+            for index, key in enumerate(chat_history):
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, fg_color = "gray")
+                msgBox.grid_propagate(0)
+                chatFrameList.append(msgBox)
+                msgBox.grid(row=index,column=0, ipady=10)
+                if chat_history[key]["name"] == self.curUser:
+                    Grid.columnconfigure(msgBox,0,weight=50)
+                    Grid.columnconfigure(msgBox,1,weight=0)
+                    Grid.columnconfigure(msgBox,2,weight=1)
+                elif chat_history[key]["name"] == friend:
+                    Grid.columnconfigure(msgBox,0,weight=0)
+                    Grid.columnconfigure(msgBox,1,weight=1)
+                    Grid.columnconfigure(msgBox,2,weight=50)
+                    
+                self.index += 1
+        except:
+            print("no chat")
         
         # for index, key in enumerate(chat_history):
         #     self.boxes_subframe.columnconfigure(1, weight=1)
