@@ -5,7 +5,7 @@ import customtkinter
 import os
 from PIL import Image, ImageTk
 from Libs.Database import Database
-from Libs.FriendList import FriendList
+from Libs.ChatFrame import ChatFrame
 import tkinter.font as tkfont
 
 # from chat_tester import chat_test
@@ -298,42 +298,48 @@ class app:
         global row_num
         row_num = 0     # keep track of number of rows update latest, so that new message label would be append right below the latest one
         
+        chatFrameList = []
         for index, key in enumerate(chat_history):
-            self.boxes_subframe.columnconfigure(1, weight=1)
+            msgBox = ChatFrame(self.boxes_subframe,chat_history[key])
+            chatFrameList.append(msgBox)
+            msgBox.grid(row=0,column=0)
+        
+        # for index, key in enumerate(chat_history):
+        #     self.boxes_subframe.columnconfigure(1, weight=1)
             
-            msg = chat_history[key]["text"]
-            font = tkfont.Font(family="Inter", size=30)
-            text_width = font.measure(msg)
-            print('The width of the text is:', text_width)
+        #     msg = chat_history[key]["text"]
+        #     font = tkfont.Font(family="Inter", size=30)
+        #     text_width = font.measure(msg)
+        #     print('The width of the text is:', text_width)
             
-            if text_width >= 1100:
-                text_width = 1100
-            if chat_history[key]["name"] == self.curUser:
-                # time label display
-                self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["time"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 15))
-                self.messages.grid(row=row_num, column=1, padx=32, pady=0, sticky="ne")
+        #     if text_width >= 1100:
+        #         text_width = 1100
+        #     if chat_history[key]["name"] == self.curUser:
+        #         # time label display
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["time"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 15))
+        #         self.messages.grid(row=row_num, column=1, padx=32, pady=0, sticky="ne")
 
-                # text label display below time
-                self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["text"],text_color="#000000", bg_color=chatbox_color, font=("Inter", 30), wraplength=text_width)
-                self.messages.grid(row=row_num, column=2, padx=32, pady=25, sticky="e")
+        #         # text label display below time
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["text"],text_color="#000000", bg_color=chatbox_color, font=("Inter", 30), wraplength=text_width)
+        #         self.messages.grid(row=row_num, column=2, padx=32, pady=25, sticky="e")
 
-            elif chat_history[key]["name"] == friend:
-                # time label display
-                self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["time"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 15))
-                self.messages.grid(row=row_num, column=2, padx=0, pady=30, sticky="sw")
+        #     elif chat_history[key]["name"] == friend:
+        #         # time label display
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["time"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 15))
+        #         self.messages.grid(row=row_num, column=2, padx=0, pady=30, sticky="sw")
                 
-                # text label display below time
-                self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["text"],text_color="#000000", bg_color=chatbox_color, font=("Inter", 30), wraplength=text_width)
-                self.messages.grid(row=row_num, column=1, pady=30, sticky="w")
+        #         # text label display below time
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["text"],text_color="#000000", bg_color=chatbox_color, font=("Inter", 30), wraplength=text_width)
+        #         self.messages.grid(row=row_num, column=1, pady=30, sticky="w")
                 
-                # recipient's name label display left next to the received message
-                profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.db.getFriendPic(friend)}.png"), size=(60, 60))
-                profile = customtkinter.CTkLabel(self.boxes_subframe, text="", image=profile_logo)
-                profile.grid(row = row_num, column = 0, padx=30,pady = 30, sticky='nw')
+        #         # recipient's name label display left next to the received message
+        #         profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.db.getFriendPic(friend)}.png"), size=(60, 60))
+        #         profile = customtkinter.CTkLabel(self.boxes_subframe, text="", image=profile_logo)
+        #         profile.grid(row = row_num, column = 0, padx=30,pady = 30, sticky='nw')
                 
-                # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["name"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 18))
-                # self.messages.grid(row=row_num, column=1, padx=1, pady=25, sticky="ww")
-            row_num += 1
+        #         # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["name"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 18))
+        #         # self.messages.grid(row=row_num, column=1, padx=1, pady=25, sticky="ww")
+        #     row_num += 1
         
 
     def addFriend(self):
