@@ -15,7 +15,7 @@ class ChatFrame(ctk.CTkFrame):
         # height = 50
         # if text_width > 1500:
         #     height += (text_width // 1500) * 50
-        # self.configure(height=height)
+        self.configure(fg_color="#e9f2b9")
 
         if chat["name"] == self.curUser:
             print("here")
@@ -25,11 +25,11 @@ class ChatFrame(ctk.CTkFrame):
 
             # time label
             self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", bg_color="#DCE9F6", font=("Inter", 15))
-            self.messages.grid(row=0, column=1, sticky="e")
+            self.messages.grid(row=0, column=1, padx=(10,0), sticky="e")
         else:
             # time label display
             self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", bg_color="#DCE9F6", font=("Inter", 15))
-            self.messages.grid(row=0, column=2, padx=0, sticky="w")
+            self.messages.grid(row=0, column=2, padx=(0,10), sticky="w")
             
             # text label display below time
             self.messages = ctk.CTkLabel(self, text=chat["text"],text_color="#000000", fg_color="#DCE9F6", font=("Inter", 30), wraplength=1000, corner_radius=10)
@@ -43,3 +43,9 @@ class ChatFrame(ctk.CTkFrame):
             # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["name"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 18))
             # self.messages.grid(row=row_num, column=1, padx=1, pady=25, sticky="ww")
 
+    def getHeight(self):
+        return self.messages
+        # newHeight = self.messages.winfo_height()
+        # x, y, width, height = self.grid_bbox(self.messages)
+        # print(height)
+        # self.configure(height=newHeight)

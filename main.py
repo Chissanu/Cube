@@ -272,6 +272,7 @@ class app:
 
         self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color="#e9f2b9", scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        Grid.columnconfigure(self.boxes_subframe,0,weight=1)
 
         # create chat box and emoji btn
         tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=BG_COLOR)
@@ -330,18 +331,22 @@ class app:
         self.index = 0
         try:
             for index, key in enumerate(chat_history):
-                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, fg_color = "gray")
-                msgBox.grid_propagate(0)
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "gray")
+                # height = msgBox.getHeight()
+                # newHeight = height.winfo_height()
+                msgBox.configure(fg_color="#e9f2b9")
+                # msgBox.grid_propagate(0)
                 chatFrameList.append(msgBox)
-                msgBox.grid(row=index,column=0, ipady=10, sticky="nsew")
                 if chat_history[key]["name"] == self.curUser:
-                    Grid.columnconfigure(msgBox,0,weight=50)
+                    msgBox.grid(row=index,column=0, ipady=10, sticky="e")
+                    Grid.columnconfigure(msgBox,0,weight=0)
                     Grid.columnconfigure(msgBox,1,weight=0)
                     Grid.columnconfigure(msgBox,2,weight=1)
                 elif chat_history[key]["name"] == friend:
+                    msgBox.grid(row=index,column=0, ipady=10, sticky="w")
                     Grid.columnconfigure(msgBox,0,weight=0)
                     Grid.columnconfigure(msgBox,1,weight=1)
-                    Grid.columnconfigure(msgBox,2,weight=50)
+                    Grid.columnconfigure(msgBox,2,weight=0)
                     
                 self.index += 1
         except Exception as e:
