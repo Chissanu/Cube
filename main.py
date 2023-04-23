@@ -183,26 +183,47 @@ class app:
         # create sidebar
         self.sidebar("chat")
 
-        profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(80, 80))
-
         # create friendlist frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=480, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
         friendList_frame.grid(row=0, column=1, sticky="nsew")
         
-        tempFriends = {}
-        for val in self.db.showFriendList(self.curUser):
-            tempFriends[val] = val
-        
-        for i, button_name in enumerate(tempFriends):
-            friendBtn = customtkinter.CTkButton(friendList_frame, 
-                                                image=profile_logo, 
-                                                text="  "+ button_name, 
+        tempFriends = []
+        try:
+            for val in self.db.showFriendList(self.curUser):
+                friend = self.db.findFriend(val)
+                tempFriends.append(friend)
+            print(tempFriends)
+        except Exception as e:
+            print(e)
+            pass
+            
+        if tempFriends == []:
+            label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
+            label.grid(column = 0, row = 0, padx = 180, pady = 20, sticky = N)
+
+        else:
+            try:
+                for i, button_name in enumerate(tempFriends):
+                    profile_pic = customtkinter.CTkImage(Image.open(f"profilePic\\{tempFriends[i]['profileImage']}.png"), size=(80, 80))
+                    profile_name = tempFriends[i]['name']
+                    if len(profile_name) > 5:
+                        profile_name = profile_name[:5] + '...'
+                    profile_user = tempFriends[i]['username']
+
+                    friendBtn = customtkinter.CTkButton(friendList_frame, 
+                                                image=profile_pic, 
+                                                text="  "+ profile_name, 
                                                 font=("Inter", 40), 
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda message=tempFriends[button_name]: self.display_chat(message))	
-            friendBtn.grid(row=i, column=0, sticky="nsew")	
+                                                command=lambda message=profile_user: self.display_chat(message))	
+                    friendBtn.grid(row=i, column=0, sticky="nsew")
+            except Exception as e:
+                label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
+                label.grid(column = 0, row = 0, padx = 180, pady = 20, sticky = N)
+                print(e)
+                pass
 
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
@@ -221,6 +242,8 @@ class app:
             self.boxes_subframe.columnconfigure(1, weight=1)
 
             msg = str(chat_entry.get())
+            if not msg.strip():
+                return
             print(f"Message sent to {self.curChatFriend} with {msg}")
     
             # Current Date and Time
@@ -803,7 +826,6 @@ class app:
             self.errorReg.configure(text=data)
 
         else:
-            print('here')
             print(data)
             self.curUser = data.get()['username']
             self.name = data.get()['name']
