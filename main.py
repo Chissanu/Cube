@@ -333,7 +333,7 @@ class app:
                 msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, fg_color = "gray")
                 msgBox.grid_propagate(0)
                 chatFrameList.append(msgBox)
-                msgBox.grid(row=index,column=0, ipady=10)
+                msgBox.grid(row=index,column=0, ipady=10, sticky="nsew")
                 if chat_history[key]["name"] == self.curUser:
                     Grid.columnconfigure(msgBox,0,weight=50)
                     Grid.columnconfigure(msgBox,1,weight=0)
@@ -344,7 +344,8 @@ class app:
                     Grid.columnconfigure(msgBox,2,weight=50)
                     
                 self.index += 1
-        except:
+        except Exception as e:
+            print(e)
             print("no chat")
         
         # for index, key in enumerate(chat_history):
