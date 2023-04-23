@@ -238,8 +238,7 @@ class app:
         # create a message boxes container 
         # Remove texts after hitting enter to send a message
         def send_text(e):
-            global row_num
-            self.boxes_subframe.columnconfigure(1, weight=1)
+            # self.boxes_subframe.columnconfigure(1, weight=1)
 
             msg = str(chat_entry.get())
             if not msg.strip():
@@ -256,10 +255,9 @@ class app:
             "name": self.curUser,
             "emotion": " "
         }
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, fg_color = "gray")
-            msgBox.grid_propagate(0)
-            msgBox.grid(row=self.index,column=0, ipady=10)
-            Grid.columnconfigure(msgBox,0,weight=50)
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = "gray")
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+            Grid.columnconfigure(msgBox,0,weight=0)
             Grid.columnconfigure(msgBox,1,weight=0)
             Grid.columnconfigure(msgBox,2,weight=1)
 
@@ -331,10 +329,9 @@ class app:
         self.index = 0
         try:
             for index, key in enumerate(chat_history):
-                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "gray")
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "#e9f2b9")
                 # height = msgBox.getHeight()
                 # newHeight = height.winfo_height()
-                msgBox.configure(fg_color="#e9f2b9")
                 # msgBox.grid_propagate(0)
                 chatFrameList.append(msgBox)
                 if chat_history[key]["name"] == self.curUser:

@@ -15,7 +15,6 @@ class ChatFrame(ctk.CTkFrame):
         # height = 50
         # if text_width > 1500:
         #     height += (text_width // 1500) * 50
-        self.configure(fg_color="#e9f2b9")
 
         if chat["name"] == self.curUser:
             print("here")
@@ -24,11 +23,11 @@ class ChatFrame(ctk.CTkFrame):
             self.messages.grid(row=0, column=2, padx=(0, 20), ipadx=10, ipady=10, sticky="e")
 
             # time label
-            self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", bg_color="#DCE9F6", font=("Inter", 15))
+            self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", fg_color="#e9f2b9", font=("Inter", 15))
             self.messages.grid(row=0, column=1, padx=(10,0), sticky="e")
         else:
             # time label display
-            self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", bg_color="#DCE9F6", font=("Inter", 15))
+            self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", fg_color="#e9f2b9", font=("Inter", 15))
             self.messages.grid(row=0, column=2, padx=(0,10), sticky="w")
             
             # text label display below time
