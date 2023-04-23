@@ -50,8 +50,8 @@ test = chat_test()
 #test.register()
 test.login()
 #test.chatroom()
-#test.createChatroom()
-#test.enterChatRoom()
-test.uploadPic()
+test.createChatroom()
+test.enterChatRoom()
+#test.uploadPic()
         
         

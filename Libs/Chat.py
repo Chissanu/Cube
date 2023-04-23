@@ -38,7 +38,7 @@ class Chat:
 
         # Current Date and Time
         now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y")
+        date_time = now.strftime("%m/%d/%Y %H:%M")
 
         sentText.set({
             "text": message,

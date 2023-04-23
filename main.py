@@ -266,12 +266,6 @@ class app:
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
-    # def display_chat(self):
-    #     for key, j in enumerate(chat_history):
-            
-    #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[j].values(), bg_color="#f1f1f1")
-    #         self.messages.grid(row=key, column=0, padx=32, pady=2, sticky="w")
-
     # Function to display output message
     def display_chat(self, friend):
         self.curChatFriend = friend
