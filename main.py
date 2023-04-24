@@ -8,6 +8,8 @@ from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
 import tkinter.font as tkfont
 from datetime import datetime
+from threading import Thread
+import time
 
 # from chat_tester import chat_test
 
@@ -22,7 +24,6 @@ BUTTON = "#061A40"
 FRIEND_LIST = "#0353A4"
 LIGHT_BG = "#DCE9F6"
 
-
 class app:
     def __init__(self, master):
         self.master = master
@@ -34,6 +35,9 @@ class app:
         screen_height = self.master.winfo_screenheight()
         
         self.db = Database()
+        self.initiateThread = False
+        self.thread = None
+        self.curChatFriend = None 
 
         # find the center point
         center_x = int(screen_width/2 - window_width / 2)
@@ -217,7 +221,7 @@ class app:
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda message=profile_user: self.display_chat(message))	
+                                                command=lambda message=profile_user: self.display_chat(message, True))	
                     friendBtn.grid(row=i, column=0, sticky="nsew")
             except Exception as e:
                 label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
@@ -303,7 +307,7 @@ class app:
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
     # Function to display output message
-    def display_chat(self, friend):
+    def display_chat(self, friend, ini):
         self.curChatFriend = friend
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
@@ -327,8 +331,16 @@ class app:
         
         chatFrameList = []
         self.index = 0
-        thread = self.db.customThread(friend,self.db.getChat())
-        thread.start()
+        #Threading
+
+        if ini:
+            print("hello")
+            self.thread = self.db.customThread(friend,self.db.getChat())
+            self.thread.start()
+            Thread(target = self.checkUpdate).start()
+            self.initiateThread = True
+        
+
         try:
             for index, key in enumerate(chat_history):
                 msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "#e9f2b9")
@@ -351,6 +363,7 @@ class app:
         except Exception as e:
             print(e)
             print("no chat")
+
         
         # for index, key in enumerate(chat_history):
         #     self.boxes_subframe.columnconfigure(1, weight=1)
@@ -390,10 +403,18 @@ class app:
         #     row_num += 1
         self.master.bind("<F2>", lambda x : self.update_frame(friend))
 
-    def update_frame(self,friend):
+    def checkUpdate(self):
+        while True:
+            print("checked")
+            if self.thread.update:
+                self.update_frame(self.curChatFriend)
+                self.thread.update = False
+            time.sleep(0.5)
 
+
+    def update_frame(self,friend):
         self.boxes_subframe.grid_forget()
-        self.display_chat(friend)
+        self.display_chat(friend, False)
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         print("Calling Update")
 
@@ -874,3 +895,4 @@ if __name__ == '__main__':
         root.attributes('-fullscreen', True)
         app(root)
         root.mainloop()
+

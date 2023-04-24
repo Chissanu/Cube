@@ -80,12 +80,14 @@ class CustomThread(Thread): #Threading to constantly track change in database
         self.friend = friend
         self.exit = False
         self.chatroom = chatroom
+        self.update = False
 
     def run(self):
         while True:
             if self.chatroom.countMessage(self.friend) != self.noOfMessage:
                 #self.chatroom.loadchat(self.friend)
                 print("Detect new msg")
+                self.update = True
                 self.noOfMessage = self.chatroom.countMessage(self.friend)
             time.sleep(1)
     
