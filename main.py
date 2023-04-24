@@ -327,6 +327,8 @@ class app:
         
         chatFrameList = []
         self.index = 0
+        thread = self.db.customThread(friend,self.db.getChat())
+        thread.start()
         try:
             for index, key in enumerate(chat_history):
                 msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "#e9f2b9")
@@ -386,7 +388,14 @@ class app:
         #         # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["name"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 18))
         #         # self.messages.grid(row=row_num, column=1, padx=1, pady=25, sticky="ww")
         #     row_num += 1
-        
+        self.master.bind("<F2>", lambda x : self.update_frame(friend))
+
+    def update_frame(self,friend):
+
+        self.boxes_subframe.grid_forget()
+        self.display_chat(friend)
+        self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        print("Calling Update")
 
     def addFriend(self):
         for i in self.master.winfo_children():

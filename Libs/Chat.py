@@ -84,7 +84,8 @@ class CustomThread(Thread): #Threading to constantly track change in database
     def run(self):
         while True:
             if self.chatroom.countMessage(self.friend) != self.noOfMessage:
-                self.chatroom.loadchat(self.friend)
+                #self.chatroom.loadchat(self.friend)
+                print("Detect new msg")
                 self.noOfMessage = self.chatroom.countMessage(self.friend)
             time.sleep(1)
     

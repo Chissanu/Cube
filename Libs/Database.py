@@ -168,7 +168,8 @@ class Database:
     
     def customThread(self, friend, chatroom): #create thread to look constantly read the number of messages
         self.thread = CustomThread(friend, chatroom)
-        self.thread.start()
+        return self.thread
+        #self.thread.start()
 
     def uploadPic(self, picDir, type, name):
         blob = self.bucket.blob(type + "/" + name)
