@@ -259,7 +259,7 @@ class app:
             "name": self.curUser,
             "emotion": " "
         }
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = "gray")
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = "#e9f2b9")
             msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
             Grid.columnconfigure(msgBox,0,weight=0)
             Grid.columnconfigure(msgBox,1,weight=0)
@@ -577,7 +577,7 @@ class app:
         self.padName = (50,10)
         name_label = customtkinter.CTkLabel(self.info_subframe, text="Name:     ", font=("Inter", 35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         name_label.grid(row=0, column=0, pady=self.padName, padx=(150, 0), sticky='w')
-        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
+        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
         self.name_text.grid(row=0, column=1, padx=(0, 0), pady=self.padName, sticky='w')
         self.name_text.insert("0.0", text=self.name)
         self.name_text.configure(state="disabled")
@@ -589,7 +589,7 @@ class app:
         # bio
         bio_label = customtkinter.CTkLabel(self.info_subframe, text="Bio:         ", font=("Inter",35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         bio_label.grid(row=1, column=0, padx=(150, 0), pady=5, sticky='n')
-        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
+        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
         self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
         self.bio_text.insert("0.0", text=self.bio)
         self.bio_text.configure(state="disabled")
@@ -664,7 +664,7 @@ class app:
             profile.grid(row = 0, column = 0, pady = (20,0))
             name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             name_text.grid(row = 1, column = 0, pady = (10,10))
-            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE)
+            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
             bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
