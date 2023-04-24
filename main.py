@@ -334,10 +334,9 @@ class app:
         #Threading
 
         if ini:
-            print("hello")
             self.thread = self.db.customThread(friend,self.db.getChat())
             self.thread.start()
-            Thread(target = self.checkUpdate).start()
+            t = Thread(target = self.checkUpdate).start()
             self.initiateThread = True
         
 
@@ -405,17 +404,17 @@ class app:
 
     def checkUpdate(self):
         while True:
-            print("checked")
             if self.thread.update:
                 self.update_frame(self.curChatFriend)
                 self.thread.update = False
-            time.sleep(0.5)
+                print("Updating")
+            time.sleep(2)
 
 
     def update_frame(self,friend):
-        self.boxes_subframe.grid_forget()
+        #self.boxes_subframe.grid_forget()
         self.display_chat(friend, False)
-        self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        #self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         print("Calling Update")
 
     def addFriend(self):
