@@ -3,6 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 import time
 from threading import Thread
+from datetime import datetime
 
 class Chat:
     def __init__(self, userRef, username):
@@ -34,12 +35,18 @@ class Chat:
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         sentText = chat.push()
+
+        # Current Date and Time
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M")
+
         sentText.set({
             "text": message,
-            "time": time.time(),
+            "time": date_time,
             "name": self.username,
             "emotion": " "
         })
+
         self.currentFriend = nameLs[1]
         return nameLs[0] + nameLs[1]
     
@@ -48,8 +55,6 @@ class Chat:
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
-        for key in message:
-            print(message[key].values())
         self.currentFriend = nameLs[1]
         return message
     
@@ -75,11 +80,14 @@ class CustomThread(Thread): #Threading to constantly track change in database
         self.friend = friend
         self.exit = False
         self.chatroom = chatroom
+        self.update = False
 
     def run(self):
         while True:
             if self.chatroom.countMessage(self.friend) != self.noOfMessage:
-                self.chatroom.loadchat(self.friend)
+                #self.chatroom.loadchat(self.friend)
+                print("Detect new msg")
+                self.update = True
                 self.noOfMessage = self.chatroom.countMessage(self.friend)
             time.sleep(1)
     

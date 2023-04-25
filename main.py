@@ -5,7 +5,11 @@ import customtkinter
 import os
 from PIL import Image, ImageTk
 from Libs.Database import Database
-from Libs.FriendList import FriendList
+from Libs.ChatFrame import ChatFrame
+import tkinter.font as tkfont
+from datetime import datetime
+from threading import Thread
+import time
 
 # from chat_tester import chat_test
 
@@ -20,7 +24,6 @@ BUTTON = "#061A40"
 FRIEND_LIST = "#0353A4"
 LIGHT_BG = "#DCE9F6"
 
-
 class app:
     def __init__(self, master):
         self.master = master
@@ -32,6 +35,9 @@ class app:
         screen_height = self.master.winfo_screenheight()
         
         self.db = Database()
+        self.initiateThread = False
+        self.thread = None
+        self.curChatFriend = None 
 
         # find the center point
         center_x = int(screen_width/2 - window_width / 2)
@@ -48,7 +54,7 @@ class app:
 
         # self.username = None
 
-        # self.chat()
+        #self.chat()
         # self.addFriend()
         # self.myProfile()
         self.main_menu()
@@ -167,7 +173,8 @@ class app:
         # error_label = customtkinter.CTkLabel(self.master, text="Wrong Password or Account not found", font=("Inter", 20), text_color="red")
         # error_label.grid(column=1, row=10, pady=(20,0))
 
-    def chat(self):  
+    def chat(self):
+        self.curChatFriend = None 
         # Setting up grid and frame for button widgets/ texts
         # comment these out for now, as they messed with the alignment of widgets for tkinter
         Grid.columnconfigure(root, index = 0, weight = 0)
@@ -180,56 +187,97 @@ class app:
         # create sidebar
         self.sidebar("chat")
 
-        profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(80, 80))
-
         # create friendlist frame	
         friendList_frame = customtkinter.CTkScrollableFrame(self.master, width=480, height=1080, corner_radius=0, fg_color=FRIEND_LIST)	
         friendList_frame.grid(row=0, column=1, sticky="nsew")
         
-        tempFriends = {}
-        for val in self.db.showFriendList(self.curUser):
-            tempFriends[val] = val
-        
-        for i, button_name in enumerate(tempFriends):
-            friendBtn = customtkinter.CTkButton(friendList_frame, 
-                                                image=profile_logo, 
-                                                text="  "+ button_name, 
+        tempFriends = []
+        try:
+            for val in self.db.showFriendList(self.curUser):
+                friend = self.db.findFriend(val)
+                tempFriends.append(friend)
+            print(tempFriends)
+        except Exception as e:
+            print(e)
+            pass
+            
+        if tempFriends == []:
+            label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
+            label.grid(column = 0, row = 0, padx = 180, pady = 20, sticky = N)
+
+        else:
+            try:
+                for i, button_name in enumerate(tempFriends):
+                    profile_pic = customtkinter.CTkImage(Image.open(f"profilePic\\{tempFriends[i]['profileImage']}.png"), size=(80, 80))
+                    profile_name = tempFriends[i]['name']
+                    if len(profile_name) > 5:
+                        profile_name = profile_name[:5] + '...'
+                    profile_user = tempFriends[i]['username']
+
+                    friendBtn = customtkinter.CTkButton(friendList_frame, 
+                                                image=profile_pic, 
+                                                text="  "+ profile_name, 
                                                 font=("Inter", 40), 
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda message=tempFriends[button_name]: self.display_chat(message))	
-            friendBtn.grid(row=i, column=0, sticky="nsew")	
+                                                command=lambda message=profile_user: self.display_chat(message, True))	
+                    friendBtn.grid(row=i, column=0, sticky="nsew")
+            except Exception as e:
+                label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
+                label.grid(column = 0, row = 0, padx = 180, pady = 20, sticky = N)
+                print(e)
+                pass
 
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
         self.chat_frame.grid(row=0, column=2, sticky="nsew")
 
         # create topbar
-        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=75, corner_radius=0, fg_color=WHITE)
+        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=75, corner_radius=0, fg_color="#b70849")
         self.topbar_subframe.grid(row=0, column=0)
         self.topbar_subframe.grid_propagate(0)
 
+
+        # create a message boxes container 
         # Remove texts after hitting enter to send a message
-        def clear_text(e):
-            chat_entry.delete("1.0","end")
+        def send_text(e):
+            # self.boxes_subframe.columnconfigure(1, weight=1)
 
-        # # Display texts from chat_entry on text box
-        def temp_text(e):
-            inp = chat_entry.get(1.0, "end-1c")
-            # self.boxes_subframe.insert(END,inp)
-            # messagebox.delete(0,"end")
-            return inp
-        
+            msg = str(chat_entry.get())
+            if not msg.strip():
+                return
+            print(f"Message sent to {self.curChatFriend} with {msg}")
+    
+            # Current Date and Time
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
 
-        # create a message boxes container  /   display text on frame (to be in chat form later)
-        # self.boxes_subframe = customtkinter.CTkTextbox(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
-        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR)
+            chatObject = {
+            "text": msg,
+            "time": date_time,
+            "name": self.curUser,
+            "emotion": " "
+        }
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = "#e9f2b9")
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+            Grid.columnconfigure(msgBox,0,weight=0)
+            Grid.columnconfigure(msgBox,1,weight=0)
+            Grid.columnconfigure(msgBox,2,weight=1)
+
+            self.db.send(str(msg),self.curChatFriend)
+
+            timeLabel = ""      # TO INCLUDE IN TIME LABEL OF NEWLY SENT MESSAGE
+
+            chat_entry.delete(0, END) 
+            self.index += 1
+
+        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color="#e9f2b9", scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
-        # self.boxes_subframe.grid_propagate(0)
+        Grid.columnconfigure(self.boxes_subframe,0,weight=1)
 
         # create chat box and emoji btn
-        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1370, height=100, corner_radius=0, fg_color=BG_COLOR)
+        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=BG_COLOR)
         tool_subframe.grid(row=2, column=0)
         tool_subframe.grid_propagate(0)
 
@@ -238,18 +286,17 @@ class app:
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
         # chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
-        chat_entry = customtkinter.CTkTextbox(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
+        #chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
+        chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
         # chat_entry = Text(tool_subframe, font=("Inter", 19), borderwidth=2, bd=0.5, fg=GENERAL_TEXT, width=69, height=1)
         chat_entry.grid(row=0, column=1)
-        # chat_entry.bind("<Return>", temp_text)
-        # chat_entry.bind("<Return>", clear_text)
 
         # Message display as label
-        self.ch_subframe = customtkinter.CTkLabel(self.boxes_subframe, text=chat_entry, corner_radius=0, fg_color=WHITE)
-        self.ch_subframe.grid(row=1, column=0, sticky='nsew')
-        self.ch_subframe.grid_propagate(0)
+        # self.ch_subframe = customtkinter.CTkLabel(self.boxes_subframe, text=chat_entry, corner_radius=0, fg_color=WHITE)
+        # self.ch_subframe.grid(row=1, column=0, sticky='nsew')
+        # self.ch_subframe.grid_propagate(0)
 
-        chat_entry.bind("<Return>", clear_text)
+        chat_entry.bind("<Return>", send_text)
 
         sticker_logo = customtkinter.CTkImage(Image.open("logostorage\Sticker_btn.png"), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
@@ -259,8 +306,116 @@ class app:
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
-    def work_chat(self):
-        pass
+    # Function to display output message
+    def display_chat(self, friend, ini):
+        self.curChatFriend = friend
+        # create name in topbar
+        for i in self.topbar_subframe.winfo_children():
+            i.destroy()	
+        name = customtkinter.CTkLabel(self.topbar_subframe, text=friend, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
+        name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)
+
+        # Load Chat
+        chat_history = self.db.loadchat(friend)
+        
+        # Clear frame
+        for widget in self.boxes_subframe.winfo_children():
+            widget.destroy()
+
+        # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text="", bg_color="#f1f1f1")
+        # detect if theres anything in boxes subframe, then clear all out before grid in new ones
+        # if self.messages.winfo_exists():
+        #     self.boxes_subframe.destroy()
+        
+        chatbox_color = "#DCE9F6"
+        
+        chatFrameList = []
+        self.index = 0
+        #Threading
+
+        if ini:
+            self.thread = self.db.customThread(friend,self.db.getChat())
+            self.thread.start()
+            t = Thread(target = self.checkUpdate).start()
+            self.initiateThread = True
+        
+
+        try:
+            for index, key in enumerate(chat_history):
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "#e9f2b9")
+                # height = msgBox.getHeight()
+                # newHeight = height.winfo_height()
+                # msgBox.grid_propagate(0)
+                chatFrameList.append(msgBox)
+                if chat_history[key]["name"] == self.curUser:
+                    msgBox.grid(row=index,column=0, ipady=10, sticky="e")
+                    Grid.columnconfigure(msgBox,0,weight=0)
+                    Grid.columnconfigure(msgBox,1,weight=0)
+                    Grid.columnconfigure(msgBox,2,weight=1)
+                elif chat_history[key]["name"] == friend:
+                    msgBox.grid(row=index,column=0, ipady=10, sticky="w")
+                    Grid.columnconfigure(msgBox,0,weight=0)
+                    Grid.columnconfigure(msgBox,1,weight=1)
+                    Grid.columnconfigure(msgBox,2,weight=0)
+                    
+                self.index += 1
+        except Exception as e:
+            print(e)
+            print("no chat")
+
+        
+        # for index, key in enumerate(chat_history):
+        #     self.boxes_subframe.columnconfigure(1, weight=1)
+            
+        #     msg = chat_history[key]["text"]
+        #     font = tkfont.Font(family="Inter", size=30)
+        #     text_width = font.measure(msg)
+        #     print('The width of the text is:', text_width)
+            
+        #     if text_width >= 1100:
+        #         text_width = 1100
+        #     if chat_history[key]["name"] == self.curUser:
+        #         # time label display
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["time"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 15))
+        #         self.messages.grid(row=row_num, column=1, padx=32, pady=0, sticky="ne")
+
+        #         # text label display below time
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["text"],text_color="#000000", bg_color=chatbox_color, font=("Inter", 30), wraplength=text_width)
+        #         self.messages.grid(row=row_num, column=2, padx=32, pady=25, sticky="e")
+
+        #     elif chat_history[key]["name"] == friend:
+        #         # time label display
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["time"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 15))
+        #         self.messages.grid(row=row_num, column=2, padx=0, pady=30, sticky="sw")
+                
+        #         # text label display below time
+        #         self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["text"],text_color="#000000", bg_color=chatbox_color, font=("Inter", 30), wraplength=text_width)
+        #         self.messages.grid(row=row_num, column=1, pady=30, sticky="w")
+                
+        #         # recipient's name label display left next to the received message
+        #         profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.db.getFriendPic(friend)}.png"), size=(60, 60))
+        #         profile = customtkinter.CTkLabel(self.boxes_subframe, text="", image=profile_logo)
+        #         profile.grid(row = row_num, column = 0, padx=30,pady = 30, sticky='nw')
+                
+        #         # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["name"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 18))
+        #         # self.messages.grid(row=row_num, column=1, padx=1, pady=25, sticky="ww")
+        #     row_num += 1
+        self.master.bind("<F2>", lambda x : self.update_frame(friend))
+
+    def checkUpdate(self):
+        while True:
+            if self.thread.update:
+                self.update_frame(self.curChatFriend)
+                self.thread.update = False
+                print("Updating")
+            time.sleep(2)
+
+
+    def update_frame(self,friend):
+        #self.boxes_subframe.grid_forget()
+        self.display_chat(friend, False)
+        #self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        print("Calling Update")
 
     def addFriend(self):
         for i in self.master.winfo_children():
@@ -370,7 +525,6 @@ class app:
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
-                print('here')
                 pass
         
         # create search btn
@@ -422,7 +576,7 @@ class app:
         self.padName = (50,10)
         name_label = customtkinter.CTkLabel(self.info_subframe, text="Name:     ", font=("Inter", 35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         name_label.grid(row=0, column=0, pady=self.padName, padx=(150, 0), sticky='w')
-        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
+        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
         self.name_text.grid(row=0, column=1, padx=(0, 0), pady=self.padName, sticky='w')
         self.name_text.insert("0.0", text=self.name)
         self.name_text.configure(state="disabled")
@@ -434,7 +588,7 @@ class app:
         # bio
         bio_label = customtkinter.CTkLabel(self.info_subframe, text="Bio:         ", font=("Inter",35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
         bio_label.grid(row=1, column=0, padx=(150, 0), pady=5, sticky='n')
-        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE)
+        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
         self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
         self.bio_text.insert("0.0", text=self.bio)
         self.bio_text.configure(state="disabled")
@@ -509,7 +663,7 @@ class app:
             profile.grid(row = 0, column = 0, pady = (20,0))
             name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             name_text.grid(row = 1, column = 0, pady = (10,10))
-            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE)
+            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
             bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
@@ -547,15 +701,9 @@ class app:
 
         exit_btn = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
         exit_btn.grid(column=1, row=4, pady=100)
+            
 
-    # Function to display output message
-    def display_chat(self, message):
-        print(message)
-        # create name in topbar
-        for i in self.topbar_subframe.winfo_children():
-            i.destroy()	
-        name = customtkinter.CTkLabel(self.topbar_subframe, text=message, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
-        name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)	
+
 
     # popup frame
     def popup(self):
@@ -684,7 +832,6 @@ class app:
     Backend Code
     """
     def loginDB(self,username,password):
-        print("Logging in...")
         data = self.db.login(username,password)
         if type(data) == Exception:
             # create error label
@@ -695,6 +842,7 @@ class app:
             self.name = data.get()['name']
             self.bio = data.get()['bio']
             self.profilePic = data.get()['profileImage']
+            print(f"Logged In as {self.curUser}")
             self.myProfile()
 
     
@@ -710,7 +858,6 @@ class app:
             self.errorReg.configure(text=data)
 
         else:
-            print('here')
             print(data)
             self.curUser = data.get()['username']
             self.name = data.get()['name']
@@ -747,3 +894,4 @@ if __name__ == '__main__':
         root.attributes('-fullscreen', True)
         app(root)
         root.mainloop()
+

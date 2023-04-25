@@ -14,7 +14,7 @@ class Database:
         # Initialize the app with a service account, granting admin privileges
         firebase_admin.initialize_app(cred, {
             'databaseURL': 'https://cube-bc9c8-default-rtdb.asia-southeast1.firebasedatabase.app/',
-            'storageBucket': 'cube-bc9c8.appspot.com/'
+            'storageBucket': 'cube-bc9c8.appspot.com'
         })
         self.ref = db.reference('/')
         
@@ -23,6 +23,7 @@ class Database:
         self.chat = None
         self.username = None
         self.thread = None
+        self.bucket = storage.bucket()
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -139,6 +140,9 @@ class Database:
     def getIncoming(self, user):
         return self.features.showIncoming(user)
     
+    def getFriendPic(self,user):
+        return self.features.getTargetProfilePic(user)
+    
     """
     Function to call Chat.py functions
     """
@@ -146,6 +150,9 @@ class Database:
     # def Chatroom(self, ref): #initialize chatroom so that you can use other functions
     #     self.chat = Chat(ref, self.username)
     #     return self.chat
+
+    def getChat(self):
+        return self.chat
     
     def createChatroom(self, friend): #create chatroom
         return self.chat.createChatroom(friend)
@@ -161,7 +168,14 @@ class Database:
     
     def customThread(self, friend, chatroom): #create thread to look constantly read the number of messages
         self.thread = CustomThread(friend, chatroom)
-        self.thread.start()
+        return self.thread
+        #self.thread.start()
+
+    def uploadPic(self, picDir, type, name):
+        blob = self.bucket.blob(type + "/" + name)
+        blob.upload_from_filename(picDir)
+        blob.make_public()
+        return blob.public_url
         
     # def runit(self):
     #     reff = db.reference('Chatrooms')
