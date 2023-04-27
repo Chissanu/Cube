@@ -89,6 +89,7 @@ class Detection:
 		# 	self.timedDetection(self, source, model_path, video_duration)
 
 	def untimedDetection(self, source, model_path):
+		global buttonclick
 		self.clearEmotionData()
 		vid = cv2.VideoCapture(source)
 		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
@@ -96,25 +97,27 @@ class Detection:
 		success, img = vid.read()
 		initial = time.time()
 
+		while True:
+			while success and buttonclick == True:
+				
+				if buttonclick == False:
+					break
 
-		while success and buttonclick == True:
-			
-			if buttonclick == False:
+				if fno % 32 == 0:
+					results = model(img)
+
+				try:
+					self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
+					print(self.emotion_table)
+
+				except IndexError:
+					print("Not Detected")
+					pass
+
+				# read next frame
+				success, img = vid.read()
+			if buttonclick == "end":
 				break
-
-			if fno % 32 == 0:
-				results = model(img)
-
-			try:
-				self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
-				print(self.emotion_table)
-
-			except IndexError:
-				print("Not Detected")
-				pass
-
-			# read next frame
-			success, img = vid.read()
 			
 
 	def clearEmotionData(self):
@@ -155,14 +158,21 @@ class Processing:
 
 
 def getbutton():
-	key = input("break: ")
 	global buttonclick
-	if key == "a":
-		buttonclick = True
-	if key == "b":
-		buttonclick = False
-	if key == "c":
-		buttonclick = "end"
+	while True:
+		key = input("break: ")
+		with lock:
+			if key == "a":
+				buttonclick = True
+				#thread2.start()
+			if key == "b":
+				buttonclick = False
+				#thread2.stop()
+			if key == "c":
+				buttonclick = "end"
+				break
+			print("buttonclick is", buttonclick)
+
 ''' 
 A Piece of history
 print("hello world")
@@ -189,10 +199,15 @@ print("hello world")
 # 	trueemotion.getMostOccuringEmotion(t)
 
 test = Detection()
+global buttonclick
+buttonclick = False
+lock = threading.Lock()
 thread1 = threading.Thread(target=getbutton)
 thread2 = threading.Thread(target=test.untimedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt"))
-getbutton()
 thread1.start()
 thread2.start()
+if buttonclick == "end":
+	thread1.stop()
+	thread2.stop()
 
 
