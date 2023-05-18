@@ -3,6 +3,7 @@ import cv2
 import torch
 import time
 
+
 # This class contains all detection algorithms and some data accessing
 class Detection:
 	def __init__(self):
@@ -140,33 +141,28 @@ class Processing:
 		from joblib import load
 
 		# Load the model from a file using joblib
-		model = load('jacob_2.joblib')
+		model = load('walter.joblib')
 		header = list(data.values())
 		result = model.predict([header])
 		result = self.conversion_table[result[0]]
 		return result
+	
 
-''' 
-A Piece of history
-print("hello world")
-print("hello world")
-print("hello world")
-print("hello world")
-print("hello world")
-'''
 # Test run codes. Will be removed in the final iteration of this script.
 
 #random text for now, will get from backend later
-wordcount = 0
-text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
-for i in text:
-	if i == " ":
-		wordcount +=1
-#human reading rate is 4 words/sec, detection time is average read time + 25%
-d = (wordcount/4) + (wordcount/8)
+# wordcount = 0
+# text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
+# for i in text:
+# 	if i == " ":
+# 		wordcount +=1
+# #human reading rate is 4 words/sec, detection time is average read time + 25%
+# d = (wordcount/4) + (wordcount/8)
 test = Detection()
 t = test.timedDetection("http://192.168.1.101:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
 
 trueemotion = Processing()
 t = trueemotion.getDominantEmotion(t)
-trueemotion.getMostOccuringEmotion(t)
+r = trueemotion.getPredictedEmotion(t)
+print(t)
+print(r)
