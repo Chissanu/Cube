@@ -44,22 +44,29 @@ class Detection:
 			if fno % 32 == 0:
 				results = model(img)
 
-			try:
-				emotion = results.pandas().xyxy[0].name[0]
-				self.emotion_table[emotion] += 1
-				current = time.time()
-				if current - initial >= duration:
-					print(current - initial)
-					break
+			current = time.time()
+			if current - initial >= duration:
+				print(current - initial)
+				break
 
-				print(self.emotion_table)
+			else:
+				try:
+					emotion = results.pandas().xyxy[0].name[0]
+					self.emotion_table[emotion] += 1
+					# current = time.time()
+					# if current - initial >= duration:
+					# 	print(current - initial)
+					# 	break
 
-			except IndexError:
-				print("Not Detected")
-				pass
+					print(self.emotion_table)
 
-			# read next frame
-			success, img = vid.read()
+				except IndexError:
+					print("Not Detected")
+					pass
+			
+
+				# read next frame
+				success, img = vid.read()
 		
 		if len(self.calibration_operator) <= 5:
 			self.calibration_operator.append(count)
