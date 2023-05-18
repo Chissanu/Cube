@@ -77,7 +77,8 @@ class Detection:
 			import isodate
 
 			# This is a Google API key. This key will be filled later.
-			api_key = "temp_key"
+			operator = open("googlekeys.txt", "r")
+			api_key = operator.read()
 			video_id = video.split("v=")[1]
 			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
 			# This part extract the duration of the video
@@ -157,21 +158,9 @@ class Processing:
 		else:
 			print("Most")
 		return result
-	
 
-# Test run codes. Will be removed in the final iteration of this script.
-
-#random text for now, will get from backend later
-# wordcount = 0
-# text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
-# for i in text:
-# 	if i == " ":
-# 		wordcount +=1
-# #human reading rate is 4 words/sec, detection time is average read time + 25%
-# d = (wordcount/4) + (wordcount/8)
-# test = Detection()
-# t = test.timedDetection(0, "Libs\Jessie_1.pt", 5)
-
+test = Detection()
+test.timedDetectionVideo()
 trueemotion = Processing()
 # t = trueemotion.getDominantEmotion(t)
 r = trueemotion.getPredictedEmotion({"happy": 15, "sad": 5, "neutral": 100, "angry": 0, "disgust": 0, "surprise": 0})
