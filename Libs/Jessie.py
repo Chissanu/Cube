@@ -94,7 +94,6 @@ class Detection:
 		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
 		fno = 0
 		success, img = vid.read()
-		initial = time.time()
 
 		while success:
 	
@@ -160,9 +159,8 @@ class Processing:
 		return result
 
 test = Detection()
-test.timedDetectionVideo()
-trueemotion = Processing()
-# t = trueemotion.getDominantEmotion(t)
-r = trueemotion.getPredictedEmotion({"happy": 15, "sad": 5, "neutral": 100, "angry": 0, "disgust": 0, "surprise": 0})
-# print(t)
-print(r)
+result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\\Jessie_1.pt", 5)
+
+true_emotion = Processing()
+absolute_emotion = true_emotion.getPredictedEmotion(result)
+print(absolute_emotion)
