@@ -175,6 +175,7 @@ class Database:
         blob = self.bucket.blob(type + "/" + name)
         blob.upload_from_filename(picDir)
         blob.make_public()
+        self.send(blob.public_url, )
         return blob.public_url
         
     # def runit(self):
