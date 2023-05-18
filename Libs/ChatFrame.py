@@ -30,6 +30,7 @@ class ChatFrame(ctk.CTkFrame):
             self.messages.grid(row=0, column=1, padx=(10,0), sticky="e")
         else:
             # time label display
+            print(chat["time"])
             self.messages = ctk.CTkLabel(self, text=chat["time"][-5:-1],text_color="#000000", fg_color="#e9f2b9", font=("Inter", 15))
             self.messages.grid(row=0, column=2, padx=(0,10), sticky="w")
             

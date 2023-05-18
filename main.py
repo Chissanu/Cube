@@ -252,7 +252,7 @@ class app:
             # Current Date and Time
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
-
+            print(date_time)
             chatObject = {
             "text": msg,
             "time": date_time,

@@ -120,8 +120,12 @@ class Processing:
 	# 	self.duration = duration
 	# 	self.table = table
 
+	def __init__(self):
+		self.result = ""
+		self.conversion_table = {0: 'happy', 1: 'sad', 2: 'neutral', 3: 'angry', 4: 'disgust', 5: 'surprise'}
+
 	def getDominantEmotion(self,table):
-		hmultiplier = 4
+		hmultiplier = 40
 		smultiplier = 2
 		nmultiplier = 1
 		amultiplier = 3
@@ -141,7 +145,7 @@ class Processing:
 		from joblib import load
 
 		# Load the model from a file using joblib
-		model = load('walter.joblib')
+		model = load('Libs\walter.joblib')
 		header = list(data.values())
 		result = model.predict([header])
 		result = self.conversion_table[result[0]]
@@ -159,10 +163,10 @@ class Processing:
 # #human reading rate is 4 words/sec, detection time is average read time + 25%
 # d = (wordcount/4) + (wordcount/8)
 test = Detection()
-t = test.timedDetection("http://192.168.1.101:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
+t = test.timedDetection(0, "Libs\Jessie_1.pt", 5)
 
 trueemotion = Processing()
-t = trueemotion.getDominantEmotion(t)
+# t = trueemotion.getDominantEmotion(t)
 r = trueemotion.getPredictedEmotion(t)
-print(t)
+# print(t)
 print(r)
