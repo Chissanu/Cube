@@ -13,10 +13,10 @@ pip3 install torchvision --index-url https://download.pytorch.org/whl/cu118
 pip3 install torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
-## Step 2: Clone the YOLOv5 repository.
+## Step 2: Download CUDA 11.8
 
 ```shell
-git clone https://github.com/ultralytics/yolov5
+https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11
 ```
 
 ## Step 4: Change the working directory to your cloned library
