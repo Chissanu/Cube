@@ -2,6 +2,8 @@
 import cv2
 import torch
 import time
+import statistics
+import random
 
 
 # This class contains all detection algorithms and some data accessing
@@ -9,6 +11,8 @@ class Detection:
 	def __init__(self):
 		# This dictionary stores emotions count detected by the A.I
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
+		self.calibration_operator = []
+		self.user_calibration_constant = 0
 	
 	# Input the emotion and it returns how many times the A.I detected these emotions according to the emotion_table.
 	# If no input is taken, it returns the whole dictionary
@@ -33,9 +37,10 @@ class Detection:
 		fno = 0
 		success, img = vid.read()
 		initial = time.time()
+		count = 0
 
 		while success:
-	
+			count += 3
 			if fno % 32 == 0:
 				results = model(img)
 
@@ -56,6 +61,9 @@ class Detection:
 			# read next frame
 			success, img = vid.read()
 		
+		if len(self.calibration_operator) <= 5:
+			self.calibration_operator.append(count)
+
 		return self.emotion_table
 
 	# This special method is used on videos it takes the same arguements as the two methods.
@@ -114,6 +122,18 @@ class Detection:
 	def clearEmotionData(self):
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 
+	def calibration(self, source, model_path):
+		epochs = 5
+		for x in range(epochs):
+			self.timedDetection(source, model_path, 5)
+			initial = time.time()
+			while True:
+				current = time.time()
+				if current - initial >= 1:
+					break
+
+		return statistics.mean(self.calibration_operator)
+
 # This class contains every processing algorithms for the emotions data
 class Processing:
 	# def __init__(self, duration, table):
@@ -123,6 +143,8 @@ class Processing:
 	def __init__(self):
 		self.result = ""
 		self.conversion_table = {0: 'happy', 1: 'sad', 2: 'neutral', 3: 'angry', 4: 'disgust', 5: 'surprise'}
+		# Model Data Calibration Constant Multiplier
+		self.model_calibration_constant = 170
 
 	def getDominantEmotion(self, table):
 		hmultiplier = 40
@@ -141,17 +163,24 @@ class Processing:
 		return max(table, key=table.get)
 	
 	# AI powered prediction from the custom gathered dataset. Result returns the absolute emotion value as a string
-	def getPredictedEmotion(self, data):
+	def getPredictedEmotion(self, data, calibration_constant):
 		from joblib import load
 
 		# Load the model from a file using joblib
 		model = load('Libs\walter.joblib')
 		header = list(data.values())
-		result = model.predict([header])
+		calibrated_header = []
+
+		calibration_ratio = self.model_calibration_constant // calibration_constant
+		
+		for x in header:
+			calibrated_header.append(x + (x * calibration_ratio))
+
+		result = model.predict([calibrated_header])
 		result = self.conversion_table[result[0]]
 		
 
-		if data[result] <= 2:
+		if data[result] <= 0:
 			result = self.getDominantEmotion(data)
 			print("Finny")
 		else:
@@ -159,8 +188,15 @@ class Processing:
 		return result
 
 test = Detection()
-result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\\Jessie_1.pt", 5)
+
+calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
+print(calibrate)
+
+result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
+
+# result = {"happy": random.randint(0, 5), "sad": random.randint(0, 5), "neutral": random.randint(0, 5), "angry": random.randint(0, 5), "disgust": random.randint(0, 5), "surprise": random.randint(0, 5)}
+# print(result)
 
 true_emotion = Processing()
-absolute_emotion = true_emotion.getPredictedEmotion(result)
+absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)
 print(absolute_emotion)
