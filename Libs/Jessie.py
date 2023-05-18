@@ -124,7 +124,7 @@ class Processing:
 		self.result = ""
 		self.conversion_table = {0: 'happy', 1: 'sad', 2: 'neutral', 3: 'angry', 4: 'disgust', 5: 'surprise'}
 
-	def getDominantEmotion(self,table):
+	def getDominantEmotion(self, table):
 		hmultiplier = 40
 		smultiplier = 2
 		nmultiplier = 1
@@ -137,8 +137,8 @@ class Processing:
 		for i in range(6):
 			table[emolist[i]]*=mullist[i]
 
-		print(table)
-		return table
+		# print(table)
+		return max(table, key=table.get)
 	
 	# AI powered prediction from the custom gathered dataset. Result returns the absolute emotion value as a string
 	def getPredictedEmotion(self, data):
@@ -149,6 +149,13 @@ class Processing:
 		header = list(data.values())
 		result = model.predict([header])
 		result = self.conversion_table[result[0]]
+		
+
+		if data[result] <= 2:
+			result = self.getDominantEmotion(data)
+			print("Finny")
+		else:
+			print("Most")
 		return result
 	
 
@@ -162,11 +169,11 @@ class Processing:
 # 		wordcount +=1
 # #human reading rate is 4 words/sec, detection time is average read time + 25%
 # d = (wordcount/4) + (wordcount/8)
-test = Detection()
-t = test.timedDetection(0, "Libs\Jessie_1.pt", 5)
+# test = Detection()
+# t = test.timedDetection(0, "Libs\Jessie_1.pt", 5)
 
 trueemotion = Processing()
 # t = trueemotion.getDominantEmotion(t)
-r = trueemotion.getPredictedEmotion(t)
+r = trueemotion.getPredictedEmotion({"happy": 15, "sad": 5, "neutral": 100, "angry": 0, "disgust": 0, "surprise": 0})
 # print(t)
 print(r)
