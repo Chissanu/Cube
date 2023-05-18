@@ -3,7 +3,6 @@ import cv2
 import torch
 import time
 import statistics
-import random
 
 
 # This class contains all detection algorithms and some data accessing
@@ -200,9 +199,6 @@ calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie
 print(calibrate)
 
 result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
-
-# result = {"happy": random.randint(0, 5), "sad": random.randint(0, 5), "neutral": random.randint(0, 5), "angry": random.randint(0, 5), "disgust": random.randint(0, 5), "surprise": random.randint(0, 5)}
-# print(result)
 
 true_emotion = Processing()
 absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)

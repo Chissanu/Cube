@@ -1,3 +1,5 @@
+# This code is already obsolete and its mostly for archival purposes
+
 # Import the required libraries (Some libraries will not be import here)
 import cv2
 import torch
