@@ -275,7 +275,8 @@ class app:
             Grid.columnconfigure(msgBox,1,weight=0)
             Grid.columnconfigure(msgBox,2,weight=1)
 
-            emotion = self.detectAI()
+            #emotion = self.detectAI()
+            emotion = "sad"
             print(emotion)
             self.db.send(str(msg),self.curChatFriend,emotion)
 

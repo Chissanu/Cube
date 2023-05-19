@@ -6,7 +6,7 @@ from threading import Thread
 from datetime import datetime
 
 class Chat:
-    def __init__(self, userRef, username):
+    def __init__(self,username):
 
         self.ref = db.reference('/')
         self.username = username
@@ -15,8 +15,14 @@ class Chat:
     def createChatroom(self, friend): # Create Chatroom when there is no chatroom
         ref = db.reference("/Chatrooms")
         nameLs = [self.username, friend.lower()]
+        print(nameLs)
+        print("Before SORT")
         nameLs.sort()
+        print("After SORT")
         name = str(nameLs[0] + "-" + nameLs[1])
+        print(nameLs)
+        print(name)
+        print("Here2")
         ref.child(name).set({
             "message": {
                 "start": {

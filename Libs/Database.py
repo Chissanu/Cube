@@ -28,8 +28,8 @@ class Database:
         self.bucket = storage.bucket()
         
         # Start AI Thread
-        ai = threading.Thread(target=self.thread_function, args=(1,))
-        ai.start()
+        # ai = threading.Thread(target=self.thread_function, args=(1,))
+        # ai.start()
     
     def thread_function(self,name):
         # AI Initializing
@@ -76,7 +76,7 @@ class Database:
             'profileImage' : 0,
             'created'  : date_time
         })
-        self.chat = Chat(self.ref, self.username)
+        self.chat = Chat(username)
         return new_user_ref
 
     def login(self, username, password):
@@ -89,7 +89,7 @@ class Database:
             for user in users.keys():
                 if user == username and users[user]['password'] == password:
                     self.username = user
-                    self.chat = Chat(self.ref, self.username)
+                    self.chat = Chat(username)
                     return db.reference("/users/" + username)
             return Exception("Wrong password or Account not found!")
         except:
