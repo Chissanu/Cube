@@ -618,7 +618,7 @@ class app:
             else:
                 self.errorAddFriend.configure(text="")
             
-            picture = os.path.join("profilePic"f"{profile['profileImage']}.png")
+            picture = os.path.join("profilePic",f"{profile['profileImage']}.png")
             name = str(profile['name'])
             user = str(profile['username'])
             bio = str(profile['bio'])
@@ -646,6 +646,7 @@ class app:
             add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=WHITE, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
             add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
         except Exception as e:
+            print(e)
             print("Profile not found")
 
     # Function to toggle switch the themes (light & dark)

@@ -128,7 +128,6 @@ class Features:
         # Query users
         userList = self.ref.child('users').get()
         
-        
         # Check if user exist in users db
         if user in userList:
             data = userList[user]
