@@ -207,7 +207,6 @@ class Features:
                 
                 tempDict[count] = val
 
-                print(tempDict)
                 # Check if list is empty
                 currUserIncoming = self.addNull(currUserIncoming)
                 

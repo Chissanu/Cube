@@ -275,8 +275,7 @@ class app:
             Grid.columnconfigure(msgBox,1,weight=0)
             Grid.columnconfigure(msgBox,2,weight=1)
 
-            #emotion = self.detectAI()
-            emotion = "sad"
+            emotion = self.detectAI()
             print(emotion)
             self.db.send(str(msg),self.curChatFriend,emotion)
 
@@ -598,8 +597,12 @@ class app:
     def acceptBtn(self, name, frame):
         self.db.acceptFriendRequest(self.curUser, name)
         try:
-            self.db.loadchat(name)
+            print("Loading chat")
+            err = self.db.loadchat(name)
+            if type(err) == Exception:
+                self.db.createChatroom(name)
         except:
+            print("Creating Chatroom from main.py")
             self.db.createChatroom(name)
         frame.destroy()
 

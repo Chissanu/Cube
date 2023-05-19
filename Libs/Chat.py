@@ -13,16 +13,11 @@ class Chat:
         self.currentFriend = ""
     
     def createChatroom(self, friend): # Create Chatroom when there is no chatroom
+        print("Creating Chatroom")
         ref = db.reference("/Chatrooms")
         nameLs = [self.username, friend.lower()]
-        print(nameLs)
-        print("Before SORT")
         nameLs.sort()
-        print("After SORT")
         name = str(nameLs[0] + "-" + nameLs[1])
-        print(nameLs)
-        print(name)
-        print("Here2")
         ref.child(name).set({
             "message": {
                 "start": {
@@ -32,8 +27,7 @@ class Chat:
                     "emotion": " "
                 }
             }
-            }
-        )
+        })
         return nameLs[0] + nameLs[1]
     
     def send(self, message, friend, emotion): #send message to a friend
@@ -62,6 +56,8 @@ class Chat:
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         message = chat.get()
         self.currentFriend = nameLs[1]
+        if message == None:
+            return Exception("Message not found")
         return message
     
     def countMessage(self, friend): #count the total message in the chatroom
