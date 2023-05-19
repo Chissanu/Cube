@@ -18,13 +18,23 @@ import emoji
 CURRENT_PATH = os.getcwd()
 
 # color palatte
-BG_COLOR = "#B9D6F2"
+BG_COLOR = "#F1F6F9"
+BG2_COLOR = "#9BA4B5"
+LIGHT_BG = "#FFFFFF"
 GENERAL_TEXT = "#000000"
-GRAY = "#989898"
-WHITE = "#FFFFFF"
-BUTTON = "#061A40"
-FRIEND_LIST = "#0353A4"
-LIGHT_BG = "#DCE9F6"
+INPUT_TEXT = "#989898"
+INPUT_BOX = "#FFFFFF"
+BUTTON = "#394867"
+BUTTON_TEXT = "#FFFFFF"
+FRIEND_LIST = "#6B7A97"
+SIDE_BAR = "#212A3E"
+REQUEST_LIST = "#9BA4B5"
+PROFILE_INFO = "#FFFFFF"
+MSG_BOX = "#9BA4B5"
+MSG_TEXT = "#000000"
+EMOJIANDTIME = "#000000"
+TOPBUTT_BAR = "#212A3E"
+TOPBUTT_TEXT = "#FFFFFF"
 
 class app:
     def __init__(self, master):
@@ -46,7 +56,7 @@ class app:
         center_y = int(screen_height/2 - window_height / 2)
         self.master.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.master.resizable(0, 0)
-        self.master['bg'] = BG_COLOR
+        self.master['bg'] = BG2_COLOR
         self.tempframe = None
 
         # self.curUser = 'c1'
@@ -68,11 +78,14 @@ class app:
         Grid.columnconfigure(root, index = 0, weight = 1)
         Grid.rowconfigure(root, 0, weight = 1)
         """
+        Grid.rowconfigure(root,3,weight=0)
+        Grid.rowconfigure(root,4,weight=0)
+
         for i in self.master.winfo_children():
             i.destroy()
         # Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "material-symbols_arrow-back.png")), size=(50, 50))
-        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG_COLOR, command=self.main_menu)
+        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG2_COLOR, command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, padx=10, pady=10,sticky=tk.NW, columnspan=2)
 
         # Cube logo
@@ -80,21 +93,21 @@ class app:
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
         img_label.grid(column=1, row=0, pady=35)
 
-        tk.Label(self.master, text="Login", font=("Inter", 40), bg= BG_COLOR).grid(column=1, row=1, pady=5, sticky=tk.N)
+        tk.Label(self.master, text="Login", font=("Inter", 40), bg= BG2_COLOR).grid(column=1, row=1, pady=5, sticky=tk.N)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
         username_label = customtkinter.CTkLabel(self.master, text="Username", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_label.grid(column=1, row=2, pady=(20,0), padx=(250,0), sticky=SW)
-        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         username_entry.grid(column=1, row=3, sticky = N)
 
         username_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
-        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         password_entry.grid(column=1, row=5, sticky = N)
         
         # create error frame
-        self.errLogin_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG_COLOR)
+        self.errLogin_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG2_COLOR)
         self.errLogin_frame.grid(row=6, column=1)
         self.errLogin_frame.grid_propagate(0)
 
@@ -103,7 +116,7 @@ class app:
         Grid.rowconfigure(self.errLogin_frame,0,weight=1)
 
         # Login button
-        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
+        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=60,
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
         
@@ -130,7 +143,7 @@ class app:
             i.destroy()
         # Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "material-symbols_arrow-back.png")), size=(50, 50))
-        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG_COLOR, command=self.main_menu)
+        arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG2_COLOR, command=self.main_menu)
         arrow_label.grid(row = 0, column = 0, padx=10, pady=10, sticky=tk.NW, columnspan=2)
     
         # Cube logo
@@ -138,31 +151,31 @@ class app:
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
         img_label.grid(column=1, row=0, pady=35)
 
-        tk.Label(self.master, text="Register", font=("Inter", 40), bg=BG_COLOR).grid(column=1, row=1, pady=5)
+        tk.Label(self.master, text="Register", font=("Inter", 40), bg=BG2_COLOR).grid(column=1, row=1, pady=5)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
         username_label = customtkinter.CTkLabel(self.master, text="Name", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_label.grid(column=1, row=2, pady=(50,0), padx=(250,0), sticky=SW)
-        name_entry = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        name_entry = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         name_entry.grid(column=1, row=3)
 
         username_label = customtkinter.CTkLabel(self.master, text="Username", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
-        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         username_entry.grid(column=1, row=5)
 
         username_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_label.grid(column=1, row=6, pady=(20,0), padx=(250,0), sticky=SW)
-        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         password_entry.grid(column=1, row=7)
 
         username_label = customtkinter.CTkLabel(self.master, text="Confirm password", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_label.grid(column=1, row=8, pady=(20,0), padx=(250,0), sticky=SW)
-        confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         confirm_entry.grid(column=1, row=9)
 
         # create error frame
-        errReg_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG_COLOR)
+        errReg_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG2_COLOR)
         errReg_frame.grid(row=10, column=1, rowspan=2)
         errReg_frame.grid_propagate(0)
 
@@ -175,7 +188,7 @@ class app:
         self.errorReg.grid(column=0, row=0)
 
         # Register button
-        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
+        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=60,
                                           command= lambda : self.registerDB(username_entry.get(),name_entry.get(),password_entry.get(),confirm_entry.get()))
         reg_btn.grid(column=1, row=12, sticky = "s", pady=50)
 
@@ -231,7 +244,7 @@ class app:
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda message=profile_user: self.display_chat(message, True))	
+                                                command=lambda user=profile_user: self.display_chat(user, True))	
                     friendBtn.grid(row=i, column=0, sticky="nsew")
             except Exception as e:
                 label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
@@ -244,7 +257,7 @@ class app:
         self.chat_frame.grid(row=0, column=2, sticky="nsew")
 
         # create topbar
-        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=75, corner_radius=0, fg_color="#b70849")
+        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
         self.topbar_subframe.grid(row=0, column=0)
         self.topbar_subframe.grid_propagate(0)
 
@@ -269,7 +282,7 @@ class app:
             "name": self.curUser,
             "emotion": " "
         }
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = "#e9f2b9")
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
             msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
             Grid.columnconfigure(msgBox,0,weight=0)
             Grid.columnconfigure(msgBox,1,weight=0)
@@ -284,38 +297,30 @@ class app:
             chat_entry.delete(0, END) 
             self.index += 1
 
-        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color="#e9f2b9", scrollbar_button_color="black")
+        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
         Grid.columnconfigure(self.boxes_subframe,0,weight=1)
 
         # create chat box and emoji btn
-        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=BG_COLOR)
+        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
         tool_subframe.grid(row=2, column=0)
         tool_subframe.grid_propagate(0)
 
         other_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Other_btn.png")), size=(40, 40))
-        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=BG_COLOR)
+        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR)
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
-        # chat_entry = customtkinter.CTkEntry(tool_subframe, placeholder_text="Type something", font=("Inter", 20), corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
-        #chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
-        chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=WHITE, width=1050, height=50)
-        # chat_entry = Text(tool_subframe, font=("Inter", 19), borderwidth=2, bd=0.5, fg=GENERAL_TEXT, width=69, height=1)
+        chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
         chat_entry.grid(row=0, column=1)
-
-        # Message display as label
-        # self.ch_subframe = customtkinter.CTkLabel(self.boxes_subframe, text=chat_entry, corner_radius=0, fg_color=WHITE)
-        # self.ch_subframe.grid(row=1, column=0, sticky='nsew')
-        # self.ch_subframe.grid_propagate(0)
 
         chat_entry.bind("<Return>", send_text)
 
         sticker_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Sticker_btn.png")), size=(40, 40))
-        sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
+        sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         sticker_label.grid(row = 0, column = 2, padx = 30, pady = 30)
 
         emoji_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Emoji_btn.png")), size=(40, 40))
-        emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=BG_COLOR, command=None)
+        emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
     # Function to display output message
@@ -324,7 +329,7 @@ class app:
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
-        name = customtkinter.CTkLabel(self.topbar_subframe, text=friend, font=("Inter", 40), text_color=GENERAL_TEXT, anchor=W)	
+        name = customtkinter.CTkLabel(self.topbar_subframe, text=friend, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
         name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)
 
         # Load Chat
@@ -354,7 +359,7 @@ class app:
 
         try:
             for index, key in enumerate(chat_history):
-                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), width=1355, height=100, fg_color = "#e9f2b9")
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
                 # height = msgBox.getHeight()
                 # newHeight = height.winfo_height()
                 # msgBox.grid_propagate(0)
@@ -404,13 +409,13 @@ class app:
         Grid.columnconfigure(addFriend_frame,0,weight=1)
 
         # create requestList frame	
-        container_frame = customtkinter.CTkFrame(self.master, width=480, height=1030, corner_radius=0, fg_color=FRIEND_LIST)
+        container_frame = customtkinter.CTkFrame(self.master, width=480, height=1030, corner_radius=0, fg_color=TOPBUTT_BAR)
         container_frame.grid(row=0, column=1)
 
-        request_label = customtkinter.CTkLabel(container_frame, text="Request Friend", font=("Inter", 25), height=50, text_color=WHITE)
+        request_label = customtkinter.CTkLabel(container_frame, text="Request Friend", font=("Inter", 25), height=50, text_color=TOPBUTT_TEXT)
         request_label.grid(row=0, column=0)
 
-        requestList_frame = customtkinter.CTkScrollableFrame(container_frame, width=480, height=1030, corner_radius=0, fg_color=WHITE)	
+        requestList_frame = customtkinter.CTkScrollableFrame(container_frame, width=480, height=1030, corner_radius=0, fg_color=REQUEST_LIST)	
         requestList_frame.grid(row=1, column=0, sticky="nsew")
         
         # profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(80, 80))
@@ -430,7 +435,7 @@ class app:
         addFriend_text.grid(row=0, column=0, columnspan = 2, sticky= N, pady = (50,20))
 
         # create entry box
-        username_entry = customtkinter.CTkEntry(self.search_subframe, placeholder_text="Enter your friend's username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=WHITE, width=500, height=60)
+        username_entry = customtkinter.CTkEntry(self.search_subframe, placeholder_text="Enter your friend's username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         username_entry.grid(row=1, column=0, padx=(230,0), sticky=N)
 
         # create profile subframe
@@ -463,7 +468,7 @@ class app:
         else:
             try:
                 for i, button_name in enumerate(tempFriends):
-                    friend_subframe = customtkinter.CTkFrame(requestList_frame, width=480, height=100, corner_radius=0, fg_color=WHITE)
+                    friend_subframe = customtkinter.CTkFrame(requestList_frame, width=480, height=100, corner_radius=0, fg_color=REQUEST_LIST)
                     friend_subframe.grid(row=i, column=0, sticky="nsew")
                     friend_subframe.grid_propagate(0)
                     Grid.columnconfigure(friend_subframe,0,weight=1)
@@ -484,17 +489,17 @@ class app:
                                                         anchor=W, 
                                                         width=300, height=100,
                                                         text_color=GENERAL_TEXT,
-                                                        fg_color=WHITE, 
+                                                        fg_color=REQUEST_LIST, 
                                                         command=lambda profile=profile_user: self.showProfile(profile))	
                     friendBtn.grid(row=0, column=0, sticky="nsew")	
                     friendBtn.grid_propagate(0)
                     
                     accept_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "accept_btn.png")), size=(40, 40))
-                    accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=WHITE, command=lambda name=profile_user, frame=friend_subframe: self.acceptBtn(name, frame))
+                    accept_btn = customtkinter.CTkButton(friend_subframe, image=accept_logo, text="", width=0, fg_color=REQUEST_LIST, command=lambda name=profile_user, frame=friend_subframe: self.acceptBtn(name, frame))
                     accept_btn.grid(row = 0, column = 1)
 
                     reject_logo =  customtkinter.CTkImage(Image.open(os.path.join("logostorage", "reject_btn.png")), size=(40, 40))
-                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=WHITE, command= lambda name=profile_user, frame=friend_subframe: self.rejectBtn(name, frame))
+                    reject_btn = customtkinter.CTkButton(friend_subframe, image=reject_logo, text="", width=0, fg_color=REQUEST_LIST, command= lambda name=profile_user, frame=friend_subframe: self.rejectBtn(name, frame))
                     reject_btn.grid(row = 0, column = 2, padx=(30,0))
             except Exception as e:
                 print(e)
@@ -547,30 +552,30 @@ class app:
         # create information in infobox
         # name
         self.padName = (50,10)
-        name_label = customtkinter.CTkLabel(self.info_subframe, text="Name:     ", font=("Inter", 35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
+        name_label = customtkinter.CTkLabel(self.info_subframe, text="Name:     ", font=("Inter", 35), width=0, text_color=GENERAL_TEXT, fg_color=PROFILE_INFO)
         name_label.grid(row=0, column=0, pady=self.padName, padx=(150, 0), sticky='w')
-        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
+        self.name_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=70, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
         self.name_text.grid(row=0, column=1, padx=(0, 0), pady=self.padName, sticky='w')
         self.name_text.insert("0.0", text=self.name)
         self.name_text.configure(state="disabled")
 
         edit_image = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "editText.png")), size=(30, 30))
-        editName_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=WHITE, corner_radius=0, command=lambda: self.edit_name())
+        editName_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=PROFILE_INFO, corner_radius=0, command=lambda: self.edit_name())
         editName_label.grid(row=0, column=2, pady=self.padName, padx=(10,20), sticky='e')
         
         # bio
-        bio_label = customtkinter.CTkLabel(self.info_subframe, text="Bio:         ", font=("Inter",35), width=0, text_color=GENERAL_TEXT, fg_color=WHITE)
+        bio_label = customtkinter.CTkLabel(self.info_subframe, text="Bio:         ", font=("Inter",35), width=0, text_color=GENERAL_TEXT, fg_color=PROFILE_INFO)
         bio_label.grid(row=1, column=0, padx=(150, 0), pady=5, sticky='n')
-        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
+        self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
         self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
         self.bio_text.insert("0.0", text=self.bio)
         self.bio_text.configure(state="disabled")
         
-        editBio_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=WHITE, corner_radius=0, command=lambda: self.edit_bio())
+        editBio_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=PROFILE_INFO, corner_radius=0, command=lambda: self.edit_bio())
         editBio_label.grid(row=1, column=2, padx=(10,20), sticky='ne')
 
         # emotion
-        emotion_subframe = customtkinter.CTkFrame(self.info_subframe, width=700, height=400, fg_color=LIGHT_BG)
+        emotion_subframe = customtkinter.CTkFrame(self.info_subframe, width=700, height=400, fg_color=PROFILE_INFO)
         emotion_subframe.grid(row=2, column=0, columnspan=3, padx=50, sticky=E)
         emotion_subframe.grid_propagate(0)
 
@@ -610,6 +615,7 @@ class app:
         self.db.rejectFriendRequest(self.curUser,name)
         frame.destroy()
 
+    # function show profile in addfriend page
     def showProfile(self, name):
         # create variable
         try:
@@ -641,13 +647,13 @@ class app:
             profile.grid(row = 0, column = 0, pady = (20,0))
             name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             name_text.grid(row = 1, column = 0, pady = (10,10))
-            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=WHITE, wrap="word")
+            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
             bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
 
             # create add button
-            add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=WHITE, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
+            add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=PROFILE_INFO, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
             add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
         except Exception as e:
             print(e)
@@ -674,10 +680,10 @@ class app:
         Grid.rowconfigure(theme_toggle_frame,2,weight=1)
 
         # topbar frame
-        container_frame = customtkinter.CTkFrame(theme_toggle_frame, width=2500, height=100, corner_radius=0, fg_color=FRIEND_LIST)
+        container_frame = customtkinter.CTkFrame(theme_toggle_frame, width=2500, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
         container_frame.grid(row=0, column=0, sticky=N)
         # topbar frame text label
-        text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=WHITE)
+        text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=TOPBUTT_TEXT)
         text_label.grid(row=0, column=0)
 
         # to add
@@ -692,7 +698,7 @@ class app:
         for i in self.master.winfo_children():
             i.destroy()
         # Title 
-        tk.Label(self.master, text="CUBE", font=("Inter", 64, "bold"), bg=BG_COLOR).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
+        tk.Label(self.master, text="CUBE", font=("Inter", 64, "bold"), bg=BG2_COLOR).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
         
         # Cube logo
         self.image = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "vaadin_cube.png")), size=(220, 220))
@@ -700,15 +706,15 @@ class app:
         img_label.grid(column=1, row=1)
 
         # Menu texts/ three buttons: Login, Register, & Quit
-        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG_COLOR).grid(column=1, row=2, pady=20, sticky=tk.N)
+        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG2_COLOR).grid(column=1, row=2, pady=20, sticky=tk.N)
 
-        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.login_menu)
+        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=350, height=75, command=self.login_menu)
         log_btn.grid(column=1, row=2, pady=(70,0))
 
-        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=350, height=75, command=self.register_menu)
+        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=350, height=75, command=self.register_menu)
         reg_btn.grid(column=1, row=3)
 
-        exit_btn = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=WHITE, width=250, height=75, command=root.destroy)
+        exit_btn = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=BUTTON_TEXT, width=250, height=75, command=root.destroy)
         exit_btn.grid(column=1, row=4, pady=100)
             
 
@@ -718,14 +724,14 @@ class app:
     def popup(self):
         self.popup_window = tk.Toplevel(root)
         self.popup_window.geometry("1200x800+360+140")
-        self.popup_window.configure(bg=FRIEND_LIST)
+        self.popup_window.configure(bg=TOPBUTT_BAR)
 
         Grid.columnconfigure(self.popup_window,0,weight=1)
         Grid.rowconfigure(self.popup_window,0,weight=0)  
         Grid.rowconfigure(self.popup_window,1,weight=1)  
         Grid.rowconfigure(self.popup_window,2,weight=0) 
 
-        label = customtkinter.CTkLabel(self.popup_window, text="Choose the profile that you like", text_color=WHITE, font=("Inter", 40))
+        label = customtkinter.CTkLabel(self.popup_window, text="Choose the profile that you like", text_color=TOPBUTT_TEXT, font=("Inter", 40))
         label.grid(column = 0, row = 0, pady = 20)
 
         # create scrollable frame
@@ -763,7 +769,7 @@ class app:
     def changeProfile(self, newProfile):
         self.db.changeProfilePic(self.curUser, newProfile)
         self.profilePic = newProfile
-        button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), text_color=BUTTON, fg_color=LIGHT_BG, command=lambda:self.afterChangeProfile())
+        button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), text_color=GENERAL_TEXT, fg_color=TOPBUTT_TEXT, command=lambda:self.afterChangeProfile())
         button.grid(column = 0, row = 2, pady=20)
 
     # change profile and refresh it
@@ -832,34 +838,34 @@ class app:
             myProfile_hover = True
 
         # create sidebar
-        sidebar_frame = customtkinter.CTkFrame(self.master, width=70, height=1080, corner_radius=0, fg_color=BUTTON)
+        sidebar_frame = customtkinter.CTkFrame(self.master, width=70, height=1080, corner_radius=0, fg_color=SIDE_BAR)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
         sidebar_frame.grid_propagate(0)
 
         Grid.columnconfigure(sidebar_frame, index = 0, weight = 1)
 
         chat_logo = customtkinter.CTkImage(Image.open(chat_img), size=(40, 40))
-        chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=0, hover=chat_hover, fg_color=BUTTON, command=chat_command)
+        chat_label = customtkinter.CTkButton(sidebar_frame, image=chat_logo, text="", width=0, hover=chat_hover, fg_color=SIDE_BAR, command=chat_command)
         chat_label.grid(row = 0, column = 0, pady = (30, 25))
 
         addFriend_logo = customtkinter.CTkImage(Image.open(addFriend_img), size=(40, 40))
-        addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=0, hover=addFriend_hover, fg_color=BUTTON, command=addFriend_command)
+        addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=0, hover=addFriend_hover, fg_color=SIDE_BAR, command=addFriend_command)
         addFriend_label.grid(row = 1, column = 0, pady = (30, 25))
 
         changeTheme_logo = customtkinter.CTkImage(Image.open(theme_Toggle), size=(40, 30))
-        changeTheme_label = customtkinter.CTkButton(sidebar_frame, image=changeTheme_logo, text="", width=0, hover=theme_Toggle_hover, fg_color=BUTTON, command=theme_Toggle_command)
+        changeTheme_label = customtkinter.CTkButton(sidebar_frame, image=changeTheme_logo, text="", width=0, hover=theme_Toggle_hover, fg_color=SIDE_BAR, command=theme_Toggle_command)
         changeTheme_label.grid(row = 2, column = 0, pady = (30, 25))
 
         myProfile_logo = customtkinter.CTkImage(Image.open(myProfile_img), size=(40, 40))
-        myProfile_label = customtkinter.CTkButton(sidebar_frame, image=myProfile_logo, text="", width=0, hover=myProfile_hover, fg_color=BUTTON, command=myProfile_command)
+        myProfile_label = customtkinter.CTkButton(sidebar_frame, image=myProfile_logo, text="", width=0, hover=myProfile_hover, fg_color=SIDE_BAR, command=myProfile_command)
         myProfile_label.grid(row = 3, column = 0, pady = (450, 25))
 
         logout_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "LogOut_btn.png")), size=(40, 40))
-        logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=0, fg_color=BUTTON, command=self.main_menu)
+        logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=0, fg_color=SIDE_BAR, command=self.main_menu)
         logout_label.grid(row = 4, column = 0, pady = (30, 25))
 
         shutdown_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Shutdown_btn.png")), size=(40, 40))
-        shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=0, fg_color=BUTTON, command=root.destroy)
+        shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=0, fg_color=SIDE_BAR, command=root.destroy)
         shutdown_label.grid(row = 5, column = 0, pady = (30, 25))
     
     

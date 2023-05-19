@@ -5,7 +5,7 @@ import tkinter.font as tkfont
 import emoji
 
 class ChatFrame(ctk.CTkFrame):
-    def __init__(self,master, chat, curUser, friendPic, **kwargs):
+    def __init__(self,master, chat, curUser, friendPic, bgColor, msgbox, textColor, emoji_time, **kwargs):
         super().__init__(master, **kwargs)
         self.chat = chat
         self.curUser = curUser
@@ -25,26 +25,26 @@ class ChatFrame(ctk.CTkFrame):
             emotion = chat["emotion"]
 
             # text label
-            self.messages = ctk.CTkLabel(self, text=self.chat['text'],text_color="#000000", fg_color="#DCE9F6", font=("Inter", 30), wraplength=1000, corner_radius=10)
+            self.messages = ctk.CTkLabel(self, text=self.chat['text'],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
             self.messages.grid(row=0, column=2, padx=(0, 20), ipadx=10, ipady=10, sticky="e")
 
             # time and emotion frame
-            self.frame = ctk.CTkFrame(self, width=50, height=100, fg_color="#DCE9F6")
+            self.frame = ctk.CTkFrame(self, width=50, height=100, fg_color=bgColor)
             self.frame.grid(row=0, column=1, padx = (0,5), sticky="e")
 
             # time label
-            self.time = ctk.CTkLabel(self.frame, text=chat["time"][11:],text_color="#000000", fg_color="#e9f2b9", font=("Inter", 15))
+            self.time = ctk.CTkLabel(self.frame, text=chat["time"][11:],text_color=emoji_time, fg_color=bgColor, font=("Inter", 15))
             self.time.grid(row=1, column=0)
 
             # show emotion
-            self.emotion = ctk.CTkLabel(self.frame, text=self.show_emotion(emotion),text_color="#000000", fg_color="#e9f2b9", font=("Inter", 30))
+            self.emotion = ctk.CTkLabel(self.frame, text=self.show_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
             self.emotion.grid(row=0, column=0)
 
         else:
             emotion = chat["emotion"]
 
             # text label
-            self.messages = ctk.CTkLabel(self, text=chat["text"],text_color="#000000", fg_color="#DCE9F6", font=("Inter", 30), wraplength=1000, corner_radius=10)
+            self.messages = ctk.CTkLabel(self, text=chat["text"],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
             self.messages.grid(row=0, column=1, ipadx=10, ipady=10, sticky="w")
 
             # recipient's name label display left next to the received message
@@ -53,26 +53,16 @@ class ChatFrame(ctk.CTkFrame):
             profile.grid(row = 0, column = 0, padx=30, sticky='w')
 
             # time and emotion frame
-            self.frame = ctk.CTkFrame(self, width=50, height=100, fg_color="#DCE9F6")
+            self.frame = ctk.CTkFrame(self, width=50, height=100, fg_color=bgColor)
             self.frame.grid(row=0, column=2, padx = (5,0), sticky="w")
 
             # time label
-            self.time = ctk.CTkLabel(self.frame, text=chat["time"][11:],text_color="#000000", fg_color="#e9f2b9", font=("Inter", 15))
+            self.time = ctk.CTkLabel(self.frame, text=chat["time"][11:],text_color=emoji_time, fg_color=bgColor, font=("Inter", 15))
             self.time.grid(row=1, column=0)
             
             # show emotion
-            self.emotion = ctk.CTkLabel(self.frame, text=self.show_emotion(emotion),text_color="#000000", fg_color="#e9f2b9", font=("Inter", 30))
+            self.emotion = ctk.CTkLabel(self.frame, text=self.show_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
             self.emotion.grid(row=0, column=0)
-            
-            # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text=chat_history[key]["name"],text_color="#000000", bg_color="#e9f2b9", font=("Inter", 18))
-            # self.messages.grid(row=row_num, column=1, padx=1, pady=25, sticky="ww")
-
-    def getHeight(self):
-        return self.messages
-        # newHeight = self.messages.winfo_height()
-        # x, y, width, height = self.grid_bbox(self.messages)
-        # print(height)
-        # self.configure(height=newHeight)
     
     def show_emotion(self, emotion):
         if emotion == "happy":
