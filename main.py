@@ -636,6 +636,36 @@ class app:
             add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
         except Exception as e:
             print("Profile not found")
+
+    # Function to toggle switch the themes (light & dark)
+    def changeTheme(self):
+        Grid.rowconfigure(root,0,weight=0)
+        Grid.rowconfigure(root,1,weight=1)
+
+        for i in self.master.winfo_children():
+            i.destroy()
+
+        # create sidebar
+        self.sidebar("changeTheme")
+
+        # create frame
+        theme_toggle_frame = customtkinter.CTkFrame(self.master, width=1850, height=1080, fg_color=BG_COLOR)
+        theme_toggle_frame.grid(row=0, column=1, sticky="nsew")
+        theme_toggle_frame.grid_propagate(0)
+
+        Grid.rowconfigure(theme_toggle_frame,0,weight=1)
+        Grid.rowconfigure(theme_toggle_frame,1,weight=1)
+        Grid.rowconfigure(theme_toggle_frame,2,weight=1)
+
+        # topbar frame
+        container_frame = customtkinter.CTkFrame(theme_toggle_frame, width=2500, height=100, corner_radius=0, fg_color=FRIEND_LIST)
+        container_frame.grid(row=0, column=0, sticky=N)
+        # topbar frame text label
+        text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=WHITE)
+        text_label.grid(row=0, column=0)
+
+        # to add
+
         
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
@@ -739,6 +769,9 @@ class app:
             addFriend_img = os.path.join("logostorage", "AddFriend_btn.png")
             addFriend_command = self.addFriend
             addFriend_hover = True
+            theme_Toggle = os.path.join("logostorage", "Theme_toggle.png")
+            theme_Toggle_command = self.changeTheme
+            theme_Toggle_hover = True
             myProfile_img = os.path.join("profilePic", f"{self.profilePic}.png")
             myProfile_command = self.myProfile
             myProfile_hover = True
@@ -749,6 +782,9 @@ class app:
             addFriend_img = os.path.join("logostorage", "AddFriend_selected.png")
             addFriend_command = None
             addFriend_hover = False
+            theme_Toggle = os.path.join("logostorage", "Theme_toggle.png")
+            theme_Toggle_command = self.changeTheme
+            theme_Toggle_hover = True
             myProfile_img = os.path.join("profilePic", f"{self.profilePic}.png")
             myProfile_command = self.myProfile
             myProfile_hover = True
@@ -759,9 +795,25 @@ class app:
             addFriend_img = os.path.join("logostorage", "AddFriend_btn.png")
             addFriend_command = self.addFriend
             addFriend_hover = True
+            theme_Toggle = os.path.join("logostorage", "Theme_toggle.png")
+            theme_Toggle_command = self.changeTheme
+            theme_Toggle_hover = True
             myProfile_img = os.path.join("profilePic", f"{self.profilePic}.png")
             myProfile_command = None
             myProfile_hover = False
+        elif page == "changeTheme":
+            chat_img = os.path.join("logostorage", "Chat_btn.png")
+            chat_command = self.chat
+            chat_hover = True
+            addFriend_img = os.path.join("logostorage", "AddFriend_btn.png")
+            addFriend_command = self.addFriend
+            addFriend_hover = True
+            theme_Toggle = os.path.join("logostorage", "Theme_toggle_selected.png")
+            theme_Toggle_command = None
+            theme_Toggle_hover = False
+            myProfile_img = os.path.join("profilePic", f"{self.profilePic}.png")
+            myProfile_command = self.myProfile
+            myProfile_hover = True
 
         # create sidebar
         sidebar_frame = customtkinter.CTkFrame(self.master, width=70, height=1080, corner_radius=0, fg_color=BUTTON)
@@ -778,17 +830,21 @@ class app:
         addFriend_label = customtkinter.CTkButton(sidebar_frame, image=addFriend_logo, text="", width=0, hover=addFriend_hover, fg_color=BUTTON, command=addFriend_command)
         addFriend_label.grid(row = 1, column = 0, pady = (30, 25))
 
+        changeTheme_logo = customtkinter.CTkImage(Image.open(theme_Toggle), size=(40, 30))
+        changeTheme_label = customtkinter.CTkButton(sidebar_frame, image=changeTheme_logo, text="", width=0, hover=theme_Toggle_hover, fg_color=BUTTON, command=theme_Toggle_command)
+        changeTheme_label.grid(row = 2, column = 0, pady = (30, 25))
+
         myProfile_logo = customtkinter.CTkImage(Image.open(myProfile_img), size=(40, 40))
         myProfile_label = customtkinter.CTkButton(sidebar_frame, image=myProfile_logo, text="", width=0, hover=myProfile_hover, fg_color=BUTTON, command=myProfile_command)
-        myProfile_label.grid(row = 2, column = 0, pady = (600, 25))
+        myProfile_label.grid(row = 3, column = 0, pady = (450, 25))
 
         logout_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "LogOut_btn.png")), size=(40, 40))
         logout_label = customtkinter.CTkButton(sidebar_frame, image=logout_logo, text="", width=0, fg_color=BUTTON, command=self.main_menu)
-        logout_label.grid(row = 3, column = 0, pady = (30, 25))
+        logout_label.grid(row = 4, column = 0, pady = (30, 25))
 
         shutdown_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Shutdown_btn.png")), size=(40, 40))
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=0, fg_color=BUTTON, command=root.destroy)
-        shutdown_label.grid(row = 4, column = 0, pady = (30, 25))
+        shutdown_label.grid(row = 5, column = 0, pady = (30, 25))
     
     
     """
