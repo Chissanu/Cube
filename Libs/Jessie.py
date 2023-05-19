@@ -104,17 +104,17 @@ class Detection:
 		# 	video_duration = isodate.parse_duration(duration).total_seconds()
 		# 	print(video_duration)
 		# 	self.timedDetection(self, source, model_path, video_duration)
-			# This is a Google API key. This key will be filled later.
-			operator = open("googlekeys.txt", "r")
-			api_key = operator.read()
-			video_id = video.split("v=")[1]
-			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
-			# This part extract the duration of the video
-			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
-			duration = video_response["items"][0]["contentDetails"]["duration"]
-			video_duration = isodate.parse_duration(duration).total_seconds()
-			print(video_duration)
-			self.timedDetection(self, source, model_path, video_duration)
+		# 	# This is a Google API key. This key will be filled later.
+		# 	operator = open("googlekeys.txt", "r")
+		# 	api_key = operator.read()
+		# 	video_id = video.split("v=")[1]
+		# 	youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+		# 	# This part extract the duration of the video
+		# 	video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
+		# 	duration = video_response["items"][0]["contentDetails"]["duration"]
+		# 	video_duration = isodate.parse_duration(duration).total_seconds()
+		# 	print(video_duration)
+		# 	self.timedDetection(self, source, model_path, video_duration)
 
 	def untimedDetection(self, source, model_path):
 		global buttonclick
