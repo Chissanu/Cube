@@ -10,6 +10,7 @@ import tkinter.font as tkfont
 from datetime import datetime
 from threading import Thread
 import time
+import emoji
 
 # from chat_tester import chat_test
 
