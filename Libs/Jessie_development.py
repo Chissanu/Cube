@@ -199,10 +199,11 @@ class Processing:
 		model = load('Libs\walter.joblib')
 		header = list(data.values())
 		calibrated_header = []
+		calibration_ratio = 0
 
 		if calibration_constant <= self.model_calibration_constant:
 			calibration_ratio = self.model_calibration_constant // calibration_constant
-		
+
 		for x in header:
 			calibrated_header.append(x + (x * calibration_ratio))
 
