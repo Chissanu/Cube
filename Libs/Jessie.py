@@ -5,7 +5,10 @@ import time
 import threading
 import statistics
 import random
+from joblib import load
 
+global model
+model = load('Libs\walter.joblib')
 # This class contains all detection algorithms and some data accessing
 class Detection:
 	def __init__(self):
@@ -115,6 +118,7 @@ class Detection:
 
 	def untimedDetection(self, source, model_path):
 		global buttonclick
+		global r
 		self.clearEmotionData()
 		vid = cv2.VideoCapture(source)
 		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
@@ -123,16 +127,13 @@ class Detection:
 
 		while True:
 			while success and buttonclick == True:
-				
-				if buttonclick == False:
-					break
-
 				if fno % 32 == 0:
 					results = model(img)
 
 				try:
 					self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
-					print(self.emotion_table)
+					r = self.emotion_table
+					print(r)
 
 				except IndexError:
 					print("Not Detected")
@@ -140,8 +141,10 @@ class Detection:
 
 				# read next frame
 				success, img = vid.read()
+			self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 			if buttonclick == "end":
-				break
+				r = self.emotion_table
+				return
 			
 
 	def clearEmotionData(self):
@@ -189,10 +192,10 @@ class Processing:
 	
 	# AI powered prediction from the custom gathered dataset. Result returns the absolute emotion value as a string
 	def getPredictedEmotion(self, data, calibration_constant):
-		from joblib import load
+		#from joblib import load
 
 		# Load the model from a file using joblib
-		model = load('Libs\walter.joblib')
+		print("data",data)
 		header = list(data.values())
 		calibrated_header = []
 
@@ -217,18 +220,30 @@ class Processing:
 
 def getbutton():
 	global buttonclick
+	global r
+	global n
+	true_emotion = Processing()
 	while True:
 		key = input("break: ")
 		with lock:
 			if key == "a":
 				buttonclick = True
-				#thread2.start()
+				n = 1
 			if key == "b":
 				buttonclick = False
-				#thread2.stop()
+				n = 0
+				if n < 1:
+					print(r)
+					calibrate = 40
+
+					#true_emotion = Processing()
+					absolute_emotion = true_emotion.getPredictedEmotion(r, calibrate)
+					print(absolute_emotion)
+					n = 1
 			if key == "c":
 				buttonclick = "end"
-				break
+				print("ends")
+				return
 			print("buttonclick is", buttonclick)
 
 ''' 
@@ -256,17 +271,21 @@ print("hello world")
 # 	t = trueemotion.getDominantEmotion(t)
 # 	trueemotion.getMostOccuringEmotion(t)
 
+
+
 test = Detection()
 global buttonclick
+global r
+global n 
+n = 1
 buttonclick = False
 lock = threading.Lock()
 thread1 = threading.Thread(target=getbutton)
 thread2 = threading.Thread(target=test.untimedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt"))
 thread1.start()
 thread2.start()
-if buttonclick == "end":
-	thread1.stop()
-	thread2.stop()
+
+	
 
 
 # test = Detection()
@@ -275,10 +294,5 @@ if buttonclick == "end":
 # print(calibrate)
 
 # result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
-result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
-print(result)
-calibrate = 40
+#result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
 
-true_emotion = Processing()
-absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)
-print(absolute_emotion)
