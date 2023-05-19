@@ -273,19 +273,19 @@ print("hello world")
 # 	thread2.stop()
 
 
-test = Detection()
+# test = Detection()
 
-test.initialize("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
+# test.initialize("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
 
-calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
-print(calibrate)
+# calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
+# print(calibrate)
 
-result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
-# result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
-print(result)
-# calibrate = 40
-print(calibrate)
+# result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
+# # result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
+# print(result)
+# # calibrate = 40
+# print(calibrate)
 
-true_emotion = Processing()
-absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)
-print(absolute_emotion)
+# true_emotion = Processing()
+# absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)
+# print(absolute_emotion)

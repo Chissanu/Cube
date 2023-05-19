@@ -58,6 +58,7 @@ class app:
         #self.chat()
         # self.addFriend()
         # self.myProfile()
+        master.bind('<F7>', lambda e: self.testAI(e))
         self.main_menu()
 
     def login_menu(self):  
@@ -105,6 +106,11 @@ class app:
         log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=WHITE, fg_color=BUTTON, width=500, height=60,
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
+        
+    def testAI(self, e):
+        print("RUNNING")
+        self.ai = self.db.getAI()
+        self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
 
     def register_menu(self):  
         """

@@ -1,9 +1,11 @@
 import firebase_admin
+import threading
 from firebase_admin import credentials
 from firebase_admin import db
 from datetime import datetime
 from Libs.Features import Features
 from Libs.Chat import Chat, CustomThread
+from Libs.Jessie_development import Detection
 from firebase_admin import storage
 
 class Database:
@@ -24,6 +26,16 @@ class Database:
         self.username = None
         self.thread = None
         self.bucket = storage.bucket()
+        
+        # Start AI Thread
+        ai = threading.Thread(target=self.thread_function, args=(1,))
+        ai.start()
+    
+    def thread_function(self,name):
+        # AI Initializing
+        print("Starting AI Model thread")
+        self.AIModel = Detection()
+        self.ai = self.AIModel.initialize(0, "Libs\Jessie_1.pt")
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -177,6 +189,13 @@ class Database:
         blob.make_public()
         self.send(blob.public_url, )
         return blob.public_url
+    
+    """
+    Function to call Jesse.py functions
+    """
+    def getAI(self):
+        return self.AIModel
+    
         
     # def runit(self):
     #     reff = db.reference('Chatrooms')
