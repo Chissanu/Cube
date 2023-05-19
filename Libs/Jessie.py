@@ -3,7 +3,7 @@ import cv2
 import torch
 import time
 import statistics
-
+import random
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
@@ -177,11 +177,13 @@ class Processing:
 		header = list(data.values())
 		calibrated_header = []
 
-		calibration_ratio = self.model_calibration_constant // calibration_constant
+		if calibration_constant <= self.model_calibration_constant:
+			calibration_ratio = self.model_calibration_constant // calibration_constant
 		
 		for x in header:
 			calibrated_header.append(x + (x * calibration_ratio))
 
+		print(calibrated_header)
 		result = model.predict([calibrated_header])
 		result = self.conversion_table[result[0]]
 		
@@ -193,12 +195,15 @@ class Processing:
 			print("Most")
 		return result
 
-test = Detection()
+# test = Detection()
 
-calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
-print(calibrate)
+# calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
+# print(calibrate)
 
-result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
+# result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
+result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
+print(result)
+calibrate = 40
 
 true_emotion = Processing()
 absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)
