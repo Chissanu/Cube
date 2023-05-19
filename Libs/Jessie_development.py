@@ -1,9 +1,4 @@
-"""
-For regular use case, Jessie.py is sufficient. This code contains the developing tools that was used for the followings:
-1. Testing Purposes: Test the trained A.I at a given parameter.
-2. Model Training Purposes: Used to gather data for the Sci-Kit Learn Decision Tree
-3. Development of a much more complex and optimized codes.
-"""
+# This code is already obsolete and its mostly for archival purposes
 
 # Import the required libraries (Some libraries will not be import here)
 import cv2
@@ -13,6 +8,7 @@ import csv
 from sklearn import tree
 import pandas as pd
 import numpy as np
+import os
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
@@ -157,29 +153,31 @@ class Detection:
 		header.append("percieved_emotion")
 		success, img = vid.read()
 		initial = time.time()
+		file = open(csv_path, "a", encoding = "UTF8", newline='')
+		writer = csv.writer(file)
 
 		while success:
-			if fno % 32 == 0:
-				results = model(img)
+			# if fno % 32 == 0:
+			results = model(img)
 
 			try:
 				current = time.time()
 				self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
 				if current - initial >= 5:
-					result = self.emotion_table
-					file = open(csv_path, "a", encoding = "UTF8", newline='')
-					writer = csv.writer(file)
-					operator = [result[header[0]], result[header[1]], result[header[2]], result[header[3]], result[header[4]], result[header[5]], 4]
-					if operator[4] <= 2:
-						print("Skip!")
+					emotion = self.emotion_table
+					operator = [emotion[header[0]], emotion[header[1]], emotion[header[2]], emotion[header[3]], emotion[header[4]], emotion[header[5]], 4]
+					if operator[4] <= 1:
+						print("Skip!: ", self.emotion_table)
 						self.clearEmotionData()
 						initial = time.time()
 
 					else:
+						file = open(csv_path, "a", encoding = "UTF8", newline='')
 						writer.writerow(operator)
 						print(self.emotion_table)
 						self.clearEmotionData()
 						initial = time.time()
+						file.close()
 
 			except IndexError:
 				# print("Not Detected")
@@ -187,8 +185,6 @@ class Detection:
 
 			# read next frame
 			success, img = vid.read()
-		
-		file.close()
 
 	# Intermediate method, used with the collectData method to label the "perceived emotion" column.
 	def giveEmotionLabel(self, choice, choice_list, csv_path):
@@ -226,9 +222,7 @@ class Processing:
 
 test = Detection()
 
-# test.timedDetectionVideo("http://192.168.1.112:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "https://www.youtube.com/watch?v=nkh9VGCY8as", 1)
-
-emote = test.timedDetection("http://192.168.1.112:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
+emote = test.timedDetection(0, "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
 
 process = Processing()
 
@@ -236,5 +230,21 @@ processed_emotion = process.getPredictedEmotion(emote)
 
 print(processed_emotion)
 
+# chosen_folder_dir = 'C:\\Users\\Firesoft\\Downloads\\Data_Collection_Video'
+# validation = 0
+
+# new_file_array = []
+
+# files = os.listdir(chosen_folder_dir)
+
+# for file in files:
+# 	new_file_array.append(chosen_folder_dir + "\\" + file)
+
+# print(new_file_array)
+
+# for videos in new_file_array:
+# 	test.collectVideoData(videos, "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\data_collection.csv")
+
 # test.collectData("http://10.100.9.1:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\datasets\\experiment_data.csv", 150)
-# test.collectVideoData("C:\\Users\\Firesoft\\Downloads\\Disgust_2.mp4", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\datasets\\experiment_data.csv", )
+# test.collectVideoData("C:\\Users\\Firesoft\\Downloads\\Data_Collection_Video\\Disgust_3_AdobeExpress.mp4", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\datasets\\experiment_data.csv")
+# test.untimedDetection("C:\\Users\\Firesoft\\Downloads\\Disgust2.mp4", "C:\Users\Firesoft\Documents\Computing\Testing_Grounds\trained_models\Jessie_1.pt")
