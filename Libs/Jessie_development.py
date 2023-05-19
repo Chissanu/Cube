@@ -158,6 +158,10 @@ class Detection:
 					break
 
 		return statistics.mean(self.calibration_operator)
+	
+	def initialize(self, source, model_path):
+		self.timedDetection(source, model_path, 1)
+		self.calibration_operator = []
 
 # This class contains every processing algorithms for the emotions data
 class Processing:
@@ -269,15 +273,18 @@ print("hello world")
 # 	thread2.stop()
 
 
-# test = Detection()
+test = Detection()
 
-# calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
-# print(calibrate)
+test.initialize("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
 
-# result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
-result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
+calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
+print(calibrate)
+
+result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
+# result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
 print(result)
-calibrate = 40
+# calibrate = 40
+print(calibrate)
 
 true_emotion = Processing()
 absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)

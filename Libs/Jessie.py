@@ -146,10 +146,10 @@ class Detection:
 				r = self.emotion_table
 				return
 			
-
 	def clearEmotionData(self):
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
-
+	
+	# Calibration, only call when tuning the Jessie's accuracy
 	def calibration(self, source, model_path):
 		epochs = 5
 		for x in range(epochs):
