@@ -6,6 +6,7 @@ import os
 from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
+from Libs.Jessie_development import Processing
 import tkinter.font as tkfont
 from datetime import datetime
 from threading import Thread
@@ -58,7 +59,6 @@ class app:
         #self.chat()
         # self.addFriend()
         # self.myProfile()
-        master.bind('<F7>', lambda e: self.testAI(e))
         self.main_menu()
 
     def login_menu(self):  
@@ -107,10 +107,13 @@ class app:
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
         
-    def testAI(self, e):
-        print("RUNNING")
+    def detectAI(self):
+        print("RUNNING...")
         self.ai = self.db.getAI()
-        self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
+        result = self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
+        true_emotion = Processing()
+        absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
+        return absolute_emotion
 
     def register_menu(self):  
         """
@@ -272,7 +275,9 @@ class app:
             Grid.columnconfigure(msgBox,1,weight=0)
             Grid.columnconfigure(msgBox,2,weight=1)
 
-            self.db.send(str(msg),self.curChatFriend)
+            emotion = self.detectAI()
+            print(emotion)
+            self.db.send(str(msg),self.curChatFriend,emotion)
 
             timeLabel = ""      # TO INCLUDE IN TIME LABEL OF NEWLY SENT MESSAGE
 

@@ -30,7 +30,7 @@ class Chat:
         )
         return nameLs[0] + nameLs[1]
     
-    def send(self, message, friend): #send message to a friend
+    def send(self, message, friend, emotion): #send message to a friend
         nameLs = [self.username, friend.lower()]
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
@@ -44,7 +44,7 @@ class Chat:
             "text": message,
             "time": date_time,
             "name": self.username,
-            "emotion": " "
+            "emotion": emotion
         })
 
         self.currentFriend = nameLs[1]

@@ -36,6 +36,7 @@ class Database:
         print("Starting AI Model thread")
         self.AIModel = Detection()
         self.ai = self.AIModel.initialize(0, "Libs\Jessie_1.pt")
+        self.calibrate = self.AIModel.calibration(0, "Libs\Jessie_1.pt")
 
     def createAccount(self, username, name, password):
         username = username.lower()
@@ -169,8 +170,8 @@ class Database:
     def createChatroom(self, friend): #create chatroom
         return self.chat.createChatroom(friend)
     
-    def send(self, message, friend): # send message
-        return self.chat.send(message, friend)
+    def send(self, message, friend, emotion): # send message
+        return self.chat.send(message, friend, emotion)
     
     def loadchat(self, friend): # load chat
         return self.chat.loadchat(friend)
@@ -195,6 +196,9 @@ class Database:
     """
     def getAI(self):
         return self.AIModel
+    
+    def getCalibration(self):
+        return self.calibrate
     
         
     # def runit(self):
