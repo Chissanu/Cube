@@ -34,47 +34,68 @@ class Detection:
 	
 	# Takes three inputs, the source of the video (0 for webcam), the model_path and the duration. Returns nothing at the moment
 	def timedDetection(self, source, model_path, duration):
+		global buttonclick
+		global r
+		first = True
 		self.clearEmotionData()
-		vid = cv2.VideoCapture(source)
+		vid = cv2.VideoCapture(source, cv2.CAP_DSHOW)
 		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
 		fno = 0
 		success, img = vid.read()
 		initial = time.time()
 		count = 0
 
-		while success:
-			count += 3
-			if fno % 32 == 0:
-				results = model(img)
+		while True:
+			while success and buttonclick == True:
+				count += 3
+				if fno % 32 == 0:
+					results = model(img)
 
-			current = time.time()
-			if current - initial >= duration:
-				print(current - initial)
-				break
+				current = time.time()
+				if current - initial >= duration and first is True:
+					print(current - initial)
+					first = False
+					initial = 0
+				
+				if first is True:
+					try:
+						cache = []
+						emotion = results.pandas().xyxy[0].name[0]
+						self.emotion_table[emotion] += 1
+						r = self.emotion_table
+						cache.append(emotion)
 
-			else:
-				try:
-					emotion = results.pandas().xyxy[0].name[0]
-					self.emotion_table[emotion] += 1
-					# current = time.time()
-					# if current - initial >= duration:
-					# 	print(current - initial)
-					# 	break
+						print(r)
 
-					print(self.emotion_table)
+					except IndexError:
+						print("Not Detected")
+						pass
+				if first is False:
+					try:
+						remove = cache.pop(0)
+						emotion = results.pandas().xyxy[0].name[0]
+						self.emotion_table[emotion] += 1
+						self.emotion_table[remove] -= 1
+						r = self.emotion_table
+						cache.append(emotion)
 
-				except IndexError:
-					print("Not Detected")
-					pass
-			
+						print(r)
 
-				# read next frame
-				success, img = vid.read()
+					except IndexError:
+						print("Not Detected")
+						pass
+
+					# read next frame
+					success, img = vid.read()
+			self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
+			if buttonclick == "end":
+				r = self.emotion_table
+				return
 		
-		if len(self.calibration_operator) <= 5:
-			self.calibration_operator.append(count)
+			if len(self.calibration_operator) <= 5:
+				self.calibration_operator.append(count)
 
-		return self.emotion_table
+			return self.emotion_table
 
 	# This special method is used on videos it takes the same arguements as the two methods.
 	# It also takes two additional methods "mode" and "video", the "mode" specifies the format of the video and the "video" specifies the path/link.
@@ -243,6 +264,7 @@ def getbutton():
 			if key == "c":
 				buttonclick = "end"
 				print("ends")
+				cv2.destroyAllWindows()
 				return
 			print("buttonclick is", buttonclick)
 
@@ -273,19 +295,25 @@ print("hello world")
 
 
 
-test = Detection()
 global buttonclick
 global r
 global n 
 n = 1
 buttonclick = False
-lock = threading.Lock()
-thread1 = threading.Thread(target=getbutton)
-thread2 = threading.Thread(target=test.untimedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt"))
-thread1.start()
-thread2.start()
+class threads:
+	def __init__(self):
+		pass
+	def begin(self):
+		test = Detection()
+		global lock
+		lock = threading.Lock()
+		thread1 = threading.Thread(target=getbutton)
+		thread2 = threading.Thread(target=test.timedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt",5))
+		thread1.start()
+		thread2.start()
 
-	
+t = threads()
+t.begin()
 
 
 # test = Detection()
