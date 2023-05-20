@@ -127,7 +127,6 @@ class app:
         true_emotion = Processing()
         absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
         return absolute_emotion
-    
 
     def register_menu(self):  
         """
@@ -258,8 +257,8 @@ class app:
         self.chat_frame.grid(row=0, column=2, sticky="nsew")
 
         # create topbar
-        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
-        self.topbar_subframe.grid(row=0, column=0)
+        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1355, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
+        self.topbar_subframe.grid(row=0, column=0, sticky='w')
         self.topbar_subframe.grid_propagate(0)
 
 
@@ -327,7 +326,7 @@ class app:
         
     def topEmoji(self):
         emoji = customtkinter.CTkLabel(self.topbar_subframe, text=self.convert_emotion("happy"), font=("Inter", 40), text_color=TOPBUTT_TEXT)	
-        emoji.grid(row=0, column=1, padx=15, sticky="e")
+        emoji.grid(row=0, column=1, padx=(0,15), sticky="e")
 
     def convert_emotion(self, emotion):
         if emotion == "happy":
@@ -348,14 +347,17 @@ class app:
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 
-        # # create emoji in topbar
-        # self.topEmoji()
+        Grid.columnconfigure(self.topbar_subframe,0,weight=1)
+        Grid.columnconfigure(self.topbar_subframe,1,weight=1)
 
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
         name = customtkinter.CTkLabel(self.topbar_subframe, text=name, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
-        name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)
+        name.grid(row=0, column=0, pady = 15, padx=(15,0), sticky=W)
+
+        # create emoji in topbar
+        self.topEmoji()
 
         # Load Chat
         chat_history = self.db.loadchat(friend)
