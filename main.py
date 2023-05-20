@@ -3,9 +3,11 @@ from tkinter.ttk import *
 import tkinter as tk
 import customtkinter
 import os
+import socket
 from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
+from Libs.Client import Client
 from Libs.Jessie_development import Processing
 import tkinter.font as tkfont
 from datetime import datetime
@@ -35,6 +37,14 @@ MSG_TEXT = "#000000"
 EMOJIANDTIME = "#000000"
 TOPBUTT_BAR = "#212A3E"
 TOPBUTT_TEXT = "#FFFFFF"
+
+"""
+SOCKET DATA
+"""
+HOST = '192.168.1.113'
+PORT = 1105
+LISTENER_LIMIT = 5
+active_clients = []
 
 class app:
     def __init__(self, master):
@@ -69,8 +79,11 @@ class app:
         #self.chat()
         # self.addFriend()
         # self.myProfile()
+        
+        #master.bind("<F7>", lambda e:self.connect(e))
+        master.bind("<F8>", lambda e:self.sendMsg(e))
         self.main_menu()
-
+        
     def login_menu(self):  
         """
         Setting up grid and frame for button widgets/ texts
@@ -270,33 +283,32 @@ class app:
             msg = str(chat_entry.get())
             if not msg.strip():
                 return
-            print(f"Message sent to {self.curChatFriend} with {msg}")
-    
-            # Current Date and Time
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y %H:%M")
-            print(date_time)
-            chatObject = {
-            "text": msg,
-            "time": date_time,
-            "name": self.curUser,
-            "emotion": " "
-        }
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
-            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-            Grid.columnconfigure(msgBox,0,weight=0)
-            Grid.columnconfigure(msgBox,1,weight=0)
-            Grid.columnconfigure(msgBox,2,weight=1)
 
+            # Current Date and Time
+            if self.socketOn == False:
+                now = datetime.now()
+                date_time = now.strftime("%m/%d/%Y %H:%M")
+                #print(date_time)
+                chatObject = {
+                    "text": msg,
+                    "time": date_time,
+                    "name": self.curUser,
+                    "emotion": " "
+                }
+                msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=0)
+                Grid.columnconfigure(msgBox,2,weight=1)
+            else:
+                self.send_message(str(chat_entry.get()))
             #emotion = self.detectAI()
             emotion = "sad"
             print(emotion)
             self.db.send(str(msg),self.curChatFriend,emotion)
 
-            timeLabel = ""      # TO INCLUDE IN TIME LABEL OF NEWLY SENT MESSAGE
-
             chat_entry.delete(0, END) 
-            self.index += 1
+            #self.index += 1
 
         self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
@@ -341,9 +353,96 @@ class app:
             return "🤢"
         elif emotion == "surprise":
             return "😲"
+        
+    """
+    SOCKET Functions
+    """
+    def add_message(self, data):
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M")
+        #print(date_time)
+        chatObject = {
+            "text": data['msg'],
+            "time": date_time,
+            "name": data['name'],
+            "emotion": " "
+        }
+        print(chatObject)
+        if data['name'] != self.curUser:
+            profilePic = self.db.getFriendPic(data['name'])
+        else:
+            profilePic = None
+
+        msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+
+        if self.curUser == data['name']:
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+            Grid.columnconfigure(msgBox,0,weight=0)
+            Grid.columnconfigure(msgBox,1,weight=0)
+            Grid.columnconfigure(msgBox,2,weight=1)
+        else:
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
+            Grid.columnconfigure(msgBox,0,weight=0)
+            Grid.columnconfigure(msgBox,1,weight=1)
+            Grid.columnconfigure(msgBox,2,weight=0)
+        self.index += 1
+        
+    def connect(self):
+        # try except block
+        try:
+            # Connect to the server
+            self.client.connect((HOST, PORT))
+            print("Successfully connected to server")
+            print("[SERVER] Successfully connected to the server")
+        except:
+            print(f"Unable to connect to server", f"Unable to connect to server {HOST}:{PORT}")
+
+        if self.curUser != '':
+            self.client.sendall(self.curUser.encode())
+        else:
+            print("Invalid username", "Username cannot be empty")
+
+        self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
+        
+    def send_message(self,message):
+        #message = message_textbox.get()
+        if message != '':
+            self.client.sendall(message.encode())
+            # message_textbox.delete(0, len(message))
+        else:
+            print("Empty Message")
+    
+    def listen_for_messages_from_server(self,client):
+        while 1:
+            message = self.client.recv(2048).decode('utf-8')
+            if message != '':
+                username = message.split("~")[0]
+                content = message.split('~')[1]
+
+                data = {
+                    "name" : username,
+                    "msg" : content
+                }
+                self.add_message(data)
+                
+            else:
+                print("Error")
+
 
     # Function to display output message
     def display_chat(self, friend, ini):
+        try:
+            self.socketOn = True
+            self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.connect()
+        except:
+            self.socketOn = False
+            if ini:
+                self.thread = self.db.customThread(friend,self.db.getChat())
+                self.thread.start()
+                t = Thread(target = self.checkUpdate).start()
+                self.initiateThread = True
+        
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 
@@ -376,12 +475,6 @@ class app:
         chatFrameList = []
         self.index = 0
         #Threading
-
-        if ini:
-            self.thread = self.db.customThread(friend,self.db.getChat())
-            self.thread.start()
-            t = Thread(target = self.checkUpdate).start()
-            self.initiateThread = True
         
 
         try:
