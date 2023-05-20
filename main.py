@@ -42,7 +42,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.0.110'
+HOST = '192.168.56.1'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -337,6 +337,7 @@ class app:
     def upload_image(self):
         # Open a file dialog to select an image file
         filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
         print(filepath)
 
     def topEmoji(self):

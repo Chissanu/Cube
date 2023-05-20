@@ -7,6 +7,7 @@ from Libs.Features import Features
 from Libs.Chat import Chat, CustomThread
 from Libs.Jessie_development import Detection
 from firebase_admin import storage
+import os
 
 class Database:
     def __init__(self):
@@ -179,6 +180,11 @@ class Database:
         return self.chat.createChatroom(friend)
     
     def send(self, message, friend, emotion): # send message
+        if os.path.exists(os.path.dirname(message)):
+            nameArr = [self.username, friend]
+            nameArr.sort()
+            name = nameArr[0]+ "-" + nameArr[1]
+            message = self.uploadPic(message, name, os.path.basename(message).split('/')[-1])
         return self.chat.send(message, friend, emotion)
     
     def loadchat(self, friend): # load chat
@@ -192,11 +198,10 @@ class Database:
         return self.thread
         #self.thread.start()
 
-    def uploadPic(self, picDir, type, name):
-        blob = self.bucket.blob(type + "/" + name)
+    def uploadPic(self, picDir, folder, name):
+        blob = self.bucket.blob(folder + "/" + name)
         blob.upload_from_filename(picDir)
         blob.make_public()
-        self.send(blob.public_url, )
         return blob.public_url
     
     """

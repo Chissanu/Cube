@@ -83,6 +83,7 @@ class Chat:
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         lastText = chat.get().keys()
         chat.child(lastText[-1]).child("emotion").update({"emotion": emotion})
+
     
 class CustomThread(Thread): #Threading to constantly track change in database
     def __init__(self, friend, chatroom):
