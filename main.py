@@ -441,7 +441,7 @@ class app:
                 self.initiateThread = True
         
         # Detect Emotion Thread
-        #self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
+        self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
         
                 
         self.curChatFriend = friend
@@ -465,11 +465,6 @@ class app:
         # Clear frame
         for widget in self.boxes_subframe.winfo_children():
             widget.destroy()
-
-        # self.messages = customtkinter.CTkLabel(self.boxes_subframe, text="", bg_color="#f1f1f1")
-        # detect if theres anything in boxes subframe, then clear all out before grid in new ones
-        # if self.messages.winfo_exists():
-        #     self.boxes_subframe.destroy()
         
         chatbox_color = "#DCE9F6"
         
