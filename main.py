@@ -41,7 +41,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.0.110'
+HOST = '192.168.1.113'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -291,7 +291,7 @@ class app:
                     "text": msg,
                     "time": date_time,
                     "name": self.curUser,
-                    "emotion": " "
+                    "emotion": self.realTimeEmotion
                 }
                 msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
                 msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
@@ -301,9 +301,8 @@ class app:
             else:
                 self.send_message(str(chat_entry.get()))
             #emotion = self.detectAI()
-            emotion = "sad"
-            print(emotion)
-            self.db.send(str(msg),self.curChatFriend,emotion)
+
+            self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
 
             chat_entry.delete(0, END) 
             #self.index += 1
@@ -442,7 +441,7 @@ class app:
                 self.initiateThread = True
         
         # Detect Emotion Thread
-        self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
+        #self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
         
                 
         self.curChatFriend = friend
