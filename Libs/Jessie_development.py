@@ -2,17 +2,20 @@
 import cv2
 import torch
 import time
-import threading
 import statistics
 import random
+import threading
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
 	def __init__(self):
 		# This dictionary stores emotions count detected by the A.I
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
+		self.emotion_table_cache = []
 		self.calibration_operator = []
 		self.user_calibration_constant = 0
+		self.detection_control = 0
+		self.real_time_emotion = ""
 	
 	# Input the emotion and it returns how many times the A.I detected these emotions according to the emotion_table.
 	# If no input is taken, it returns the whole dictionary
@@ -40,7 +43,7 @@ class Detection:
 		count = 0
 
 		while success:
-			count += 3
+			count += 1
 			if fno % 32 == 0:
 				results = model(img)
 
@@ -53,18 +56,12 @@ class Detection:
 				try:
 					emotion = results.pandas().xyxy[0].name[0]
 					self.emotion_table[emotion] += 1
-					# current = time.time()
-					# if current - initial >= duration:
-					# 	print(current - initial)
-					# 	break
-
 					print(self.emotion_table)
 
 				except IndexError:
 					print("Not Detected")
 					pass
 			
-
 				# read next frame
 				success, img = vid.read()
 		
@@ -143,7 +140,6 @@ class Detection:
 			if buttonclick == "end":
 				break
 			
-
 	def clearEmotionData(self):
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 
@@ -162,6 +158,71 @@ class Detection:
 	def initialize(self, source, model_path):
 		self.timedDetection(source, model_path, 1)
 		self.calibration_operator = []
+		return
+	
+	def realTimeDetection(self, source, model_path, calibration_constant):
+		self.clearEmotionData()
+		vid = cv2.VideoCapture(source)
+		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
+		fno = 0
+		success, img = vid.read()
+		initial = time.time()
+		time_elasped = 0
+		detection_threshold = 5
+
+		while success and self.detection_control == 0:
+			if fno % 32 == 0:
+				results = model(img)
+
+			if time_elasped >= detection_threshold:
+				# print(time_elasped)
+				total_emotion = []
+				for items in self.emotion_table_cache:
+					if total_emotion == []:
+						total_emotion = list(items.values())
+						print(total_emotion)
+					
+					else:
+						temp = list(items.values())
+						total_emotion = [total_emotion[0] + temp[0], total_emotion[1] + temp[1], total_emotion[2] + temp[2], 
+		       							total_emotion[3] + temp[3], total_emotion[4] + temp[4], total_emotion[5] + temp[5]]
+						print(total_emotion)
+
+				prediction_data = {"happy": total_emotion[0], "sad": total_emotion[1], "neutral": total_emotion[2],
+		       					  "angry": total_emotion[3], "disgust": total_emotion[4], "surprise": total_emotion[5]}
+				
+				get_emotion = Processing()
+				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
+				print(self.real_time_emotion)
+				total_emotion = []
+				self.emotion_table_cache.pop(0)
+				time_elasped -= 1
+				# self.stop_detection()
+
+			else:
+				try:
+					emotion = results.pandas().xyxy[0].name[0]
+					self.emotion_table[emotion] += 1
+
+				except IndexError:
+					print("Not Detected")
+					pass
+			
+			current = time.time()
+			if current - initial >= 1:
+				time_elasped += 1
+				self.emotion_table_cache.append(self.emotion_table)
+				self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
+				print(self.emotion_table_cache)
+				initial = time.time()
+				# read next frame
+				success, img = vid.read()
+
+		return
+	
+	def stop_detection(self):
+		self.detection_control = 1
+		return
 
 # This class contains every processing algorithms for the emotions data
 class Processing:
@@ -219,23 +280,6 @@ class Processing:
 			print("Most")
 		return result
 
-
-def getbutton():
-	global buttonclick
-	while True:
-		key = input("break: ")
-		with lock:
-			if key == "a":
-				buttonclick = True
-				#thread2.start()
-			if key == "b":
-				buttonclick = False
-				#thread2.stop()
-			if key == "c":
-				buttonclick = "end"
-				break
-			print("buttonclick is", buttonclick)
-
 ''' 
 A Piece of history
 print("hello world")
@@ -246,35 +290,12 @@ print("hello world")
 '''
 # Test run codes. Will be removed in the final iteration of this script.
 
-#random text for now, will get from backend later
-# def timeword():
-# 	wordcount = 0
-# 	text = "SDKGHK JHSHOIHGPI SHGO IDS HOIHG OIHdkgsh ghsigh slkghs lgh"
-# 	for i in text:
-# 		if i == " ":
-# 			wordcount +=1
-# 	#human reading rate is 4 words/sec, detection time is average read time + 25%
-# 	d = (wordcount/4) + (wordcount/8)
-# 	test = Detection()
-# 	t = test.timedDetection("http://192.168.1.101:4747/mjpegfeed", "C:\\Users\\Firesoft\\Documents\\Computing\\Testing_Grounds\\trained_models\\Jessie_1.pt", 5)
-# 	trueemotion = Processing()
-# 	t = trueemotion.getDominantEmotion(t)
-# 	trueemotion.getMostOccuringEmotion(t)
+test = Detection()
 
-# test = Detection()
-# global buttonclick
-# buttonclick = False
-# lock = threading.Lock()
-# thread1 = threading.Thread(target=getbutton)
-# thread2 = threading.Thread(target=test.untimedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt"))
-# thread1.start()
-# thread2.start()
-# if buttonclick == "end":
-# 	thread1.stop()
-# 	thread2.stop()
+# calibrate = test.calibration(0, "Libs\Jessie_1.pt")
+calibrate = 40
 
-
-# test = Detection()
+test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
 
 # test.initialize("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
 
