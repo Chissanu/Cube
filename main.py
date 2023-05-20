@@ -33,6 +33,7 @@ FRIEND_LIST = "#6B7A97"
 SIDE_BAR = "#212A3E"
 REQUEST_LIST = "#9BA4B5"
 PROFILE_INFO = "#FFFFFF"
+ADD_SHOWINFO = "#6B7A97"
 MSG_BOX = "#9BA4B5"
 MSG_TEXT = "#000000"
 EMOJIANDTIME = "#000000"
@@ -42,7 +43,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.56.1'
+HOST = '192.168.0.110'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -561,7 +562,7 @@ class app:
         username_entry.grid(row=1, column=0, padx=(230,0), sticky=N)
 
         # create profile subframe
-        self.profile_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=700, corner_radius=50, fg_color=LIGHT_BG)	
+        self.profile_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=700, corner_radius=50, fg_color=ADD_SHOWINFO)	
         self.profile_subframe.grid(row=2, column=0, pady=30)
         self.profile_subframe.grid_propagate(0)
         Grid.columnconfigure(self.profile_subframe,0,weight=1)
@@ -569,11 +570,11 @@ class app:
 
         # create tempframe in profile subframe
         if self.tempframe == None:
-            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
+            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=ADD_SHOWINFO)
             self.tempframe.grid(row=0, column=0)
         else: 
             self.tempframe.destroy()
-            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
+            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=ADD_SHOWINFO)
             self.tempframe.grid(row=0, column=0)
 
         tempFriends = []
@@ -762,7 +763,7 @@ class app:
             
             # destroy and gen tempframe
             self.tempframe.destroy()
-            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=LIGHT_BG)
+            self.tempframe = customtkinter.CTkFrame(self.profile_subframe, width=1000, height=600, fg_color=ADD_SHOWINFO)
             self.tempframe.grid(row=0, column=0)
             self.tempframe.grid_propagate(0)
             Grid.columnconfigure(self.tempframe,0,weight=1)
@@ -779,14 +780,14 @@ class app:
             emotion_text = customtkinter.CTkLabel(self.tempframe, text=("Most used Emotions: " + emojis), font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             emotion_text.grid(row = 2, column = 0, pady = (10,10))
             
-            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
+            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO, wrap="word")
             bio_text.grid(row=3, column=0, padx=(20,0), sticky=N)
             
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
 
             # create add button
-            add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=PROFILE_INFO, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
+            add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=BUTTON_TEXT, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
             add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
         except Exception as e:
             print(e)
@@ -804,27 +805,28 @@ class app:
         self.sidebar("setting")
 
         # container frame
-        container_frame = customtkinter.CTkFrame(self.master, width=1850, height=1080, corner_radius=0, fg_color="black")
+        container_frame = customtkinter.CTkFrame(self.master, width=1850, height=1080, corner_radius=0, fg_color=BG2_COLOR)
         container_frame.grid(row=0, column=1, sticky="nsew")
+        container_frame.grid_propagate(0)
 
         Grid.columnconfigure(container_frame,0,weight=2)
         Grid.columnconfigure(container_frame,1,weight=2)
         Grid.rowconfigure(container_frame,0,weight=2)
-        Grid.rowconfigure(container_frame,1,weight=0)
+        Grid.rowconfigure(container_frame,1,weight=2)
 
         # create button
         changeTheme_btn = customtkinter.CTkButton(container_frame, text="Change Theme", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=self.changeTheme)
-        changeTheme_btn.grid(row = 0, column=0)
+        changeTheme_btn.grid(row = 0, column=0, sticky="s")
 
         calibrate_btn = customtkinter.CTkButton(container_frame, text="Calibrate", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=None)
-        calibrate_btn.grid(row=0, column=1)
+        calibrate_btn.grid(row=0, column=1, sticky="s")
 
         # create description text
         changeTheme_label = customtkinter.CTkLabel(container_frame, text="", font=("Inter", 35), text_color="gray")
         changeTheme_label.grid(row=1, column=0)
 
         calibrate_label = customtkinter.CTkLabel(container_frame, text="add text to describe what is calibrate", font=("Inter", 35), text_color="gray")
-        calibrate_label.grid(row=1, column=1, sticky="n")
+        calibrate_label.grid(row=1, column=1, pady=(15,0), sticky="n")
 
     # Function to toggle switch the themes (light & dark)
     def changeTheme(self):
