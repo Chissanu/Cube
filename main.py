@@ -6,6 +6,7 @@ import os
 from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
+from Libs.Server import Server, Client
 from Libs.Jessie_development import Processing
 import tkinter.font as tkfont
 from datetime import datetime
@@ -69,8 +70,23 @@ class app:
         #self.chat()
         # self.addFriend()
         # self.myProfile()
+        serverThread = Thread(target=self.startServer, args=(1,))
+        serverThread.start()
+        
+        master.bind("<F7>", lambda e:self.connect(e))
         self.main_menu()
 
+    """
+    SOCKET RELATED
+    """
+    def startServer(self,name):
+        print("Starting Server")
+        server = Server()
+        
+    def connect(self,e):
+        print("Connecting")
+        self.client.connect()
+        
     def login_menu(self):  
         """
         Setting up grid and frame for button widgets/ texts
@@ -344,6 +360,9 @@ class app:
 
     # Function to display output message
     def display_chat(self, friend, ini):
+        print("Display Chat")
+        
+        self.client = Client()
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 
