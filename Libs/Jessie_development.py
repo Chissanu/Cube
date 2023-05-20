@@ -59,7 +59,7 @@ class Detection:
 					# print(self.emotion_table)
 
 				except IndexError:
-					print("Not Detected")
+					#print("Not Detected")
 					pass
 			
 				# read next frame
@@ -132,7 +132,7 @@ class Detection:
 					# print(self.emotion_table)
 
 				except IndexError:
-					print("Not Detected")
+					#print("Not Detected")
 					pass
 
 				# read next frame
@@ -202,7 +202,7 @@ class Detection:
 				self.emotion_table_cache.pop(0)
 				time_elasped -= 1
 				# self.stop_detection()
-				print("New Iteration")
+				# print("New Iteration")
 
 			else:
 				try:
@@ -210,7 +210,7 @@ class Detection:
 					self.emotion_table[emotion] += 1
 
 				except IndexError:
-					print("Not Detected")
+					#print("Not Detected")
 					pass
 			
 			current = time.time()
@@ -280,9 +280,10 @@ class Processing:
 
 		if data[result] <= 0:
 			result = self.getDominantEmotion(data)
-			print("Finny")
+			#print("Finny")
 		else:
-			print("Most")
+			pass
+			#print("Most")
 		return result
 
 ''' 

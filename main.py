@@ -41,7 +41,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.1.113'
+HOST = '192.168.0.110'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -123,16 +123,22 @@ class app:
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
         
     def detectAI(self, name):
-        print("RUNNING...")
-        self.ai = self.db.getAI()
-        emotion = self.ai.real_time_emotion
-        
-        # result = self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
-        # true_emotion = Processing()
-        
-        # absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
-        print(emotion)
-        return emotion
+        while True:
+            print("RUNNING...")
+            self.ai = self.db.getAI()
+            self.realTimeEmotion = self.ai.real_time_emotion
+            try:
+                self.emojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
+            except:
+                pass
+            
+            # result = self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
+            # true_emotion = Processing()
+            
+            # absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
+            print(self.realTimeEmotion)
+            time.sleep(1)
+            #return emotion
 
     def register_menu(self):  
         """
@@ -225,7 +231,6 @@ class app:
             for val in self.db.showFriendList(self.curUser):
                 friend = self.db.findFriend(val)
                 tempFriends.append(friend)
-            print(tempFriends)
         except Exception as e:
             print(e)
             pass
@@ -330,8 +335,8 @@ class app:
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
         
     def topEmoji(self):
-        emoji = customtkinter.CTkLabel(self.topbar_subframe, text=self.convert_emotion("happy"), font=("Inter", 40), text_color=TOPBUTT_TEXT)	
-        emoji.grid(row=0, column=1, padx=(0,15), sticky="e")
+        self.emojiLabel = customtkinter.CTkLabel(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 40), text_color=TOPBUTT_TEXT)	
+        self.emojiLabel.grid(row=0, column=1, padx=(0,15), sticky="e")
 
     def convert_emotion(self, emotion):
         if emotion == "happy":
@@ -437,7 +442,7 @@ class app:
                 self.initiateThread = True
         
         # Detect Emotion Thread
-        self.realTimeEmotion = Thread(target=self.detectAI, args=(1,))
+        self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
         
                 
         self.curChatFriend = friend
