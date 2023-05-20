@@ -326,10 +326,11 @@ class app:
     # Function to display output message
     def display_chat(self, friend, ini):
         self.curChatFriend = friend
+        name = self.db.findFriend(self.curChatFriend)["name"]
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
-        name = customtkinter.CTkLabel(self.topbar_subframe, text=friend, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
+        name = customtkinter.CTkLabel(self.topbar_subframe, text=name, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
         name.grid(row=0, column=0, pady = 15, padx=15, sticky=W)
 
         # Load Chat
