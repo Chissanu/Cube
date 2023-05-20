@@ -357,19 +357,19 @@ class app:
     """
     SOCKET Functions
     """
-    def add_message(self, msg):
+    def add_message(self, data):
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y %H:%M")
         #print(date_time)
         chatObject = {
-            "text": msg[5:],
+            "text": data['message'],
             "time": date_time,
             "name": self.curUser,
             "emotion": " "
         }
         msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
 
-        if self.curUser in msg:
+        if self.curUser == data['name']:
             msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
             Grid.columnconfigure(msgBox,0,weight=0)
             Grid.columnconfigure(msgBox,1,weight=0)
@@ -413,7 +413,11 @@ class app:
                 username = message.split("~")[0]
                 content = message.split('~')[1]
 
-                self.add_message(f"[{username}] {content}")
+                data = {
+                    "name" : username,
+                    "msg" : content
+                }
+                self.add_message(data)
                 
             else:
                 print("Error")
