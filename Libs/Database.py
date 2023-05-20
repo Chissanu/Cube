@@ -73,7 +73,14 @@ class Database:
             'incoming' : [""],
             'friends'  : [""],
             'bio'      : [""],
-            'emotions' : [""],
+            'emotions' : {
+                'happy'   : 0,
+                'sad'     : 0,
+                'neutral' : 0,
+                'surprise': 0,
+                'angry'   : 0,
+                'disgust' : 0   
+            },
             'profileImage' : 0,
             'created'  : date_time
         })

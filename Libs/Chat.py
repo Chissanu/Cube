@@ -49,8 +49,11 @@ class Chat:
             "emotion": emotion
         })
         
+        emotionDict = userRef.get()['emotions']
+        emotionDict[emotion] += 1
+        
         userRef.update({
-            "name" : "test"
+            'emotions' : emotionDict
         })
 
         self.currentFriend = nameLs[1]
