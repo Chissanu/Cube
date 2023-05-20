@@ -770,8 +770,10 @@ class app:
             sortedEmotion = sorted(profile['emotions'].items(), key=lambda x: x[1], reverse=True)
             emojis = ""
             for val in sortedEmotion[:3]:
-                emojis += self.convert_emotion(val[0]) + " "
-            
+                if val[1] != 0:
+                    emojis += self.convert_emotion(val[0]) + " "
+                else:
+                    emojis = "No emotion in database"
             
             # destroy and gen tempframe
             self.tempframe.destroy()
