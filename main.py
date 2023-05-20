@@ -288,7 +288,8 @@ class app:
             Grid.columnconfigure(msgBox,1,weight=0)
             Grid.columnconfigure(msgBox,2,weight=1)
 
-            emotion = self.detectAI()
+            #emotion = self.detectAI()
+            emotion = "sad"
             print(emotion)
             self.db.send(str(msg),self.curChatFriend,emotion)
 
@@ -389,7 +390,6 @@ class app:
                 self.update_frame(self.curChatFriend)
                 self.thread.update = False
                 print("Updating")
-            time.sleep(2)
 
 
     def update_frame(self,friend):
