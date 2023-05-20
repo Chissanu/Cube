@@ -127,6 +127,7 @@ class app:
         true_emotion = Processing()
         absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
         return absolute_emotion
+    
 
     def register_menu(self):  
         """
@@ -412,6 +413,7 @@ class app:
                 self.update_frame(self.curChatFriend)
                 self.thread.update = False
                 print("Updating")
+            time.sleep(2)
 
     def update_frame(self,friend):
         self.display_chat(friend, False)
