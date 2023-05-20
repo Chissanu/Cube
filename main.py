@@ -287,30 +287,28 @@ class app:
             #print(f"Message sent to {self.curChatFriend} with {msg}")
     
             # Current Date and Time
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y %H:%M")
-            #print(date_time)
-            chatObject = {
-            "text": msg,
-            "time": date_time,
-            "name": self.curUser,
-            "emotion": " "
-        }
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
-            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-            Grid.columnconfigure(msgBox,0,weight=0)
-            Grid.columnconfigure(msgBox,1,weight=0)
-            Grid.columnconfigure(msgBox,2,weight=1)
+            # now = datetime.now()
+            # date_time = now.strftime("%m/%d/%Y %H:%M")
+            # #print(date_time)
+            # chatObject = {
+            #     "text": msg,
+            #     "time": date_time,
+            #     "name": self.curUser,
+            #     "emotion": " "
+            # }
+            # msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+            # msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+            # Grid.columnconfigure(msgBox,0,weight=0)
+            # Grid.columnconfigure(msgBox,1,weight=0)
+            # Grid.columnconfigure(msgBox,2,weight=1)
 
             #emotion = self.detectAI()
             emotion = "sad"
             print(emotion)
             self.db.send(str(msg),self.curChatFriend,emotion)
 
-            timeLabel = ""      # TO INCLUDE IN TIME LABEL OF NEWLY SENT MESSAGE
-
             chat_entry.delete(0, END) 
-            self.index += 1
+            #self.index += 1
 
         self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
@@ -359,8 +357,29 @@ class app:
     """
     SOCKET Functions
     """
-    def add_message(self, message):
-        print(message)
+    def add_message(self, msg):
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M")
+        #print(date_time)
+        chatObject = {
+            "text": msg[5:],
+            "time": date_time,
+            "name": self.curUser,
+            "emotion": " "
+        }
+        msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+
+        if self.curUser in msg:
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+            Grid.columnconfigure(msgBox,0,weight=0)
+            Grid.columnconfigure(msgBox,1,weight=0)
+            Grid.columnconfigure(msgBox,2,weight=1)
+        else:
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
+            Grid.columnconfigure(msgBox,0,weight=0)
+            Grid.columnconfigure(msgBox,1,weight=1)
+            Grid.columnconfigure(msgBox,2,weight=0)
+        self.index += 1
         
     def connect(self):
         # try except block
