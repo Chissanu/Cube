@@ -169,6 +169,7 @@ class Detection:
 		initial = time.time()
 		time_elasped = 0
 		detection_threshold = 5
+		duration = 1
 
 		while success and self.detection_control == 0:
 			if fno % 32 == 0:
@@ -176,6 +177,7 @@ class Detection:
 
 			if time_elasped >= detection_threshold:
 				# print(time_elasped)
+				duration = 0.5
 				total_emotion = []
 				for items in self.emotion_table_cache:
 					if total_emotion == []:
@@ -198,6 +200,7 @@ class Detection:
 				self.emotion_table_cache.pop(0)
 				time_elasped -= 1
 				# self.stop_detection()
+				print("New Iteration")
 
 			else:
 				try:
@@ -209,7 +212,7 @@ class Detection:
 					pass
 			
 			current = time.time()
-			if current - initial >= 1:
+			if current - initial >= duration:
 				time_elasped += 1
 				self.emotion_table_cache.append(self.emotion_table)
 				self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}

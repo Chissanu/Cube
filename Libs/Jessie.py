@@ -47,7 +47,7 @@ class Detection:
 
 		while True:
 			while success and buttonclick == True:
-				count += 3
+				count += 1
 				if fno % 32 == 0:
 					results = model(img)
 
@@ -78,6 +78,7 @@ class Detection:
 						self.emotion_table[remove] -= 1
 						r = self.emotion_table
 						cache.append(emotion)
+
 
 						print(r)
 
@@ -308,7 +309,7 @@ class threads:
 		global lock
 		lock = threading.Lock()
 		thread1 = threading.Thread(target=getbutton)
-		thread2 = threading.Thread(target=test.timedDetection, args=(0,"C:\\Users\\ACER\\Documents\\KMITL\\cognitive\\proj\\Jessie_1.pt",5))
+		thread2 = threading.Thread(target=test.timedDetection, args=(0,"Libs\Jessie_1.pt",5))
 		thread1.start()
 		thread2.start()
 
