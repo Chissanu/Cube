@@ -37,7 +37,7 @@ class ChatFrame(ctk.CTkFrame):
             self.time.grid(row=1, column=0)
 
             # show emotion
-            self.emotion = ctk.CTkLabel(self.frame, text=self.show_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
+            self.emotion = ctk.CTkLabel(self.frame, text=self.convert_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
             self.emotion.grid(row=0, column=0)
 
         else:
@@ -61,10 +61,10 @@ class ChatFrame(ctk.CTkFrame):
             self.time.grid(row=1, column=0)
             
             # show emotion
-            self.emotion = ctk.CTkLabel(self.frame, text=self.show_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
+            self.emotion = ctk.CTkLabel(self.frame, text=self.convert_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
             self.emotion.grid(row=0, column=0)
     
-    def show_emotion(self, emotion):
+    def convert_emotion(self, emotion):
         if emotion == "happy":
             return "😄"
         elif emotion == "sad":

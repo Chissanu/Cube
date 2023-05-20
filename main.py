@@ -323,11 +323,33 @@ class app:
         emoji_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Emoji_btn.png")), size=(40, 40))
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
+        
+    def topEmoji(self):
+        emoji = customtkinter.CTkLabel(self.topbar_subframe, text=self.convert_emotion("happy"), font=("Inter", 40), text_color=TOPBUTT_TEXT)	
+        emoji.grid(row=0, column=1, padx=15, sticky="e")
+
+    def convert_emotion(self, emotion):
+        if emotion == "happy":
+            return "😄"
+        elif emotion == "sad":
+            return "😟"
+        elif emotion == "neutral":
+            return "🙂"
+        elif emotion == "angry":
+            return "😡"
+        elif emotion == "disgust":
+            return "🤢"
+        elif emotion == "surprise":
+            return "😲"
 
     # Function to display output message
     def display_chat(self, friend, ini):
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
+
+        # # create emoji in topbar
+        # self.topEmoji()
+
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
@@ -390,7 +412,6 @@ class app:
                 self.update_frame(self.curChatFriend)
                 self.thread.update = False
                 print("Updating")
-
 
     def update_frame(self,friend):
         self.display_chat(friend, False)
