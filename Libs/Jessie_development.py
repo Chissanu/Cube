@@ -170,6 +170,7 @@ class Detection:
 		time_elasped = 0
 		detection_threshold = 5
 		duration = 1
+		self.detection_control = 0
 
 		while success and self.detection_control == 0:
 			if fno % 32 == 0:
@@ -293,12 +294,12 @@ print("hello world")
 '''
 # Test run codes. Will be removed in the final iteration of this script.
 
-test = Detection()
+# test = Detection()
 
-# calibrate = test.calibration(0, "Libs\Jessie_1.pt")
-calibrate = 40
+# # calibrate = test.calibration(0, "Libs\Jessie_1.pt")
+# calibrate = 40
 
-test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
+# test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
 
 # test.initialize("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
 
