@@ -3,30 +3,39 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import tkinter.font as tkfont
 import emoji
+import requests
+from io import BytesIO
+
 
 class ChatFrame(ctk.CTkFrame):
     def __init__(self,master, chat, curUser, friendPic, bgColor, msgbox, textColor, emoji_time, **kwargs):
         super().__init__(master, **kwargs)
+        self.master = master
         self.chat = chat
+        msg = self.chat['text']
         self.curUser = curUser
-
-        # font = tkfont.Font(family="Inter", size=30)
-        # text_width = font.measure(self.chat['text'])
-        # print('The width of the text is:', text_width)
-        # height = 50
-        # if text_width > 1500:
-        #     height += (text_width // 1500) * 50
-
-        for char in chat["name"]:
-            if char == " ":
-                print("Empty detected")
+        self.msgbox = msgbox
+        self.textColor = textColor
 
         if chat["name"] == self.curUser:
             emotion = chat["emotion"]
 
-            # text label
-            self.messages = ctk.CTkLabel(self, text=self.chat['text'],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
-            self.messages.grid(row=0, column=2, padx=(0, 20), ipadx=10, ipady=10, sticky="e")
+            if msg[0:8]=="https://":
+                response = requests.get(msg)
+                image_data = response.content
+                image = Image.open(BytesIO(image_data))
+                
+                # Resize the image if necessary
+                if image.width > 500 or image.height > 500:
+                    image.thumbnail((image.width*0.5, image.height*0.5))
+                
+                tk_image =  ImageTk.PhotoImage(image)
+                label = ctk.CTkLabel(self, image=tk_image, text="")
+                label.grid(row=0, column=2, padx=(0, 20), sticky="e")  # Display the image in the grid
+            else:
+                # text label
+                self.messages = ctk.CTkLabel(self, text=self.chat['text'],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
+                self.messages.grid(row=0, column=2, padx=(0, 20), ipadx=10, ipady=10, sticky="e")
 
             # time and emotion frame
             self.frame = ctk.CTkFrame(self, width=50, height=100, fg_color=bgColor)
@@ -43,9 +52,22 @@ class ChatFrame(ctk.CTkFrame):
         else:
             emotion = chat["emotion"]
 
-            # text label
-            self.messages = ctk.CTkLabel(self, text=chat["text"],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
-            self.messages.grid(row=0, column=1, ipadx=10, ipady=10, sticky="w")
+            if msg[0:8]=="https://":
+                response = requests.get(msg)
+                image_data = response.content
+                image = Image.open(BytesIO(image_data))
+                
+                # Resize the image if necessary
+                if image.width > 500 or image.height > 500:
+                    image.thumbnail((image.width*0.5, image.height*0.5))
+                
+                tk_image =  ImageTk.PhotoImage(image)
+                label = ctk.CTkLabel(self, image=tk_image, text="")
+                label.grid(row=0, column=1)  # Display the image in the grid
+            else:
+                # text label
+                self.messages = ctk.CTkLabel(self, text=chat["text"],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
+                self.messages.grid(row=0, column=1, ipadx=10, ipady=10, sticky="w")
 
             # recipient's name label display left next to the received message
             profile_logo = ctk.CTkImage(Image.open(f"profilePic\\{friendPic}.png"), size=(60, 60))
@@ -77,3 +99,4 @@ class ChatFrame(ctk.CTkFrame):
             return "🤢"
         elif emotion == "surprise":
             return "😲"
+

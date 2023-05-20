@@ -14,6 +14,7 @@ from datetime import datetime
 from threading import Thread
 import time
 import emoji
+from tkinter import filedialog
 
 # from chat_tester import chat_test
 
@@ -41,7 +42,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.1.113'
+HOST = '192.168.0.110'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -317,7 +318,7 @@ class app:
         tool_subframe.grid_propagate(0)
 
         other_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Other_btn.png")), size=(40, 40))
-        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR)
+        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=lambda:self.upload_image())
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
         chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
@@ -332,7 +333,12 @@ class app:
         emoji_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Emoji_btn.png")), size=(40, 40))
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
-        
+
+    def upload_image(self):
+        # Open a file dialog to select an image file
+        filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        print(filepath)
+
     def topEmoji(self):
         self.emojiLabel = customtkinter.CTkLabel(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 40), text_color=TOPBUTT_TEXT)	
         self.emojiLabel.grid(row=0, column=1, padx=(0,15), sticky="e")
