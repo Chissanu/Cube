@@ -35,6 +35,8 @@ class Chat:
         nameLs.sort()
         chat = db.reference("/Chatrooms/" + nameLs[0] + "-" + nameLs[1] +"/message")
         sentText = chat.push()
+        
+        userRef = db.reference("/users").child(self.username)
 
         # Current Date and Time
         now = datetime.now()
@@ -45,6 +47,10 @@ class Chat:
             "time": date_time,
             "name": self.username,
             "emotion": emotion
+        })
+        
+        userRef.update({
+            "name" : "test"
         })
 
         self.currentFriend = nameLs[1]

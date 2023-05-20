@@ -41,7 +41,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.0.110'
+HOST = '192.168.1.113'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -746,7 +746,7 @@ class app:
             picture = os.path.join("profilePic",f"{profile['profileImage']}.png")
             name = str(profile['name'])
             user = str(profile['username'])
-            bio = str(profile['bio'])
+            bio = str(profile['bio'][0])
             
             # destroy and gen tempframe
             self.tempframe.destroy()
@@ -760,10 +760,16 @@ class app:
             profile_logo = customtkinter.CTkImage(Image.open(picture), size=(250, 250))
             profile = customtkinter.CTkLabel(self.tempframe, text="", image=profile_logo)
             profile.grid(row = 0, column = 0, pady = (20,0))
+            
             name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             name_text.grid(row = 1, column = 0, pady = (10,10))
+            
+            emotion_text = customtkinter.CTkLabel(self.tempframe, text="Most used Emotions: ", font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+            emotion_text.grid(row = 2, column = 0, pady = (10,10))
+            
             bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
-            bio_text.grid(row=2, column=0, padx=(20,0), sticky=N)
+            bio_text.grid(row=3, column=0, padx=(20,0), sticky=N)
+            
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
 
