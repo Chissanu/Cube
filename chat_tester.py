@@ -44,7 +44,7 @@ class chat_test:
             self.chat.send(message, self.friendUsername)
 
     def uploadPic(self):
-        self.database.uploadPic('C:/Users/Tonkhaow/Desktop/Cube/profilePic/0.png', 'profile', '0.png')
+        self.database.uploadPic('profilePic\\0.png', 'profile', '0.png')
             
 test = chat_test()
 #test.register()
@@ -52,6 +52,6 @@ test.login()
 #test.chatroom()
 test.createChatroom()
 test.enterChatRoom()
-#test.uploadPic()
+test.uploadPic()
         
         

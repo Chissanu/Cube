@@ -41,7 +41,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.1.113'
+HOST = '192.168.0.110'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -362,7 +362,7 @@ class app:
             "text": data['msg'],
             "time": date_time,
             "name": data['name'],
-            "emotion": " "
+            "emotion": self.realTimeEmotion
         }
         print(chatObject)
         if data['name'] != self.curUser:
