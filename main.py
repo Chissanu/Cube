@@ -3,10 +3,11 @@ from tkinter.ttk import *
 import tkinter as tk
 import customtkinter
 import os
+import socket
 from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
-from Libs.Server import Server, Client
+from Libs.Client import Client
 from Libs.Jessie_development import Processing
 import tkinter.font as tkfont
 from datetime import datetime
@@ -36,6 +37,14 @@ MSG_TEXT = "#000000"
 EMOJIANDTIME = "#000000"
 TOPBUTT_BAR = "#212A3E"
 TOPBUTT_TEXT = "#FFFFFF"
+
+"""
+SOCKET DATA
+"""
+HOST = '192.168.1.113'
+PORT = 1105
+LISTENER_LIMIT = 5
+active_clients = []
 
 class app:
     def __init__(self, master):
@@ -70,22 +79,10 @@ class app:
         #self.chat()
         # self.addFriend()
         # self.myProfile()
-        serverThread = Thread(target=self.startServer, args=(1,))
-        serverThread.start()
         
-        master.bind("<F7>", lambda e:self.connect(e))
+        #master.bind("<F7>", lambda e:self.connect(e))
+        master.bind("<F8>", lambda e:self.sendMsg(e))
         self.main_menu()
-
-    """
-    SOCKET RELATED
-    """
-    def startServer(self,name):
-        print("Starting Server")
-        server = Server()
-        
-    def connect(self,e):
-        print("Connecting")
-        self.client.connect()
         
     def login_menu(self):  
         """
@@ -284,14 +281,15 @@ class app:
             # self.boxes_subframe.columnconfigure(1, weight=1)
 
             msg = str(chat_entry.get())
+            self.send_message(str(chat_entry.get()))
             if not msg.strip():
                 return
-            print(f"Message sent to {self.curChatFriend} with {msg}")
+            #print(f"Message sent to {self.curChatFriend} with {msg}")
     
             # Current Date and Time
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
-            print(date_time)
+            #print(date_time)
             chatObject = {
             "text": msg,
             "time": date_time,
@@ -357,12 +355,60 @@ class app:
             return "🤢"
         elif emotion == "surprise":
             return "😲"
+        
+    """
+    SOCKET Functions
+    """
+    def add_message(self, message):
+        print(message)
+        
+    def connect(self):
+        # try except block
+        try:
+            # Connect to the server
+            self.client.connect((HOST, PORT))
+            print("Successfully connected to server")
+            print("[SERVER] Successfully connected to the server")
+        except:
+            print(f"Unable to connect to server", f"Unable to connect to server {HOST} {PORT}")
+
+        if self.curUser != '':
+            self.client.sendall(self.curUser.encode())
+        else:
+            print("Invalid username", "Username cannot be empty")
+
+        Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
+        
+    def send_message(self,message):
+        #message = message_textbox.get()
+        if message != '':
+            self.client.sendall(message.encode())
+            # message_textbox.delete(0, len(message))
+        else:
+            print("Empty Message")
+    
+    def listen_for_messages_from_server(self,client):
+        while 1:
+            message = self.client.recv(2048).decode('utf-8')
+            if message != '':
+                username = message.split("~")[0]
+                content = message.split('~')[1]
+
+                self.add_message(f"[{username}] {content}")
+                
+            else:
+                print("Error")
+
 
     # Function to display output message
     def display_chat(self, friend, ini):
-        print("Display Chat")
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-        self.client = Client()
+        self.connect()
+        
+        # Thread for checking new MSG
+        # self.checkNewMsgThread = Thread(target=self.checkMsg, args=(1, )).start()
+        
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 
@@ -396,11 +442,11 @@ class app:
         self.index = 0
         #Threading
 
-        if ini:
-            self.thread = self.db.customThread(friend,self.db.getChat())
-            self.thread.start()
-            t = Thread(target = self.checkUpdate).start()
-            self.initiateThread = True
+        # if ini:
+        #     self.thread = self.db.customThread(friend,self.db.getChat())
+        #     self.thread.start()
+        #     t = Thread(target = self.checkUpdate).start()
+        #     self.initiateThread = True
         
 
         try:
