@@ -2,7 +2,7 @@
 import socket
 import threading
 
-HOST = '192.168.0.110'
+HOST = '192.168.1.113'
 PORT = 1105 # You can use any port between 0 to 65535
 LISTENER_LIMIT = 5
 active_clients = [] # List of all currently connected users

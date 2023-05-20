@@ -41,7 +41,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.0.110'
+HOST = '192.168.1.113'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -302,7 +302,6 @@ class app:
                 Grid.columnconfigure(msgBox,2,weight=1)
             else:
                 self.send_message(str(chat_entry.get()))
-
             #emotion = self.detectAI()
             emotion = "sad"
             print(emotion)
@@ -403,7 +402,7 @@ class app:
         else:
             print("Invalid username", "Username cannot be empty")
 
-        Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
+        self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
         
     def send_message(self,message):
         #message = message_textbox.get()
@@ -433,6 +432,7 @@ class app:
     # Function to display output message
     def display_chat(self, friend, ini):
         try:
+            self.socketOn = True
             self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.connect()
         except:
