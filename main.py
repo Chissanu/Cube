@@ -747,6 +747,11 @@ class app:
             name = str(profile['name'])
             user = str(profile['username'])
             bio = str(profile['bio'][0])
+            sortedEmotion = sorted(profile['emotions'].items(), key=lambda x: x[1], reverse=True)
+            emojis = ""
+            for val in sortedEmotion[:3]:
+                emojis += self.convert_emotion(val[0]) + " "
+            
             
             # destroy and gen tempframe
             self.tempframe.destroy()
@@ -764,7 +769,7 @@ class app:
             name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             name_text.grid(row = 1, column = 0, pady = (10,10))
             
-            emotion_text = customtkinter.CTkLabel(self.tempframe, text="Most used Emotions: ", font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+            emotion_text = customtkinter.CTkLabel(self.tempframe, text=("Most used Emotions: " + emojis), font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             emotion_text.grid(row = 2, column = 0, pady = (10,10))
             
             bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
