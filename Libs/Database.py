@@ -28,8 +28,8 @@ class Database:
         self.bucket = storage.bucket()
         
         # Start AI Thread
-        # ai = threading.Thread(target=self.thread_function, args=(1,))
-        # ai.start()
+        ai = threading.Thread(target=self.thread_function, args=(1,))
+        ai.start()
     
     def thread_function(self,name):
         # AI Initializing
@@ -37,6 +37,7 @@ class Database:
         self.AIModel = Detection()
         self.ai = self.AIModel.initialize(0, "Libs\Jessie_1.pt")
         self.calibrate = self.AIModel.calibration(0, "Libs\Jessie_1.pt")
+        self.AIModel.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
 
     def createAccount(self, username, name, password):
         username = username.lower()

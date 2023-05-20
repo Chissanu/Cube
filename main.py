@@ -69,20 +69,9 @@ class app:
         self.master['bg'] = BG2_COLOR
         self.tempframe = None
 
-        # self.curUser = 'c1'
-        # self.name = 'c1'
-        # self.bio = "Blablalbalblblla"
-        # self.profilePic = 0
 
-        # self.username = None
-
-        #self.chat()
-        # self.addFriend()
-        # self.myProfile()
-        
-        #master.bind("<F7>", lambda e:self.connect(e))
-        master.bind("<F8>", lambda e:self.sendMsg(e))
         self.main_menu()
+        
         
     def login_menu(self):  
         """
@@ -133,13 +122,17 @@ class app:
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
         
-    def detectAI(self):
+    def detectAI(self, name):
         print("RUNNING...")
         self.ai = self.db.getAI()
-        result = self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
-        true_emotion = Processing()
-        absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
-        return absolute_emotion
+        emotion = self.ai.real_time_emotion
+        
+        # result = self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
+        # true_emotion = Processing()
+        
+        # absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
+        print(emotion)
+        return emotion
 
     def register_menu(self):  
         """
@@ -443,6 +436,10 @@ class app:
                 t = Thread(target = self.checkUpdate).start()
                 self.initiateThread = True
         
+        # Detect Emotion Thread
+        self.realTimeEmotion = Thread(target=self.detectAI, args=(1,))
+        
+                
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 

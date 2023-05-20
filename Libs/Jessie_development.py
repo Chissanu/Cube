@@ -49,14 +49,14 @@ class Detection:
 
 			current = time.time()
 			if current - initial >= duration:
-				print(current - initial)
+				# print(current - initial)
 				break
 
 			else:
 				try:
 					emotion = results.pandas().xyxy[0].name[0]
 					self.emotion_table[emotion] += 1
-					print(self.emotion_table)
+					# print(self.emotion_table)
 
 				except IndexError:
 					print("Not Detected")
@@ -80,7 +80,7 @@ class Detection:
 		if mode == 0:
 			capture_video = cv2.VideoCapture(video)
 			video_duration = capture_video.get(cv2.CAP_PROP_POS_MSEC)
-			print(video_duration)
+			# print(video_duration)
 			self.timedDetection(self, source, model_path, video_duration)
 
 		# This piece of this code can only be ran around 5000 times per day. Please don't over use this method
@@ -96,7 +96,7 @@ class Detection:
 			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
 			duration = video_response["items"][0]["contentDetails"]["duration"]
 			video_duration = isodate.parse_duration(duration).total_seconds()
-			print(video_duration)
+			# print(video_duration)
 			self.timedDetection(self, source, model_path, video_duration)
 			# This is a Google API key. This key will be filled later.
 			operator = open("googlekeys.txt", "r")
@@ -107,7 +107,7 @@ class Detection:
 			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
 			duration = video_response["items"][0]["contentDetails"]["duration"]
 			video_duration = isodate.parse_duration(duration).total_seconds()
-			print(video_duration)
+			# print(video_duration)
 			self.timedDetection(self, source, model_path, video_duration)
 
 	def untimedDetection(self, source, model_path):
@@ -129,7 +129,7 @@ class Detection:
 
 				try:
 					self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
-					print(self.emotion_table)
+					# print(self.emotion_table)
 
 				except IndexError:
 					print("Not Detected")
@@ -152,7 +152,8 @@ class Detection:
 				current = time.time()
 				if current - initial >= 1:
 					break
-
+ 
+		print("Calibration Finish!")
 		return statistics.mean(self.calibration_operator)
 	
 	def initialize(self, source, model_path):
@@ -183,20 +184,20 @@ class Detection:
 				for items in self.emotion_table_cache:
 					if total_emotion == []:
 						total_emotion = list(items.values())
-						print(total_emotion)
+						# print(total_emotion)
 					
 					else:
 						temp = list(items.values())
 						total_emotion = [total_emotion[0] + temp[0], total_emotion[1] + temp[1], total_emotion[2] + temp[2], 
 		       							total_emotion[3] + temp[3], total_emotion[4] + temp[4], total_emotion[5] + temp[5]]
-						print(total_emotion)
+						# print(total_emotion)
 
 				prediction_data = {"happy": total_emotion[0], "sad": total_emotion[1], "neutral": total_emotion[2],
 		       					  "angry": total_emotion[3], "disgust": total_emotion[4], "surprise": total_emotion[5]}
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
-				print(self.real_time_emotion)
+				#print(self.real_time_emotion)
 				total_emotion = []
 				self.emotion_table_cache.pop(0)
 				time_elasped -= 1
@@ -217,7 +218,7 @@ class Detection:
 				time_elasped += 1
 				self.emotion_table_cache.append(self.emotion_table)
 				self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
-				print(self.emotion_table_cache)
+				# print(self.emotion_table_cache)
 				initial = time.time()
 				# read next frame
 				success, img = vid.read()
@@ -272,7 +273,7 @@ class Processing:
 		for x in header:
 			calibrated_header.append(x + (x * calibration_ratio))
 
-		print(calibrated_header)
+		# print(calibrated_header)
 		result = model.predict([calibrated_header])
 		result = self.conversion_table[result[0]]
 		
