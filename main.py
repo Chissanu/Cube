@@ -41,7 +41,7 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.1.113'
+HOST = '192.168.0.110'
 PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
@@ -362,12 +362,18 @@ class app:
         date_time = now.strftime("%m/%d/%Y %H:%M")
         #print(date_time)
         chatObject = {
-            "text": data['message'],
+            "text": data['msg'],
             "time": date_time,
-            "name": self.curUser,
+            "name": data['name'],
             "emotion": " "
         }
-        msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+        print(chatObject)
+        if data['name'] != self.curUser:
+            profilePic = self.db.getFriendPic(data['name'])
+        else:
+            profilePic = None
+
+        msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
 
         if self.curUser == data['name']:
             msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
