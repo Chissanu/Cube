@@ -540,8 +540,6 @@ class app:
 
         requestList_frame = customtkinter.CTkScrollableFrame(container_frame, width=480, height=1030, corner_radius=0, fg_color=REQUEST_LIST)	
         requestList_frame.grid(row=1, column=0, sticky="nsew")
-        
-        # profile_logo = customtkinter.CTkImage(Image.open(f"profilePic\\{self.profilePic}.png"), size=(80, 80))
 
         # create serch bar subframe
         self.search_subframe = customtkinter.CTkFrame(addFriend_frame, width=1000, height=250, fg_color=BG_COLOR)	
@@ -609,7 +607,7 @@ class app:
                                                         image= profile_pic, 
                                                         text="  "+ profile_name, 
                                                         font=("Inter", 40),   
-                                                        anchor=W, 
+                                                        anchor='w', 
                                                         width=300, height=100,
                                                         text_color=GENERAL_TEXT,
                                                         fg_color=REQUEST_LIST, 
@@ -631,7 +629,7 @@ class app:
         # create search btn
         search_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "search_btn.png")), size=(40, 40))
         search_btn = customtkinter.CTkButton(self.search_subframe, image=search_logo, text="", width=0, fg_color=BG_COLOR, command=lambda: self.showProfile(username_entry.get()))
-        search_btn.grid(row = 1, column = 1, padx=5, sticky=W)
+        search_btn.grid(row = 1, column = 1, padx=5, sticky='w')
 
     def myProfile(self):
         Grid.columnconfigure(root,0,weight=0)
@@ -654,11 +652,11 @@ class app:
         # profile logo
         profile_image = customtkinter.CTkImage(Image.open(os.path.join("profilePic", f"{self.profilePic}.png")), size=(400, 400))
         profile_label = customtkinter.CTkButton(profile_frame, text="", image=profile_image, width=10, height=10, fg_color=BG_COLOR, corner_radius=50, command=lambda: self.popup())
-        profile_label.grid(row=0, column=0, padx=(0,20), sticky=E)
+        profile_label.grid(row=0, column=0, padx=(0,20), sticky='e')
 
         # information box subframe
         self.info_subframe = customtkinter.CTkFrame(profile_frame, width=910, height=800, fg_color=BG_COLOR)
-        self.info_subframe.grid(row=0, column=1, sticky=W)
+        self.info_subframe.grid(row=0, column=1, sticky='w')
         self.info_subframe.grid_propagate(0)
         Grid.columnconfigure(self.info_subframe,0,weight=0)
         Grid.columnconfigure(self.info_subframe,1,weight=0)
@@ -698,9 +696,23 @@ class app:
         editBio_label.grid(row=1, column=2, padx=(10,20), sticky='ne')
 
         # emotion
-        emotion_subframe = customtkinter.CTkFrame(self.info_subframe, width=700, height=400, fg_color=PROFILE_INFO)
-        emotion_subframe.grid(row=2, column=0, columnspan=3, padx=50, sticky=E)
-        emotion_subframe.grid_propagate(0)
+        self.emotion_subframe = customtkinter.CTkFrame(self.info_subframe, width=700, height=420, fg_color=PROFILE_INFO)
+        self.emotion_subframe.grid(row=2, column=0, columnspan=3, padx=50, sticky=E)
+        self.emotion_subframe.grid_propagate(0)
+
+        # show stat of each emotion
+        for i in range(6):
+            self.emotion_stat("sad", 100, 96, i)
+
+    def emotion_stat(self, emotion, total, quantity, i):
+        # create emotion 
+        self.emotion = customtkinter.CTkLabel(self.emotion_subframe, text=self.convert_emotion(emotion),text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
+        self.emotion.grid(row=i, column=0, pady=(10,0), padx=(20,30))
+
+        # create progress bar
+        for j in range(round(10*quantity/total)):
+            progress = customtkinter.CTkLabel(self.emotion_subframe, text="🟥",text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
+            progress.grid(row=i, column=j+1, pady=(10,0))
 
     def edit_bio(self):
         self.bio_text.configure(state="normal")
