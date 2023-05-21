@@ -173,7 +173,7 @@ class Detection:
 		success, img = vid.read()
 		initial = time.time()
 		time_elasped = 0
-		detection_threshold = 10
+		detection_threshold = 5
 		duration = 1
 		self.detection_control = 0
 
@@ -201,7 +201,7 @@ class Detection:
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
-				# print(self.real_time_emotion)
+				print(self.real_time_emotion)
 				total_emotion = []
 				self.emotion_table_cache.pop(0)
 				time_elasped -= 1
@@ -226,8 +226,6 @@ class Detection:
 				initial = time.time()
 				# read next frame
 				success, img = vid.read()
-
-		return
 	
 	def stop_detection(self):
 		self.detection_control = 1
