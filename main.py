@@ -814,6 +814,13 @@ class app:
             print(e)
             print("Profile not found")
     
+    def calibrateAI(self):
+        print("Calibrating")
+        self.ai = self.db.getAI()
+        self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
+        self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
+        
+        
     # setting page
     def setting(self):
         Grid.columnconfigure(root,0,weight=0)
@@ -839,7 +846,7 @@ class app:
         changeTheme_btn = customtkinter.CTkButton(container_frame, text="Change Theme", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=self.changeTheme)
         changeTheme_btn.grid(row = 0, column=0, sticky="s")
 
-        calibrate_btn = customtkinter.CTkButton(container_frame, text="Calibrate", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=None)
+        calibrate_btn = customtkinter.CTkButton(container_frame, text="Calibrate", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=self.calibrateAI)
         calibrate_btn.grid(row=0, column=1, sticky="s")
 
         # create description text

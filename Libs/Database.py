@@ -37,8 +37,6 @@ class Database:
         print("Starting AI Model thread")
         self.AIModel = Detection()
         self.ai = self.AIModel.initialize(0, "Libs\Jessie_1.pt")
-        self.calibrate = self.AIModel.calibration(0, "Libs\Jessie_1.pt")
-        self.AIModel.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
 
     def createAccount(self, username, name, password):
         username = username.lower()

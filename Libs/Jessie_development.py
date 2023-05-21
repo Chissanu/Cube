@@ -153,12 +153,17 @@ class Detection:
 				if current - initial >= 1:
 					break
  
-		print("Calibration Finish!")
+		print("========================================")
+		print("           Calibration Finish           ")
+		print("========================================")
 		return statistics.mean(self.calibration_operator)
 	
 	def initialize(self, source, model_path):
 		self.timedDetection(source, model_path, 1)
 		self.calibration_operator = []
+		print("========================================")
+		print("              Initialized               ")
+		print("========================================")
 		return
 	
 	def realTimeDetection(self, source, model_path, calibration_constant):
