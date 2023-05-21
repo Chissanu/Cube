@@ -142,6 +142,7 @@ class app:
             except:
                 pass
             
+            time.sleep(1)
             # print(self.realTimeEmotion)
             #return emotion
 
@@ -698,7 +699,11 @@ class app:
         bio_label.grid(row=1, column=0, padx=(150, 0), pady=5, sticky='n')
         self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
         self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
-        self.bio_text.insert("0.0", text=self.bio)
+        
+        if self.bio == "":
+            bioFormat = "None"
+            
+        self.bio_text.insert("0.0", text=bioFormat)
         self.bio_text.configure(state="disabled")
         
         editBio_label = customtkinter.CTkButton(self.info_subframe, text="", image=edit_image, width=0, fg_color=PROFILE_INFO, corner_radius=0, command=lambda: self.edit_bio())
@@ -713,7 +718,7 @@ class app:
         curUserProfile = self.db.findFriend(self.curUser)
         emotionDict = curUserProfile['emotions']
         sum_of_values = 0
-        print(emotionDict)
+
         for key, value in emotionDict.items():
             sum_of_values += value
         self.emotion_stat("happy", sum_of_values, emotionDict["happy"], 0)
@@ -786,7 +791,7 @@ class app:
             picture = os.path.join("profilePic",f"{profile['profileImage']}.png")
             name = str(profile['name'])
             user = str(profile['username'])
-            bio = str(profile['bio'])
+            bio = str(profile['bio'][0])
             sortedEmotion = sorted(profile['emotions'].items(), key=lambda x: x[1], reverse=True)
             emojis = ""
             for val in sortedEmotion[:3]:
@@ -818,7 +823,10 @@ class app:
             bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=150, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO, wrap="word")
             bio_text.grid(row=2, column=0, padx=(20,0), sticky="n")
             
-            bio_text.insert("0.0", text=bio)
+            if bio == "":
+                bioText = "None"
+            
+            bio_text.insert("0.0", text=bioText)
             bio_text.configure(state="disabled")
 
             emotion_text = customtkinter.CTkLabel(self.tempframe, text=("Most used Emotions: " + emojis), font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
@@ -1097,7 +1105,7 @@ class app:
         else:
             self.curUser = data.get()['username']
             self.name = data.get()['name']
-            self.bio = data.get()['bio']
+            self.bio = data.get()['bio'][0]
             self.profilePic = data.get()['profileImage']
             print(f"Logged In as {self.curUser}")
             self.myProfile()
@@ -1118,7 +1126,7 @@ class app:
             print(data)
             self.curUser = data.get()['username']
             self.name = data.get()['name']
-            self.bio = data.get()['bio']
+            self.bio = data.get()['bio'][0]
             self.profilePic = data.get()['profileImage']
             self.myProfile()
         
