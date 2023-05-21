@@ -354,11 +354,10 @@ class app:
             self.send_message(msg)
 
         self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
-        print(self.realTimeEmotion)
         self.chat_entry.delete(0, END)
         
     def topEmoji(self):
-        self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, anchor="n", command=lambda: self.controlAI())    
+        self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, command=lambda: self.controlAI())    
         self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
 
     def controlAI(self):
@@ -400,13 +399,13 @@ class app:
 
         Grid.columnconfigure(self.topbar_subframe,0,weight=1)
         Grid.columnconfigure(self.topbar_subframe,1,weight=1)
-
+        Grid.rowconfigure(self.topbar_subframe,0,weight=1)
+        
         # create name in topbar
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
         name = customtkinter.CTkLabel(self.topbar_subframe, text=name, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
         name.grid(row=0, column=0, pady = 15, padx=(15,0), sticky="w")
-
 
         # create emoji in topbar
         self.topEmoji()
@@ -1029,7 +1028,7 @@ class app:
             except:
                 pass
             
-            print(self.realTimeEmotion)
+            # print(self.realTimeEmotion)
             
     def calibrateThread(self):
         self.popup_window = tk.Toplevel(root)
