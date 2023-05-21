@@ -71,6 +71,8 @@ class app:
         self.master['bg'] = BG2_COLOR
         self.tempframe = None
 
+        self.calibrate = 70
+
         self.setIP()
 
         self.main_menu()
@@ -130,21 +132,20 @@ class app:
         log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 25), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=60,
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
-        
+
+    def turnOnAI(self,name):
+        print("Detecting")
+        self.ai = self.db.getAI()
+        self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
+
     def detectAI(self, name):
         while True:
-            self.ai = self.db.getAI()
-            self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
             self.realTimeEmotion = self.ai.real_time_emotion
             try:
                 self.emojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
             except:
                 pass
             
-            # result = self.ai.timedDetection(0, "Libs\Jessie_1.pt", 5)
-            # true_emotion = Processing()
-            
-            # absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
             print(self.realTimeEmotion)
             #return emotion
 
@@ -455,6 +456,8 @@ class app:
                 self.initiateThread = True
         
         # Detect Emotion Thread
+        self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
+        # Detect Emotion Output Thread
         self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
         
                 
@@ -821,6 +824,8 @@ class app:
         self.ai = self.db.getAI()
         self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
         print("Ending Thread to Calibrate AI")
+        print(f"The calibration result is {self.calibrate}")
+        
         #self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
         
         
