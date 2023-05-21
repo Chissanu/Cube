@@ -8,7 +8,7 @@ from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
 from Libs.Client import Client
-from Libs.Jessie_development import Processing, Detection
+from Libs.Jessie import Processing, Detection
 import tkinter.font as tkfont
 from datetime import datetime
 from threading import Thread
@@ -190,7 +190,6 @@ class app:
             self.errorReg.configure(text=data)
 
         else:
-            print(data)
             self.curUser = data.get()['username']
             self.name = data.get()['name']
             self.bio = data.get()['bio'][0]
@@ -306,13 +305,31 @@ class app:
                                                 anchor=W, 
                                                 width=500, height=100, 
                                                 fg_color=FRIEND_LIST, 
-                                                command=lambda user=profile_user: self.display_chat(user, True))	
+                                                command=lambda user=profile_user: self.display_chat(user))	
                     friendBtn.grid(row=i, column=0, sticky="nsew")
             except Exception as e:
                 label = customtkinter.CTkLabel(friendList_frame, text="No friend", text_color=GENERAL_TEXT, font=("Inter", 30))
                 label.grid(column = 0, row = 0, padx = 180, pady = 20, sticky = N)
                 print(e)
                 pass
+
+        # create chat frame
+        self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
+        self.chat_frame.grid(row=0, column=2, sticky="nsew")
+
+        # create topbar
+        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1355, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
+        self.topbar_subframe.grid(row=0, column=0, sticky='w')
+        self.topbar_subframe.grid_propagate(0)
+
+        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
+        self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        Grid.columnconfigure(self.boxes_subframe,0,weight=1)
+
+        # create chat box and emoji btn
+        self.tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
+        self.tool_subframe.grid(row=2, column=0)
+        self.tool_subframe.grid_propagate(0)
             
     """
     ======================================
@@ -343,43 +360,26 @@ class app:
     def topEmoji(self):
         self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, anchor="n", command=lambda: self.controlAI())    
         self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
+
+    def controlAI(self):
+        print("turn off ai")
     
-    def display_chat(self, friend, ini):
-        # create chat frame
-        self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
-        self.chat_frame.grid(row=0, column=2, sticky="nsew")
-
-        # create topbar
-        self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1355, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
-        self.topbar_subframe.grid(row=0, column=0, sticky='w')
-        self.topbar_subframe.grid_propagate(0)
-
-        # create a message boxes container 
-
-        self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
-        self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
-        Grid.columnconfigure(self.boxes_subframe,0,weight=1)
-
-        # create chat box and emoji btn
-        tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
-        tool_subframe.grid(row=2, column=0)
-        tool_subframe.grid_propagate(0)
-
+    def display_chat(self, friend):
         other_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Other_btn.png")), size=(40, 40))
-        other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=lambda:self.upload_image())
+        other_label = customtkinter.CTkButton(self.tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=lambda:self.upload_image())
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
-        self.chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
+        self.chat_entry = customtkinter.CTkEntry(self.tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
         self.chat_entry.grid(row=0, column=1)
 
         self.chat_entry.bind("<Return>", lambda e: self.send_text(e))
 
         sticker_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Sticker_btn.png")), size=(40, 40))
-        sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
+        sticker_label = customtkinter.CTkButton(self.tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         sticker_label.grid(row = 0, column = 2, padx = 30, pady = 30)
 
         emoji_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Emoji_btn.png")), size=(40, 40))
-        emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
+        emoji_label = customtkinter.CTkButton(self.tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
         try:
@@ -1025,21 +1025,32 @@ class app:
         while True:
             self.realTimeEmotion = self.ai.real_time_emotion
             try:
-                self.emojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
+                self.yourEmojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
             except:
                 pass
             
-            time.sleep(1)
-            # print(self.realTimeEmotion)
+            print(self.realTimeEmotion)
             
     def calibrateThread(self):
+        self.popup_window = tk.Toplevel(root)
+        self.popup_window.geometry("1200x800+360+140")
         print("Creating Thread to Calibrate AI")
+
+        Grid.columnconfigure(self.popup_window,0,weight=2)
+        Grid.rowconfigure(self.popup_window,0,weight=2)  
+
+
+        self.calibrate_label = customtkinter.CTkLabel(self.popup_window, text="Creating Thread to Calibrate AI", text_color=GENERAL_TEXT, font=("Inter", 50))
+        self.calibrate_label.grid(column = 0, row = 0)
+
         self.aiT = Thread(target=self.calibrateAI, args=(1,)).start()
+        self.popup_window.wait_window()
         
     def calibrateAI(self,name):
         print("Calibrating")
         self.ai = self.db.getAI()
         self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
+        self.calibrate_label.configure(text="Ending Thread to Calibrate AI")
         print("Ending Thread to Calibrate AI")
         print(f"The calibration result is {self.calibrate}")
 

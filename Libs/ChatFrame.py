@@ -23,6 +23,7 @@ class ChatFrame(ctk.CTkFrame):
             emotion = chat["emotion"]
             
             if emotion == "":
+                print("---no emotion---")
                 emotion = "neutral"
 
             if msg[0:8]=="https://":
