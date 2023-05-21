@@ -133,8 +133,8 @@ class app:
         
     def detectAI(self, name):
         while True:
-            print("RUNNING...")
             self.ai = self.db.getAI()
+            self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
             self.realTimeEmotion = self.ai.real_time_emotion
             try:
                 self.emojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
@@ -146,7 +146,6 @@ class app:
             
             # absolute_emotion = true_emotion.getPredictedEmotion(result, self.db.getCalibration())
             print(self.realTimeEmotion)
-            time.sleep(1)
             #return emotion
 
     def register_menu(self):  
@@ -1104,20 +1103,6 @@ class app:
     def quit(self,e):
         self.destroy()
 
-# custom button class
-class MyButton(customtkinter.CTkButton):
-    def __init__(self, master, image_path, **kwargs):
-        # Open the image file and convert it to a PhotoImage object
-        self.photo = customtkinter.CTkImage(Image.open(image_path), size=(70, 70))
-
-        # Call the parent constructor to create the button
-        customtkinter.CTkButton.__init__(self, master, image=self.photo, bd=0, highlightthickness=0, **kwargs)
-
-        # Set the button size to match the image size
-        self.config(width=self.photo.width(), height=self.photo.height())
-
-        # Use the image as the button background
-        self.configure(image=self.photo, compound="center")
 
 if __name__ == '__main__':
     try:
