@@ -146,10 +146,11 @@ class Detection:
 		for x in range(epochs):
 			self.timedDetection(source, model_path, 5)
 			initial = time.time()
-			while True:
-				current = time.time()
-				if current - initial >= 1:
-					break
+
+		while True:
+			current = time.time()
+			if current - initial >= 1:
+				break
  
 		print("========================================")
 		print("           Calibration Finish           ")
@@ -182,7 +183,7 @@ class Detection:
 
 			if time_elasped >= detection_threshold:
 				# print(time_elasped)
-				duration = 0.5
+				duration = 0.25
 				total_emotion = []
 				for items in self.emotion_table_cache:
 					if total_emotion == []:
@@ -200,7 +201,7 @@ class Detection:
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
-				#print(self.real_time_emotion)
+				# print(self.real_time_emotion)
 				total_emotion = []
 				self.emotion_table_cache.pop(0)
 				time_elasped -= 1
@@ -285,3 +286,8 @@ class Processing:
 			pass
 			#print("Most")
 		return result
+	
+# test = Detection()
+# test.initialize(0, "Libs\Jessie_1.pt")
+# calibrate = test.calibration(0, "Libs\Jessie_1.pt")
+# test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
