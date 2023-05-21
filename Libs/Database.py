@@ -29,14 +29,16 @@ class Database:
         self.bucket = storage.bucket()
         
         # Start AI Thread
-        ai = threading.Thread(target=self.thread_function, args=(1,))
-        ai.start()
+        self.ai = threading.Thread(target=self.thread_function, args=(1,))
+        self.ai.start()
     
     def thread_function(self,name):
         # AI Initializing
         print("Starting AI Model thread")
         self.AIModel = Detection()
         self.ai = self.AIModel.initialize(0, "Libs\Jessie_1.pt")
+        print("Finish AI Thread")
+        
 
     def createAccount(self, username, name, password):
         username = username.lower()
