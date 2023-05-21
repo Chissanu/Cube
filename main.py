@@ -442,6 +442,7 @@ class app:
             self.socketOn = True
             self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.connect()
+            print("connect using socket")
         except:
             self.socketOn = False
             if ini:
@@ -449,13 +450,13 @@ class app:
                 self.thread.start()
                 t = Thread(target = self.checkUpdate).start()
                 self.initiateThread = True
-        
+            
         # Detect Emotion Thread
         self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
         # Detect Emotion Output Thread
         self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
         
-                
+        print("finish creating thread")        
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 
@@ -468,8 +469,7 @@ class app:
         name = customtkinter.CTkLabel(self.topbar_subframe, text=name, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
         name.grid(row=0, column=0, pady = 15, padx=(15,0), sticky="w")
 
-        stopDetect_btn = customtkinter.CTkButton(self.topbar_subframe, text="stop", width=50, height=25, text_color=BUTTON_TEXT, fg_color=BUTTON, command=None)
-        stopDetect_btn.grid(row = 0, column = 1, padx = 5, sticky="e")
+        print("before loading chat")
 
         # create emoji in topbar
         self.topEmoji()
@@ -715,7 +715,7 @@ class app:
         sum_of_values = 0
         print(emotionDict)
         for key, value in emotionDict.items():
-            sum_of_values += value   
+            sum_of_values += value
         self.emotion_stat("happy", sum_of_values, emotionDict["happy"], 0)
         self.emotion_stat("sad", sum_of_values, emotionDict["sad"], 1)
         self.emotion_stat("neutral", sum_of_values, emotionDict["neutral"], 2)
@@ -727,11 +727,12 @@ class app:
         # create emotion 
         self.emotion = customtkinter.CTkLabel(self.emotion_subframe, text=self.convert_emotion(emotion),text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
         self.emotion.grid(row=i, column=0, pady=(10,0), padx=(20,30))
-
-        # create progress bar
-        for j in range(round(10*quantity/total)):
-            progress = customtkinter.CTkLabel(self.emotion_subframe, text="🟥",text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
-            progress.grid(row=i, column=j+1, pady=(10,0))
+        
+        if total != 0:
+            # create progress bar
+            for j in range(round(10*quantity/total)):
+                progress = customtkinter.CTkLabel(self.emotion_subframe, text="🟥",text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
+                progress.grid(row=i, column=j+1, pady=(10,0))
 
     def edit_bio(self):
         self.bio_text.configure(state="normal")
