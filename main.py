@@ -8,7 +8,7 @@ from PIL import Image, ImageTk
 from Libs.Database import Database
 from Libs.ChatFrame import ChatFrame
 from Libs.Client import Client
-from Libs.Jessie_development import Processing
+from Libs.Jessie_development import Processing, Detection
 import tkinter.font as tkfont
 from datetime import datetime
 from threading import Thread
@@ -80,7 +80,7 @@ class app:
         s.connect(("8.8.8.8", 80))
         self.host = s.getsockname()[0]
         s.close()
-        
+             
         
     def login_menu(self):  
         """
@@ -814,11 +814,16 @@ class app:
             print(e)
             print("Profile not found")
     
-    def calibrateAI(self):
+    def calibrateThread(self):
+        print("Creating Thread to Calibrate AI")
+        self.aiT = Thread(target=self.calibrateAI, args=(1,)).start()
+        
+    def calibrateAI(self,name):
         print("Calibrating")
         self.ai = self.db.getAI()
         self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
-        self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
+        print("Ending Thread to Calibrate AI")
+        #self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
         
         
     # setting page
@@ -846,7 +851,7 @@ class app:
         changeTheme_btn = customtkinter.CTkButton(container_frame, text="Change Theme", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=self.changeTheme)
         changeTheme_btn.grid(row = 0, column=0, sticky="s")
 
-        calibrate_btn = customtkinter.CTkButton(container_frame, text="Calibrate", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=self.calibrateAI)
+        calibrate_btn = customtkinter.CTkButton(container_frame, text="Calibrate", font=("Inter", 50), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=100, command=self.calibrateThread)
         calibrate_btn.grid(row=0, column=1, sticky="s")
 
         # create description text
