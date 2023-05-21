@@ -329,32 +329,15 @@ class app:
         self.add_message(data, "image")
         self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
         
-    def send_text(self):
+    def send_text(self,e):
         msg = str(self.chat_entry.get())
-        if not msg.strip():
-            return
 
         # Current Date and Time
-        if self.socketOn == False:
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y %H:%M")
-            #print(date_time)
-            chatObject = {
-                "text": msg,
-                "time": date_time,
-                "name": self.curUser,
-                "emotion": self.realTimeEmotion
-            }
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
-            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-            Grid.columnconfigure(msgBox,0,weight=0)
-            Grid.columnconfigure(msgBox,1,weight=0)
-            Grid.columnconfigure(msgBox,2,weight=1)
-        else:
-            self.send_message(str(self.chat_entry.get()))
+        if self.socketOn == True:
+            self.send_message(msg)
 
         self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
-
+        print(self.realTimeEmotion)
         self.chat_entry.delete(0, END)
         
     def topEmoji(self):
@@ -389,7 +372,7 @@ class app:
         self.chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
         self.chat_entry.grid(row=0, column=1)
 
-        self.chat_entry.bind("<Return>", self.send_text)
+        self.chat_entry.bind("<Return>", lambda e: self.send_text(e))
 
         sticker_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Sticker_btn.png")), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
@@ -666,10 +649,6 @@ class app:
 
         folder_path = 'profilePic'
         num_files = len([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
-
-        # profileImageDict = {
-        #     0:"bla", 1:"bla", 2:"bla", 3:"bla", 4:"bla", 5:"bla", 6:"bla", 7:"bla", 8:"bla"
-        # }
         
         # create buttons
         row = 0
@@ -762,6 +741,7 @@ class app:
         self.bio_text = customtkinter.CTkTextbox(self.info_subframe, width=550, height=200, corner_radius=0, font=("Inter", 40), text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, wrap="word")
         self.bio_text.grid(row=1, column=1, padx=(0, 0), sticky='w')
         
+        bioFormat = self.bio
         if self.bio == "":
             bioFormat = "None"
             
@@ -1009,7 +989,6 @@ class app:
         self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
         
     def send_message(self,message):
-        #message = message_textbox.get()
         if message != '':
             self.client.sendall(message.encode())
             # message_textbox.delete(0, len(message))

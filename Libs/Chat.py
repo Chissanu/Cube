@@ -42,6 +42,9 @@ class Chat:
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y %H:%M")
 
+        if emotion == "":
+            emotion = "neutral"
+        
         sentText.set({
             "text": message,
             "time": date_time,

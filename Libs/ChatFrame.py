@@ -21,6 +21,9 @@ class ChatFrame(ctk.CTkFrame):
 
         if chat["name"] == self.curUser:
             emotion = chat["emotion"]
+            
+            if emotion == "":
+                emotion = "neutral"
 
             if msg[0:8]=="https://":
                 response = requests.get(msg)
