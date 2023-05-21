@@ -70,6 +70,7 @@ class Detection:
 					except IndexError:
 						print("Not Detected")
 						pass
+
 				if first is False:
 					try:
 						remove = cache.pop(0)
@@ -78,8 +79,6 @@ class Detection:
 						self.emotion_table[remove] -= 1
 						r = self.emotion_table
 						cache.append(emotion)
-
-
 						print(r)
 
 					except IndexError:
@@ -88,6 +87,7 @@ class Detection:
 
 					# read next frame
 					success, img = vid.read()
+
 			self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 			if buttonclick == "end":
 				r = self.emotion_table

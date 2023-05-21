@@ -173,7 +173,7 @@ class Detection:
 		success, img = vid.read()
 		initial = time.time()
 		time_elasped = 0
-		detection_threshold = 5
+		detection_threshold = 10
 		duration = 1
 		self.detection_control = 0
 
@@ -183,7 +183,7 @@ class Detection:
 
 			if time_elasped >= detection_threshold:
 				# print(time_elasped)
-				duration = 0.25
+				duration = 0.5
 				total_emotion = []
 				for items in self.emotion_table_cache:
 					if total_emotion == []:
