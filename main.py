@@ -142,7 +142,7 @@ class app:
             except:
                 pass
             
-            print(self.realTimeEmotion)
+            # print(self.realTimeEmotion)
             #return emotion
 
     """
@@ -344,8 +344,8 @@ class app:
         print(filepath)
 
     def topEmoji(self):
-        self.emojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=100, height=100, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, command=None)	
-        self.emojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
+        self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, anchor="n", command=lambda: self.controlAI())    
+        self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
 
     def convert_emotion(self, emotion):
         if emotion == "happy":
@@ -801,20 +801,22 @@ class app:
             self.tempframe.grid_propagate(0)
             Grid.columnconfigure(self.tempframe,0,weight=1)
             Grid.rowconfigure(self.tempframe,2,weight=1)
-            Grid.rowconfigure(self.tempframe,3,weight=1)
+            Grid.rowconfigure(self.tempframe,3,weight=2)
 
             # show profile info in tempframe
             profile_logo = customtkinter.CTkImage(Image.open(picture), size=(250, 250))
             profile = customtkinter.CTkLabel(self.tempframe, text="", image=profile_logo)
             profile.grid(row = 0, column = 0, pady = (20,0))
-            
-            name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+
+            # check len name
+            if len(name) > 13:
+                name = name[:13] + '...'
+            name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO)
             name_text.grid(row = 1, column = 0, pady = (10,10))
             
             bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=150, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO, wrap="word")
             bio_text.grid(row=2, column=0, padx=(20,0), sticky="n")
             
-            print(bio)
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
 
@@ -823,7 +825,7 @@ class app:
 
             # create add button
             add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=BUTTON_TEXT, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
-            add_btn.grid(row=4, column=0, sticky=S, pady = (20,20), padx = 350)
+            add_btn.grid(row=4, column=0, sticky=S, padx = 350)
         except Exception as e:
             print(e)
             print("Profile not found")
