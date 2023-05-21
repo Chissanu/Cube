@@ -510,7 +510,6 @@ class app:
             print(e)
             print("no chat")
 
-        self.master.bind("<F2>", lambda x : self.update_frame(friend))
 
     def checkUpdate(self):
         while True:
@@ -707,8 +706,10 @@ class app:
         self.emotion_subframe.grid_propagate(0)
 
         # show stat of each emotion
-        for i in range(6):
-            self.emotion_stat("sad", 100, 96, i)
+        curUserProfile = self.db.findFriend(self.curUser)
+        emotionDict = curUserProfile['emotions'].items()
+        print(emotionDict["sad"])
+        self.emotion_stat("sad", 100, 96, 0)
 
     def emotion_stat(self, emotion, total, quantity, i):
         # create emotion 
