@@ -61,6 +61,7 @@ class app:
         self.initiateThread = False
         self.thread = None
         self.curChatFriend = None 
+        self.control_collect = 0
 
         # find the center point
         center_x = int(screen_width/2 - window_width / 2)
@@ -392,7 +393,9 @@ class app:
         # Detect Emotion Thread
         self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
         # Detect Emotion Output Thread
-        self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
+        if self.control_collect == 0:
+            self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
+            self.control_collect = 1
               
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
@@ -1018,6 +1021,7 @@ class app:
     def turnOnAI(self,name):
         print("Detecting")
         self.ai = self.db.getAI()
+        self.ai.stop_detection()
         self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
 
     def detectAI(self, name):
