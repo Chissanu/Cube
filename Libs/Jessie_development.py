@@ -3,6 +3,7 @@ import cv2
 import torch
 import time
 import statistics
+import customtkinter
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
@@ -14,6 +15,8 @@ class Detection:
 		self.user_calibration_constant = 0
 		self.detection_control = 0
 		self.real_time_emotion = ""
+		self.calibration_progress = ""
+		self.progress_bar = ["0%", "20%", "40%", "60%", "80%", "100%"]
 	
 	# Input the emotion and it returns how many times the A.I detected these emotions according to the emotion_table.
 	# If no input is taken, it returns the whole dictionary
@@ -141,11 +144,18 @@ class Detection:
 	def clearEmotionData(self):
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 
-	def calibration(self, source, model_path):
+	def calibration(self, source, model_path, progress_widget):
 		epochs = 5
+		progress = 0
+		self.calibration_progress = self.progress_bar[progress]
+		# print(self.calibration_progress)
 		for x in range(epochs):
 			self.timedDetection(source, model_path, 5)
 			initial = time.time()
+			progress += 1
+			self.calibration_progress = self.progress_bar[progress]
+			progress_widget.configure(text=self.calibration_progress)
+			# print(self.calibration_progress)
 
 		while True:
 			current = time.time()

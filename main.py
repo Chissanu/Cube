@@ -870,7 +870,7 @@ class app:
         changeTheme_label = customtkinter.CTkLabel(container_frame, text="", font=("Inter", 35), text_color="gray")
         changeTheme_label.grid(row=1, column=0)
 
-        calibrate_label = customtkinter.CTkLabel(container_frame, text="add text to describe what is calibrate", font=("Inter", 35), text_color="gray")
+        calibrate_label = customtkinter.CTkLabel(container_frame, text="Calibrating the AI helps with your emotion accuracy.", font=("Inter", 35), text_color="gray")
         calibrate_label.grid(row=1, column=1, pady=(15,0), sticky="n")
 
     # Function to toggle switch the themes (light & dark)
@@ -1040,7 +1040,7 @@ class app:
         Grid.rowconfigure(self.popup_window,0,weight=2)  
 
 
-        self.calibrate_label = customtkinter.CTkLabel(self.popup_window, text="Creating Thread to Calibrate AI", text_color=GENERAL_TEXT, font=("Inter", 50))
+        self.calibrate_label = customtkinter.CTkLabel(self.popup_window, text="Creating Thread to Calibrate AI\n0%", text_color=GENERAL_TEXT, font=("Inter", 50))
         self.calibrate_label.grid(column = 0, row = 0)
 
         self.aiT = Thread(target=self.calibrateAI, args=(1,)).start()
@@ -1049,7 +1049,7 @@ class app:
     def calibrateAI(self,name):
         print("Calibrating")
         self.ai = self.db.getAI()
-        self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
+        self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt", self.calibrate_label)
         self.calibrate_label.configure(text="Ending Thread to Calibrate AI")
         print("Ending Thread to Calibrate AI")
         print(f"The calibration result is {self.calibrate}")

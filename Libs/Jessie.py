@@ -3,6 +3,7 @@ import cv2
 import torch
 import time
 import statistics
+import customtkinter
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
@@ -14,6 +15,24 @@ class Detection:
 		self.user_calibration_constant = 0
 		self.detection_control = 0
 		self.real_time_emotion = ""
+		self.calibration_progress = ""
+		self.progress_bar = ["Creating Thread to Calibrate AI\n0%", "Creating Thread to Calibrate AI\n20%", "Creating Thread to Calibrate AI\n40%",
+		       				 "Creating Thread to Calibrate AI\n60%", "Creating Thread to Calibrate AI\n80%", "Creating Thread to Calibrate AI\n100%"]
+	
+	# Input the emotion and it returns how many times the A.I detected these emotions according to the emotion_table.
+	# If no input is taken, it returns the whole dictionary
+	def getEmotionData(self, key=None):
+		if key:
+			return [key, self.emotion_table[key]]
+		
+		else:
+			return self.emotion_table
+
+	# Get the most occuring emotion at a given interval
+	def getMostOccuringEmotion(self):
+		operator = self.emotion_table
+		max_value = max(self.emotion_table, key=lambda x:operator[x])
+		return max_value
 	
 	# Takes three inputs, the source of the video (0 for webcam), the model_path and the duration. Returns nothing at the moment
 	def timedDetection(self, source, model_path, duration):
@@ -52,20 +71,98 @@ class Detection:
 			self.calibration_operator.append(count)
 
 		return self.emotion_table
+
+	# This special method is used on videos it takes the same arguements as the two methods.
+	# It also takes two additional methods "mode" and "video", the "mode" specifies the format of the video and the "video" specifies the path/link.
+	# If the mode is 0, the video is a normal video file (mp4, mjpeg, mpeg, mov). If it is 1, it is a youtube link.
+	# This method will call the "timedDetection" method according to the video duration.
+	# Note: From testing the video link duration will be slightly greater since there is also the duration of ADs.
+
+	def timedDetectionVideo(self, source, model_path, video, mode):
+		if mode == 0:
+			capture_video = cv2.VideoCapture(video)
+			video_duration = capture_video.get(cv2.CAP_PROP_POS_MSEC)
+			# print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
+
+		# This piece of this code can only be ran around 5000 times per day. Please don't over use this method
+		elif mode == 1:
+			import googleapiclient.discovery
+			import isodate
+
+			# This is a Google API key. This key will be filled later.
+			api_key = "temp_key"
+			video_id = video.split("v=")[1]
+			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+			# This part extract the duration of the video
+			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
+			duration = video_response["items"][0]["contentDetails"]["duration"]
+			video_duration = isodate.parse_duration(duration).total_seconds()
+			# print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
+			# This is a Google API key. This key will be filled later.
+			operator = open("googlekeys.txt", "r")
+			api_key = operator.read()
+			video_id = video.split("v=")[1]
+			youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+			# This part extract the duration of the video
+			video_response = youtube.videos().list(id=video_id, part="contentDetails").execute()
+			duration = video_response["items"][0]["contentDetails"]["duration"]
+			video_duration = isodate.parse_duration(duration).total_seconds()
+			# print(video_duration)
+			self.timedDetection(self, source, model_path, video_duration)
+
+	def untimedDetection(self, source, model_path):
+		global buttonclick
+		self.clearEmotionData()
+		vid = cv2.VideoCapture(source)
+		model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
+		fno = 0
+		success, img = vid.read()
+
+		while True:
+			while success and buttonclick == True:
+				
+				if buttonclick == False:
+					break
+
+				if fno % 32 == 0:
+					results = model(img)
+
+				try:
+					self.emotion_table[results.pandas().xyxy[0].name[0]] += 1
+					# print(self.emotion_table)
+
+				except IndexError:
+					#print("Not Detected")
+					pass
+
+				# read next frame
+				success, img = vid.read()
+			if buttonclick == "end":
+				break
 			
 	def clearEmotionData(self):
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 
-	def calibration(self, source, model_path):
+	def calibration(self, source, model_path, progress_widget):
 		epochs = 5
+		progress = 0
+		# self.calibration_progress = self.progress_bar[progress]
+		# progress_widget.configure(text=self.calibration_progress)
+		# print(self.calibration_progress)
 		for x in range(epochs):
 			self.timedDetection(source, model_path, 5)
-			initial = time.time()
+			# initial = time.time()
+			progress += 1
+			current_progress = self.progress_bar[progress]
+			print(current_progress)
+			progress_widget.configure(text=current_progress)
 
-		while True:
-			current = time.time()
-			if current - initial >= 1:
-				break
+		# while True:
+		# 	current = time.time()
+		# 	if current - initial >= 1:
+		# 		break
  
 		print("========================================")
 		print("           Calibration Finish           ")
@@ -116,7 +213,7 @@ class Detection:
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
-				# print(self.real_time_emotion)
+				print(self.real_time_emotion)
 				total_emotion = []
 				self.emotion_table_cache.pop(0)
 				time_elasped -= 1

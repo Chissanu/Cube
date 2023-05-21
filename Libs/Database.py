@@ -5,7 +5,7 @@ from firebase_admin import db
 from datetime import datetime
 from Libs.Features import Features
 from Libs.Chat import Chat, CustomThread
-from Libs.Jessie_development import Detection
+from Libs.Jessie import Detection
 from firebase_admin import storage
 import os
 
