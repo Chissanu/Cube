@@ -3,8 +3,6 @@ import cv2
 import torch
 import time
 import statistics
-import random
-import threading
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
@@ -236,9 +234,6 @@ class Detection:
 
 # This class contains every processing algorithms for the emotions data
 class Processing:
-	# def __init__(self, duration, table):
-	# 	self.duration = duration
-	# 	self.table = table
 
 	def __init__(self):
 		self.result = ""
@@ -290,35 +285,3 @@ class Processing:
 			pass
 			#print("Most")
 		return result
-
-''' 
-A Piece of history
-print("hello world")
-print("hello world")
-print("hello world")
-print("hello world")
-print("hello world")
-'''
-# Test run codes. Will be removed in the final iteration of this script.
-
-# test = Detection()
-
-# # calibrate = test.calibration(0, "Libs\Jessie_1.pt")
-# calibrate = 40
-
-# test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
-
-# test.initialize("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
-
-# calibrate = test.calibration("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt")
-# print(calibrate)
-
-# result = test.timedDetection("http://192.168.1.127:4747/mjpegfeed", "Libs\Jessie_1.pt", 5)
-# # result = {"happy": random.randint(0, 10), "sad": random.randint(0, 10), "neutral": random.randint(0, 10), "angry": 0, "disgust": 0, "surprise": 0}
-# print(result)
-# # calibrate = 40
-# print(calibrate)
-
-# true_emotion = Processing()
-# absolute_emotion = true_emotion.getPredictedEmotion(result, calibrate)
-# print(absolute_emotion)
