@@ -13,7 +13,6 @@ import tkinter.font as tkfont
 from datetime import datetime
 from threading import Thread
 import time
-import emoji
 from tkinter import filedialog
 
 # from chat_tester import chat_test
@@ -77,15 +76,60 @@ class app:
 
         self.main_menu()
         
-    def setIP(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        self.host = s.getsockname()[0]
-        s.close()
-             
     """
-    Login page
+    ======================================
+    Main Menu Functions
+    ======================================
+    """ 
+    def main_menu(self):
+        # Setting up grid and frame for button widgets/ texts
+        Grid.columnconfigure(root,0,weight=1)
+        Grid.columnconfigure(root,1,weight=1)
+        Grid.columnconfigure(root,2,weight=1)
+
+        for i in self.master.winfo_children():
+            i.destroy()
+            
+        # Title 
+        tk.Label(self.master, text="CUBE", font=("Inter", 64, "bold"), bg=BG2_COLOR).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
+        
+        # Cube logo
+        self.image = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "vaadin_cube.png")), size=(220, 220))
+        img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
+        img_label.grid(column=1, row=1)
+
+        # Menu texts/ three buttons: Login, Register, & Quit
+        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG2_COLOR).grid(column=1, row=2, pady=20, sticky=tk.N)
+
+        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=350, height=75, command=self.login_menu)
+        log_btn.grid(column=1, row=2, pady=(70,0))
+
+        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=350, height=75, command=self.register_menu)
+        reg_btn.grid(column=1, row=3)
+
+        exit_btn = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=BUTTON_TEXT, width=250, height=75, command=root.destroy)
+        exit_btn.grid(column=1, row=4, pady=100)
+        
+        
     """
+    ======================================
+    Login Functions
+    ======================================
+    """
+    def loginDB(self,username,password):
+        data = self.db.login(username,password)
+        if type(data) == Exception:
+            # create error label
+            error_label = customtkinter.CTkLabel(self.errLogin_frame, text=data, font=("Inter", 20), text_color="red")
+            error_label.grid(column=0, row=0)
+        else:
+            self.curUser = data.get()['username']
+            self.name = data.get()['name']
+            self.bio = data.get()['bio'][0]
+            self.profilePic = data.get()['profileImage']
+            print(f"Logged In as {self.curUser}")
+            self.myProfile()
+        
     def login_menu(self):  
         Grid.rowconfigure(root,3,weight=0)
         Grid.rowconfigure(root,4,weight=0)
@@ -129,26 +173,30 @@ class app:
                                           command=lambda : self.loginDB(username_entry.get(),password_entry.get()))
         log_btn.grid(column=1, row=7, sticky = "s", pady=(100,100))
 
-    def turnOnAI(self,name):
-        print("Detecting")
-        self.ai = self.db.getAI()
-        self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
-
-    def detectAI(self, name):
-        while True:
-            self.realTimeEmotion = self.ai.real_time_emotion
-            try:
-                self.emojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
-            except:
-                pass
-            
-            time.sleep(1)
-            # print(self.realTimeEmotion)
-            #return emotion
-
     """
-    Register page
+    ======================================
+    Register Functions
+    ======================================
     """
+    def registerDB(self,username,name,password,confirm):
+        if password == confirm:
+            print("Creating Account...")
+            data = self.db.createAccount(username,name,password)
+        else:
+            data = Exception("Password do not match")
+        if type(data) == Exception:
+            # create error label
+            print('error')  
+            self.errorReg.configure(text=data)
+
+        else:
+            print(data)
+            self.curUser = data.get()['username']
+            self.name = data.get()['name']
+            self.bio = data.get()['bio'][0]
+            self.profilePic = data.get()['profileImage']
+            self.myProfile()
+        
     def register_menu(self): 
         Grid.rowconfigure(root,3,weight=0)
         Grid.rowconfigure(root,4,weight=0)
@@ -205,15 +253,13 @@ class app:
         reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 25), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=500, height=60,
                                           command= lambda : self.registerDB(username_entry.get(),name_entry.get(),password_entry.get(),confirm_entry.get()))
         reg_btn.grid(column=1, row=12, sticky = "s", pady=50)
-
-        # create error label
-        # error_label = customtkinter.CTkLabel(self.master, text="Wrong Password or Account not found", font=("Inter", 20), text_color="red")
-        # error_label.grid(column=1, row=10, pady=(20,0))
-
+    
     """
-    Chat page
+    ======================================
+    Main Chat FUNCTIONS
+    ======================================
     """
-    def chat(self):
+    def mainChat(self):
         self.curChatFriend = None 
         # Setting up grid and frame for button widgets/ texts
         # comment these out for now, as they messed with the alignment of widgets for tkinter
@@ -267,77 +313,12 @@ class app:
                 label.grid(column = 0, row = 0, padx = 180, pady = 20, sticky = N)
                 print(e)
                 pass
-
-        # # create chat frame
-        # self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
-        # self.chat_frame.grid(row=0, column=2, sticky="nsew")
-
-        # # create topbar
-        # self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1355, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
-        # self.topbar_subframe.grid(row=0, column=0, sticky='w')
-        # self.topbar_subframe.grid_propagate(0)
-
-
-        # # create a message boxes container 
-        # # Remove texts after hitting enter to send a message
-        # def send_text(e):
-        #     # self.boxes_subframe.columnconfigure(1, weight=1)
-
-        #     msg = str(chat_entry.get())
-        #     if not msg.strip():
-        #         return
-
-        #     # Current Date and Time
-        #     if self.socketOn == False:
-        #         now = datetime.now()
-        #         date_time = now.strftime("%m/%d/%Y %H:%M")
-        #         #print(date_time)
-        #         chatObject = {
-        #             "text": msg,
-        #             "time": date_time,
-        #             "name": self.curUser,
-        #             "emotion": self.realTimeEmotion
-        #         }
-        #         msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
-        #         msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-        #         Grid.columnconfigure(msgBox,0,weight=0)
-        #         Grid.columnconfigure(msgBox,1,weight=0)
-        #         Grid.columnconfigure(msgBox,2,weight=1)
-        #     else:
-        #         self.send_message(str(chat_entry.get()))
-        #     #emotion = self.detectAI()
-
-        #     self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
-
-        #     chat_entry.delete(0, END) 
-        #     #self.index += 1
-
-        # self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
-        # self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
-        # Grid.columnconfigure(self.boxes_subframe,0,weight=1)
-
-        # # create chat box and emoji btn
-        # tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
-        # tool_subframe.grid(row=2, column=0)
-        # tool_subframe.grid_propagate(0)
-
-        # other_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Other_btn.png")), size=(40, 40))
-        # other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=lambda:self.upload_image())
-        # other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
-
-        # chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
-        # chat_entry.grid(row=0, column=1)
-
-        # chat_entry.bind("<Return>", send_text)
-
-        # sticker_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Sticker_btn.png")), size=(40, 40))
-        # sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
-        # sticker_label.grid(row = 0, column = 2, padx = 30, pady = 30)
-
-        # emoji_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Emoji_btn.png")), size=(40, 40))
-        # emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
-        # emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
-
+            
+    """
+    ======================================
+    Display Chat FUNCTIONS
+    ======================================
+    """
     def upload_image(self):
         # Open a file dialog to select an image file
         filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
@@ -347,131 +328,39 @@ class app:
                 }
         self.add_message(data, "image")
         self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
+        
+    def send_text(self):
+        msg = str(self.chat_entry.get())
+        if not msg.strip():
+            return
 
+        # Current Date and Time
+        if self.socketOn == False:
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
+            #print(date_time)
+            chatObject = {
+                "text": msg,
+                "time": date_time,
+                "name": self.curUser,
+                "emotion": self.realTimeEmotion
+            }
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
+            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+            Grid.columnconfigure(msgBox,0,weight=0)
+            Grid.columnconfigure(msgBox,1,weight=0)
+            Grid.columnconfigure(msgBox,2,weight=1)
+        else:
+            self.send_message(str(self.chat_entry.get()))
+
+        self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
+
+        self.chat_entry.delete(0, END)
+        
     def topEmoji(self):
         self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, anchor="n", command=lambda: self.controlAI())    
         self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
-
-    def convert_emotion(self, emotion):
-        if emotion == "happy":
-            return "😄"
-        elif emotion == "sad":
-            return "😟"
-        elif emotion == "neutral":
-            return "🙂"
-        elif emotion == "angry":
-            return "😡"
-        elif emotion == "disgust":
-            return "🤢"
-        elif emotion == "surprise":
-            return "😲"
-        
-    """
-    SOCKET Functions
-    """
-    def add_message(self, data, inputType):
-        if inputType == "text":
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y %H:%M")
-            #print(date_time)
-            chatObject = {
-                "text": data['msg'],
-                "time": date_time,
-                "name": data['name'],
-                "emotion": self.realTimeEmotion
-            }
-            # print(chatObject)
-            if data['name'] != self.curUser:
-                profilePic = self.db.getFriendPic(data['name'])
-            else:
-                profilePic = None
-
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
-
-            if self.curUser == data['name']:
-                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-                Grid.columnconfigure(msgBox,0,weight=0)
-                Grid.columnconfigure(msgBox,1,weight=0)
-                Grid.columnconfigure(msgBox,2,weight=1)
-            else:
-                msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
-                Grid.columnconfigure(msgBox,0,weight=0)
-                Grid.columnconfigure(msgBox,1,weight=1)
-                Grid.columnconfigure(msgBox,2,weight=0)
-            self.index += 1
-        elif inputType == "image":
-            now = datetime.now()
-            date_time = now.strftime("%m/%d/%Y %H:%M")
-            #print(date_time)
-            chatObject = {
-                "text": data['msg'],
-                "time": date_time,
-                "name": data['name'],
-                "emotion": self.realTimeEmotion
-            }
-            # print(chatObject)
-            if data['name'] != self.curUser:
-                profilePic = self.db.getFriendPic(data['name'])
-            else:
-                profilePic = None
-
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
-
-            if self.curUser == data['name']:
-                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-                Grid.columnconfigure(msgBox,0,weight=0)
-                Grid.columnconfigure(msgBox,1,weight=0)
-                Grid.columnconfigure(msgBox,2,weight=1)
-            else:
-                msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
-                Grid.columnconfigure(msgBox,0,weight=0)
-                Grid.columnconfigure(msgBox,1,weight=1)
-                Grid.columnconfigure(msgBox,2,weight=0)
-            self.index += 1
-        
-    def connect(self):
-        # try except block
-        try:
-            # Connect to the server
-            self.client.connect((self.host, self.port))
-            print("Successfully connected to server")
-            print("[SERVER] Successfully connected to the server")
-        except:
-            print(f"Unable to connect to server", f"Unable to connect to server {self.host}:{self.port}")
-
-        if self.curUser != '':
-            self.client.sendall(self.curUser.encode())
-        else:
-            print("Invalid username", "Username cannot be empty")
-
-        self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
-        
-    def send_message(self,message):
-        #message = message_textbox.get()
-        if message != '':
-            self.client.sendall(message.encode())
-            # message_textbox.delete(0, len(message))
-        else:
-            print("Empty Message")
     
-    def listen_for_messages_from_server(self,client):
-        while 1:
-            message = self.client.recv(2048).decode('utf-8')
-            if message != '':
-                username = message.split("~")[0]
-                content = message.split('~')[1]
-
-                data = {
-                    "name" : username,
-                    "msg" : content
-                }
-                self.add_message(data, "text")
-                
-            else:
-                print("Error")
-
-
-    # Function to display output message
     def display_chat(self, friend, ini):
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
@@ -483,37 +372,6 @@ class app:
         self.topbar_subframe.grid_propagate(0)
 
         # create a message boxes container 
-        # Remove texts after hitting enter to send a message
-        def send_text(e):
-            # self.boxes_subframe.columnconfigure(1, weight=1)
-            msg = str(chat_entry.get())
-            if not msg.strip():
-                return
-
-            # Current Date and Time
-            if self.socketOn == False:
-                now = datetime.now()
-                date_time = now.strftime("%m/%d/%Y %H:%M")
-                #print(date_time)
-                chatObject = {
-                    "text": msg,
-                    "time": date_time,
-                    "name": self.curUser,
-                    "emotion": self.realTimeEmotion
-                }
-                msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
-                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-                Grid.columnconfigure(msgBox,0,weight=0)
-                Grid.columnconfigure(msgBox,1,weight=0)
-                Grid.columnconfigure(msgBox,2,weight=1)
-            else:
-                self.send_message(str(chat_entry.get()))
-            #emotion = self.detectAI()
-
-            self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
-
-            chat_entry.delete(0, END) 
-            #self.index += 1
 
         self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
         self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
@@ -528,10 +386,10 @@ class app:
         other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=lambda:self.upload_image())
         other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
 
-        chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
-        chat_entry.grid(row=0, column=1)
+        self.chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
+        self.chat_entry.grid(row=0, column=1)
 
-        chat_entry.bind("<Return>", send_text)
+        self.chat_entry.bind("<Return>", self.send_text)
 
         sticker_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Sticker_btn.png")), size=(40, 40))
         sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
@@ -548,18 +406,12 @@ class app:
             print("connect using socket")
         except:
             self.socketOn = False
-            if ini:
-                self.thread = self.db.customThread(friend,self.db.getChat())
-                self.thread.start()
-                t = Thread(target = self.checkUpdate).start()
-                self.initiateThread = True
             
         # Detect Emotion Thread
         self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
         # Detect Emotion Output Thread
         self.realTimeEmotion = Thread(target=self.detectAI, args=(1,)).start()
-        
-        print("finish creating thread")        
+              
         self.curChatFriend = friend
         name = self.db.findFriend(self.curChatFriend)["name"]
 
@@ -572,7 +424,6 @@ class app:
         name = customtkinter.CTkLabel(self.topbar_subframe, text=name, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
         name.grid(row=0, column=0, pady = 15, padx=(15,0), sticky="w")
 
-        print("before loading chat")
 
         # create emoji in topbar
         self.topEmoji()
@@ -584,12 +435,8 @@ class app:
         for widget in self.boxes_subframe.winfo_children():
             widget.destroy()
         
-        chatbox_color = "#DCE9F6"
-        
         chatFrameList = []
-        self.index = 0
-        #Threading
-        
+        self.index = 0  
 
         try:
             for index, key in enumerate(chat_history):
@@ -610,23 +457,27 @@ class app:
         except Exception as e:
             print(e)
             print("no chat")
-
-
-    def checkUpdate(self):
-        while True:
-            if self.thread.update:
-                self.update_frame(self.curChatFriend)
-                self.thread.update = False
-                print("Updating")
-            time.sleep(2)
-
-    def update_frame(self,friend):
-        self.display_chat(friend, False)
-        print("Calling Update")
-
     """
-    add friend page
-    """
+    ======================================
+    Add Friends Functions
+    ======================================
+    """ 
+    def acceptBtn(self, name, frame):
+        self.db.acceptFriendRequest(self.curUser, name)
+        try:
+            print("Loading chat")
+            err = self.db.loadchat(name)
+            if type(err) == Exception:
+                self.db.createChatroom(name)
+        except:
+            print("Creating Chatroom from main.py")
+            self.db.createChatroom(name)
+        frame.destroy()
+
+    def rejectBtn(self, name, frame):
+        self.db.rejectFriendRequest(self.curUser,name)
+        frame.destroy()
+        
     def addFriend(self):
         for i in self.master.winfo_children():
             i.destroy()
@@ -739,10 +590,119 @@ class app:
         search_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "search_btn.png")), size=(40, 40))
         search_btn = customtkinter.CTkButton(self.search_subframe, image=search_logo, text="", width=0, fg_color=BG_COLOR, command=lambda: self.showProfile(username_entry.get()))
         search_btn.grid(row = 1, column = 1, padx=5, sticky='w')
+                   
+    """
+    ======================================
+    Profile Functions
+    ======================================
+    """
+    def edit_bio(self):
+        self.bio_text.configure(state="normal")
+        self.bio_text.insert("0.0", text='')
+        self.bio_text.bind("<Return>", self.edited_bio)
+    
+    def edited_bio(self, event):
+        self.bio = self.bio_text.get("0.0", "end")
+        self.db.changeBio(self.curUser, self.bio)
+        self.bio_text.configure(state="disabled")
+        
+    def edit_name(self):
+        self.name_text.configure(state="normal")
+        self.name_text.insert("0.0", text='')
+        self.name_text.bind("<Return>", self.edited_name)
+ 
+    def edited_name(self, event):
+        self.name = self.name_text.get("0.0", "end")
+        self.db.changeName(self.curUser, self.name)
+        self.name_text.configure(state="disabled")
+        
+    def emotion_stat(self, emotion, total, quantity, i):
+        # create emotion 
+        self.emotion = customtkinter.CTkLabel(self.emotion_subframe, text=self.convert_emotion(emotion),text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
+        self.emotion.grid(row=i, column=0, pady=(10,0), padx=(20,30))
+        
+        if total != 0:
+            # create progress bar
+            for j in range(round(10*quantity/total)):
+                progress = customtkinter.CTkLabel(self.emotion_subframe, text="🟥",text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
+                progress.grid(row=i, column=j+1, pady=(10,0))
+    
+    def convert_emotion(self, emotion):
+        if emotion == "happy":
+            return "😄"
+        elif emotion == "sad":
+            return "😟"
+        elif emotion == "neutral":
+            return "🙂"
+        elif emotion == "angry":
+            return "😡"
+        elif emotion == "disgust":
+            return "🤢"
+        elif emotion == "surprise":
+            return "😲"
+    
+    # popup frame
+    def popup(self):
+        self.popup_window = tk.Toplevel(root)
+        self.popup_window.geometry("1200x800+360+140")
+        self.popup_window.configure(bg=TOPBUTT_BAR)
 
-    """
-    profile page
-    """
+        Grid.columnconfigure(self.popup_window,0,weight=1)
+        Grid.rowconfigure(self.popup_window,0,weight=0)  
+        Grid.rowconfigure(self.popup_window,1,weight=1)  
+        Grid.rowconfigure(self.popup_window,2,weight=0) 
+
+        label = customtkinter.CTkLabel(self.popup_window, text="Choose the profile that you like", text_color=TOPBUTT_TEXT, font=("Inter", 40))
+        label.grid(column = 0, row = 0, pady = 20)
+
+        # create scrollable frame
+        image_frame = customtkinter.CTkScrollableFrame(self.popup_window, width=480, height=300, corner_radius=0, fg_color=LIGHT_BG)	
+        image_frame.grid(row=1, column=0, sticky="nsew")
+        Grid.columnconfigure(image_frame,0,weight=1)
+        Grid.columnconfigure(image_frame,1,weight=1)
+        Grid.columnconfigure(image_frame,2,weight=1)
+        Grid.columnconfigure(image_frame,3,weight=1)
+        Grid.columnconfigure(image_frame,4,weight=1)
+
+        folder_path = 'profilePic'
+        num_files = len([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
+
+        # profileImageDict = {
+        #     0:"bla", 1:"bla", 2:"bla", 3:"bla", 4:"bla", 5:"bla", 6:"bla", 7:"bla", 8:"bla"
+        # }
+        
+        # create buttons
+        row = 0
+        col = 0
+        for i in range(num_files):
+            image = os.path.join("profilePic", f"{i}.png")
+            choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
+            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda newProfile = i: self.changeProfile(newProfile))
+            choose_label.grid(row=row, column=col, padx=0, pady=15)
+            col += 1
+            if col > 4:
+                col = 0
+                row += 1
+
+        self.popup_window.wait_window()
+
+    # change profile and refresh it
+    def afterChangeProfile(self):
+        self.popup_window.destroy()
+        self.myProfile()
+    
+    # after press add button in addFriend page
+    def afterAdd(self, name):
+        self.db.addFriend(self.curUser, name)
+        self.mainChat()
+    
+    # create confirm button
+    def changeProfile(self, newProfile):
+        self.db.changeProfilePic(self.curUser, newProfile)
+        self.profilePic = newProfile
+        button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), text_color=GENERAL_TEXT, fg_color=TOPBUTT_TEXT, command=lambda:self.afterChangeProfile())
+        button.grid(column = 0, row = 2, pady=20)
+                
     def myProfile(self):
         Grid.columnconfigure(root,0,weight=0)
         Grid.columnconfigure(root,1,weight=1)
@@ -829,54 +789,7 @@ class app:
         self.emotion_stat("angry", sum_of_values, emotionDict["angry"], 3)
         self.emotion_stat("disgust", sum_of_values, emotionDict["disgust"], 4)
         self.emotion_stat("surprise", sum_of_values, emotionDict["surprise"], 5)
-
-    def emotion_stat(self, emotion, total, quantity, i):
-        # create emotion 
-        self.emotion = customtkinter.CTkLabel(self.emotion_subframe, text=self.convert_emotion(emotion),text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
-        self.emotion.grid(row=i, column=0, pady=(10,0), padx=(20,30))
-        
-        if total != 0:
-            # create progress bar
-            for j in range(round(10*quantity/total)):
-                progress = customtkinter.CTkLabel(self.emotion_subframe, text="🟥",text_color=GENERAL_TEXT, fg_color=PROFILE_INFO, font=("Inter", 50))
-                progress.grid(row=i, column=j+1, pady=(10,0))
-
-    def edit_bio(self):
-        self.bio_text.configure(state="normal")
-        self.bio_text.insert("0.0", text='')
-        self.bio_text.bind("<Return>", self.edited_bio)
     
-    def edited_bio(self, event):
-        self.bio = self.bio_text.get("0.0", "end")
-        self.db.changeBio(self.curUser, self.bio)
-        self.bio_text.configure(state="disabled")
-        
-    def edit_name(self):
-        self.name_text.configure(state="normal")
-        self.name_text.insert("0.0", text='')
-        self.name_text.bind("<Return>", self.edited_name)
- 
-    def edited_name(self, event):
-        self.name = self.name_text.get("0.0", "end")
-        self.db.changeName(self.curUser, self.name)
-        self.name_text.configure(state="disabled")
-
-    def acceptBtn(self, name, frame):
-        self.db.acceptFriendRequest(self.curUser, name)
-        try:
-            print("Loading chat")
-            err = self.db.loadchat(name)
-            if type(err) == Exception:
-                self.db.createChatroom(name)
-        except:
-            print("Creating Chatroom from main.py")
-            self.db.createChatroom(name)
-        frame.destroy()
-
-    def rejectBtn(self, name, frame):
-        self.db.rejectFriendRequest(self.curUser,name)
-        frame.destroy()
-
     # function show profile in addfriend page
     def showProfile(self, name):
         # create variable
@@ -940,22 +853,11 @@ class app:
         except Exception as e:
             print(e)
             print("Profile not found")
-    
-    def calibrateThread(self):
-        print("Creating Thread to Calibrate AI")
-        self.aiT = Thread(target=self.calibrateAI, args=(1,)).start()
-        
-    def calibrateAI(self,name):
-        print("Calibrating")
-        self.ai = self.db.getAI()
-        self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
-        print("Ending Thread to Calibrate AI")
-        print(f"The calibration result is {self.calibrate}")
-        
-        #self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
-    
+
     """
-    setting page
+    ======================================
+    Settings Functions
+    ======================================
     """
     def setting(self):
         Grid.columnconfigure(root,0,weight=0)
@@ -1017,97 +919,156 @@ class app:
 
 
         self.popup_window.wait_window()
+    
+    """
+    ======================================
+    Sockets Functions
+    ======================================
+    """
+    def setIP(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.host = s.getsockname()[0]
+        s.close()
         
-    def main_menu(self):
-        # Setting up grid and frame for button widgets/ texts
-        Grid.columnconfigure(root,0,weight=1)
-        Grid.columnconfigure(root,1,weight=1)
-        Grid.columnconfigure(root,2,weight=1)
+    def add_message(self, data, inputType):
+        if inputType == "text":
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
+            #print(date_time)
+            chatObject = {
+                "text": data['msg'],
+                "time": date_time,
+                "name": data['name'],
+                "emotion": self.realTimeEmotion
+            }
+            # print(chatObject)
+            if data['name'] != self.curUser:
+                profilePic = self.db.getFriendPic(data['name'])
+            else:
+                profilePic = None
 
-        for i in self.master.winfo_children():
-            i.destroy()
-        # Title 
-        tk.Label(self.master, text="CUBE", font=("Inter", 64, "bold"), bg=BG2_COLOR).grid(column=1, row=0, sticky=tk.N, padx=1, pady=45)
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
+
+            if self.curUser == data['name']:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=0)
+                Grid.columnconfigure(msgBox,2,weight=1)
+            else:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=1)
+                Grid.columnconfigure(msgBox,2,weight=0)
+            self.index += 1
+        elif inputType == "image":
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
+            #print(date_time)
+            chatObject = {
+                "text": data['msg'],
+                "time": date_time,
+                "name": data['name'],
+                "emotion": self.realTimeEmotion
+            }
+            # print(chatObject)
+            if data['name'] != self.curUser:
+                profilePic = self.db.getFriendPic(data['name'])
+            else:
+                profilePic = None
+
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
+
+            if self.curUser == data['name']:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=0)
+                Grid.columnconfigure(msgBox,2,weight=1)
+            else:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=1)
+                Grid.columnconfigure(msgBox,2,weight=0)
+            self.index += 1
         
-        # Cube logo
-        self.image = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "vaadin_cube.png")), size=(220, 220))
-        img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
-        img_label.grid(column=1, row=1)
+    def connect(self):
+        # try except block
+        try:
+            # Connect to the server
+            self.client.connect((self.host, self.port))
+            print("Successfully connected to server")
+            print("[SERVER] Successfully connected to the server")
+        except:
+            print(f"Unable to connect to server", f"Unable to connect to server {self.host}:{self.port}")
 
-        # Menu texts/ three buttons: Login, Register, & Quit
-        tk.Label(self.master, text="Welcome\nGlad to see you!\n\n\n\n", font=("Inter", 25), bg=BG2_COLOR).grid(column=1, row=2, pady=20, sticky=tk.N)
+        if self.curUser != '':
+            self.client.sendall(self.curUser.encode())
+        else:
+            print("Invalid username", "Username cannot be empty")
 
-        log_btn = customtkinter.CTkButton(self.master, text="Login", font=("Inter", 35), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=350, height=75, command=self.login_menu)
-        log_btn.grid(column=1, row=2, pady=(70,0))
+        self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
+        
+    def send_message(self,message):
+        #message = message_textbox.get()
+        if message != '':
+            self.client.sendall(message.encode())
+            # message_textbox.delete(0, len(message))
+        else:
+            print("Empty Message")
+    
+    def listen_for_messages_from_server(self,client):
+        while 1:
+            message = self.client.recv(2048).decode('utf-8')
+            if message != '':
+                username = message.split("~")[0]
+                content = message.split('~')[1]
 
-        reg_btn = customtkinter.CTkButton(self.master, text="Register", font=("Inter", 35), corner_radius=20, text_color=BUTTON_TEXT, fg_color=BUTTON, width=350, height=75, command=self.register_menu)
-        reg_btn.grid(column=1, row=3)
+                data = {
+                    "name" : username,
+                    "msg" : content
+                }
+                self.add_message(data, "text")
+                
+            else:
+                print("Error")
 
-        exit_btn = customtkinter.CTkButton(self.master, text="Quit", font=("Inter", 35), corner_radius=20, text_color=GENERAL_TEXT, fg_color=BUTTON_TEXT, width=250, height=75, command=root.destroy)
-        exit_btn.grid(column=1, row=4, pady=100)
+    """
+    ======================================
+    AI Functions
+    ======================================
+    """
+    def turnOnAI(self,name):
+        print("Detecting")
+        self.ai = self.db.getAI()
+        self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
+
+    def detectAI(self, name):
+        while True:
+            self.realTimeEmotion = self.ai.real_time_emotion
+            try:
+                self.emojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
+            except:
+                pass
             
-    # popup frame
-    def popup(self):
-        self.popup_window = tk.Toplevel(root)
-        self.popup_window.geometry("1200x800+360+140")
-        self.popup_window.configure(bg=TOPBUTT_BAR)
-
-        Grid.columnconfigure(self.popup_window,0,weight=1)
-        Grid.rowconfigure(self.popup_window,0,weight=0)  
-        Grid.rowconfigure(self.popup_window,1,weight=1)  
-        Grid.rowconfigure(self.popup_window,2,weight=0) 
-
-        label = customtkinter.CTkLabel(self.popup_window, text="Choose the profile that you like", text_color=TOPBUTT_TEXT, font=("Inter", 40))
-        label.grid(column = 0, row = 0, pady = 20)
-
-        # create scrollable frame
-        image_frame = customtkinter.CTkScrollableFrame(self.popup_window, width=480, height=300, corner_radius=0, fg_color=LIGHT_BG)	
-        image_frame.grid(row=1, column=0, sticky="nsew")
-        Grid.columnconfigure(image_frame,0,weight=1)
-        Grid.columnconfigure(image_frame,1,weight=1)
-        Grid.columnconfigure(image_frame,2,weight=1)
-        Grid.columnconfigure(image_frame,3,weight=1)
-        Grid.columnconfigure(image_frame,4,weight=1)
-
-        folder_path = 'profilePic'
-        num_files = len([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
-
-        # profileImageDict = {
-        #     0:"bla", 1:"bla", 2:"bla", 3:"bla", 4:"bla", 5:"bla", 6:"bla", 7:"bla", 8:"bla"
-        # }
+            time.sleep(1)
+            # print(self.realTimeEmotion)
+            
+    def calibrateThread(self):
+        print("Creating Thread to Calibrate AI")
+        self.aiT = Thread(target=self.calibrateAI, args=(1,)).start()
         
-        # create buttons
-        row = 0
-        col = 0
-        for i in range(num_files):
-            image = os.path.join("profilePic", f"{i}.png")
-            choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
-            choose_label = customtkinter.CTkButton(image_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda newProfile = i: self.changeProfile(newProfile))
-            choose_label.grid(row=row, column=col, padx=0, pady=15)
-            col += 1
-            if col > 4:
-                col = 0
-                row += 1
+    def calibrateAI(self,name):
+        print("Calibrating")
+        self.ai = self.db.getAI()
+        self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt")
+        print("Ending Thread to Calibrate AI")
+        print(f"The calibration result is {self.calibrate}")
 
-        self.popup_window.wait_window()
-    
-    # create confirm button
-    def changeProfile(self, newProfile):
-        self.db.changeProfilePic(self.curUser, newProfile)
-        self.profilePic = newProfile
-        button = customtkinter.CTkButton(self.popup_window, text="Confirm", font=("Inter", 25), text_color=GENERAL_TEXT, fg_color=TOPBUTT_TEXT, command=lambda:self.afterChangeProfile())
-        button.grid(column = 0, row = 2, pady=20)
-
-    # change profile and refresh it
-    def afterChangeProfile(self):
-        self.popup_window.destroy()
-        self.myProfile()
-    
-    # after press add button in addFriend page
-    def afterAdd(self, name):
-        self.db.addFriend(self.curUser, name)
-        self.chat()
-
+    """
+    ======================================
+    Sidebar Functions
+    ======================================
+    """
     # function to create sidepar 
     def sidebar(self, page):
         if page == "chat":
@@ -1125,7 +1086,7 @@ class app:
             myProfile_hover = True
         elif page == "addFriend":
             chat_img = os.path.join("logostorage", "Chat_btn.png")
-            chat_command = self.chat
+            chat_command = self.mainChat
             chat_hover = True
             addFriend_img = os.path.join("logostorage", "AddFriend_selected.png")
             addFriend_command = None
@@ -1138,7 +1099,7 @@ class app:
             myProfile_hover = True
         elif page == "myProfile":
             chat_img = os.path.join("logostorage", "Chat_btn.png")
-            chat_command = self.chat
+            chat_command = self.mainChat
             chat_hover = True
             addFriend_img = os.path.join("logostorage", "AddFriend_btn.png")
             addFriend_command = self.addFriend
@@ -1151,7 +1112,7 @@ class app:
             myProfile_hover = False
         elif page == "setting":
             chat_img = os.path.join("logostorage", "Chat_btn.png")
-            chat_command = self.chat
+            chat_command = self.mainChat
             chat_hover = True
             addFriend_img = os.path.join("logostorage", "AddFriend_btn.png")
             addFriend_command = self.addFriend
@@ -1193,48 +1154,9 @@ class app:
         shutdown_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Shutdown_btn.png")), size=(40, 40))
         shutdown_label = customtkinter.CTkButton(sidebar_frame, image=shutdown_logo, text="", width=0, fg_color=SIDE_BAR, command=root.destroy)
         shutdown_label.grid(row = 5, column = 0, pady = (30, 25))
-    
-    
-    """
-    Backend Code
-    """
-    def loginDB(self,username,password):
-        data = self.db.login(username,password)
-        if type(data) == Exception:
-            # create error label
-            error_label = customtkinter.CTkLabel(self.errLogin_frame, text=data, font=("Inter", 20), text_color="red")
-            error_label.grid(column=0, row=0)
-        else:
-            self.curUser = data.get()['username']
-            self.name = data.get()['name']
-            self.bio = data.get()['bio'][0]
-            self.profilePic = data.get()['profileImage']
-            print(f"Logged In as {self.curUser}")
-            self.myProfile()
 
-    
-    def registerDB(self,username,name,password,confirm):
-        if password == confirm:
-            print("Creating Account...")
-            data = self.db.createAccount(username,name,password)
-        else:
-            data = Exception("Password do not match")
-        if type(data) == Exception:
-            # create error label
-            print('error')  
-            self.errorReg.configure(text=data)
-
-        else:
-            print(data)
-            self.curUser = data.get()['username']
-            self.name = data.get()['name']
-            self.bio = data.get()['bio'][0]
-            self.profilePic = data.get()['profileImage']
-            self.myProfile()
-        
     def quit(self,e):
         self.destroy()
-
 
 if __name__ == '__main__':
     try:
@@ -1243,7 +1165,8 @@ if __name__ == '__main__':
         
     finally:
         root = Tk()
-        # root = customtkinter.CTk()                    
+        # root = customtkinter.CTk()           
+        root.title("Cube")         
         root.attributes('-fullscreen', True)
         app(root)
         root.mainloop()
