@@ -43,8 +43,6 @@ TOPBUTT_TEXT = "#FFFFFF"
 """
 SOCKET DATA
 """
-HOST = '192.168.0.110'
-PORT = 1105
 LISTENER_LIMIT = 5
 active_clients = []
 
@@ -53,6 +51,8 @@ class app:
         self.master = master
         window_width = 1080
         window_height = 1920
+        self.host = '192.168.0.110'
+        self.port = 1105
         master.bind('<Escape>',lambda e: quit(e))
         # get the screen dimension
         screen_width = self.master.winfo_screenwidth()
@@ -71,8 +71,15 @@ class app:
         self.master['bg'] = BG2_COLOR
         self.tempframe = None
 
+        self.setIP()
 
         self.main_menu()
+        
+    def setIP(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.host = s.getsockname()[0]
+        s.close()
         
         
     def login_menu(self):  
@@ -396,11 +403,11 @@ class app:
         # try except block
         try:
             # Connect to the server
-            self.client.connect((HOST, PORT))
+            self.client.connect((self.host, self.port))
             print("Successfully connected to server")
             print("[SERVER] Successfully connected to the server")
         except:
-            print(f"Unable to connect to server", f"Unable to connect to server {HOST}:{PORT}")
+            print(f"Unable to connect to server", f"Unable to connect to server {self.host}:{self.port}")
 
         if self.curUser != '':
             self.client.sendall(self.curUser.encode())

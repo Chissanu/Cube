@@ -2,7 +2,7 @@
 import socket
 import threading
 
-HOST = '192.168.0.110'
+host = '192.168.0.110'
 PORT = 1105 # You can use any port between 0 to 65535
 LISTENER_LIMIT = 5
 active_clients = [] # List of all currently connected users
@@ -51,22 +51,30 @@ def client_handler(client):
 
     threading.Thread(target=listen_for_messages, args=(client, username, )).start()
 
+def setIP():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    host = s.getsockname()[0]
+    s.close()
+    return host
+    
 # Main function
 def main():
-
+    setIP()
     # Creating the socket class object
     # AF_INET: we are going to use IPv4 addresses
     # SOCK_STREAM: we are using TCP packets for communication
+    host = setIP()
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Creating a try catch block
     try:
         # Provide the server with an address in the form of
         # host IP and port
-        server.bind((HOST, PORT))
-        print(f"Running the server on {HOST} {PORT}")
+        server.bind((host, PORT))
+        print(f"Running the server on {host} {PORT}")
     except:
-        print(f"Unable to bind to host {HOST} and port {PORT}")
+        print(f"Unable to bind to host {host} and port {PORT}")
 
     # Set server limit
     server.listen(LISTENER_LIMIT)
