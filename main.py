@@ -959,7 +959,6 @@ class app:
         tog_dark.grid(row=1, column=0, pady=20, sticky="E")
 
         self.popup_window.wait_window()
-        return BG_COLOR, LIGHT_BG, GENERAL_TEXT, INPUT_BOX, BUTTON, BUTTON_TEXT, FRIEND_LIST, PROFILE_INFO, ADD_SHOWINFO, TOPBUTT_TEXT
         
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
