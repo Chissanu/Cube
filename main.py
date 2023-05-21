@@ -83,14 +83,10 @@ class app:
         self.host = s.getsockname()[0]
         s.close()
              
-        
+    """
+    Login page
+    """
     def login_menu(self):  
-        """
-        Setting up grid and frame for button widgets/ texts
-        comment these out for now, as they messed with the alignment of widgets for tkinter
-        Grid.columnconfigure(root, index = 0, weight = 1)
-        Grid.rowconfigure(root, 0, weight = 1)
-        """
         Grid.rowconfigure(root,3,weight=0)
         Grid.rowconfigure(root,4,weight=0)
 
@@ -149,14 +145,10 @@ class app:
             print(self.realTimeEmotion)
             #return emotion
 
-    def register_menu(self):  
-        """
-        Setting up grid and frame for button widgets/ texts
-        comment these out for now, as they messed with the alignment of widgets for tkinter
-        Grid.columnconfigure(root, index = 0, weight = 1)
-        Grid.rowconfigure(root, 0, weight = 1)
-        """
-
+    """
+    Register page
+    """
+    def register_menu(self): 
         Grid.rowconfigure(root,3,weight=0)
         Grid.rowconfigure(root,4,weight=0)
 
@@ -217,6 +209,9 @@ class app:
         # error_label = customtkinter.CTkLabel(self.master, text="Wrong Password or Account not found", font=("Inter", 20), text_color="red")
         # error_label.grid(column=1, row=10, pady=(20,0))
 
+    """
+    Chat page
+    """
     def chat(self):
         self.curChatFriend = None 
         # Setting up grid and frame for button widgets/ texts
@@ -349,8 +344,8 @@ class app:
         print(filepath)
 
     def topEmoji(self):
-        self.emojiLabel = customtkinter.CTkLabel(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 40), text_color=TOPBUTT_TEXT)	
-        self.emojiLabel.grid(row=0, column=1, padx=(0,15), sticky="e")
+        self.emojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=100, height=100, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, command=None)	
+        self.emojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
 
     def convert_emotion(self, emotion):
         if emotion == "happy":
@@ -471,7 +466,10 @@ class app:
         for i in self.topbar_subframe.winfo_children():
             i.destroy()	
         name = customtkinter.CTkLabel(self.topbar_subframe, text=name, font=("Inter", 40), text_color=TOPBUTT_TEXT, anchor=W)	
-        name.grid(row=0, column=0, pady = 15, padx=(15,0), sticky=W)
+        name.grid(row=0, column=0, pady = 15, padx=(15,0), sticky="w")
+
+        stopDetect_btn = customtkinter.CTkButton(self.topbar_subframe, text="stop", width=50, height=25, text_color=BUTTON_TEXT, fg_color=BUTTON, command=None)
+        stopDetect_btn.grid(row = 0, column = 1, padx = 5, sticky="e")
 
         # create emoji in topbar
         self.topEmoji()
@@ -523,6 +521,9 @@ class app:
         self.display_chat(friend, False)
         print("Calling Update")
 
+    """
+    add friend page
+    """
     def addFriend(self):
         for i in self.master.winfo_children():
             i.destroy()
@@ -636,6 +637,9 @@ class app:
         search_btn = customtkinter.CTkButton(self.search_subframe, image=search_logo, text="", width=0, fg_color=BG_COLOR, command=lambda: self.showProfile(username_entry.get()))
         search_btn.grid(row = 1, column = 1, padx=5, sticky='w')
 
+    """
+    profile page
+    """
     def myProfile(self):
         Grid.columnconfigure(root,0,weight=0)
         Grid.columnconfigure(root,1,weight=1)
@@ -707,9 +711,17 @@ class app:
 
         # show stat of each emotion
         curUserProfile = self.db.findFriend(self.curUser)
-        emotionDict = curUserProfile['emotions'].items()
-        print(emotionDict["sad"])
-        self.emotion_stat("sad", 100, 96, 0)
+        emotionDict = curUserProfile['emotions']
+        sum_of_values = 0
+        print(emotionDict)
+        for key, value in emotionDict.items():
+            sum_of_values += value   
+        self.emotion_stat("happy", sum_of_values, emotionDict["happy"], 0)
+        self.emotion_stat("sad", sum_of_values, emotionDict["sad"], 1)
+        self.emotion_stat("neutral", sum_of_values, emotionDict["neutral"], 2)
+        self.emotion_stat("angry", sum_of_values, emotionDict["angry"], 3)
+        self.emotion_stat("disgust", sum_of_values, emotionDict["disgust"], 4)
+        self.emotion_stat("surprise", sum_of_values, emotionDict["surprise"], 5)
 
     def emotion_stat(self, emotion, total, quantity, i):
         # create emotion 
@@ -828,9 +840,10 @@ class app:
         print(f"The calibration result is {self.calibrate}")
         
         #self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
-        
-        
-    # setting page
+    
+    """
+    setting page
+    """
     def setting(self):
         Grid.columnconfigure(root,0,weight=0)
         Grid.columnconfigure(root,1,weight=2)
