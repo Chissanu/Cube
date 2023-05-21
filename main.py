@@ -22,45 +22,45 @@ CURRENT_PATH = os.getcwd()
 
 # color palatte
 
-# global BG_COLOR
-# global LIGHT_BG
-# global GENERAL_TEXT
-# global INPUT_BOX
-# global BUTTON
-# global BUTTON_TEXT
-# global FRIEND_LIST
-# global PROFILE_INFO
-# global ADD_SHOWINFO
-# global TOPBUTT_TEXT
+global BG_COLOR
+global BG2_COLOR
+global LIGHT_BG
+global GENERAL_TEXT
+global INPUT_TEXT
+global INPUT_BOX
+global BUTTON
+global BUTTON_TEXT
+global FRIEND_LIST
+global SIDE_BAR
+global REQUEST_LIST
+global PROFILE_INFO
+global ADD_SHOWINFO
+global MSG_BOX
+global MSG_TEXT
+global EMOJIANDTIME
+global TOPBUTT_BAR
+global TOPBUTT_TEXT
 
 BG_COLOR = "#F1F6F9"
-
 BG2_COLOR = "#9BA4B5"
-
 LIGHT_BG = "#FFFFFF"
 GENERAL_TEXT = "#000000"
-
 INPUT_TEXT = "#989898"
-
 INPUT_BOX = "#FFFFFF"
 BUTTON = "#394867"
 BUTTON_TEXT = "#FFFFFF"
 FRIEND_LIST = "#6B7A97"
-
-
 SIDE_BAR = "#212A3E"
 REQUEST_LIST = "#9BA4B5"
-
 PROFILE_INFO = "#FFFFFF"
 ADD_SHOWINFO = "#6B7A97"
-
-
 MSG_BOX = "#9BA4B5"
 MSG_TEXT = "#000000"
 EMOJIANDTIME = "#000000"
 TOPBUTT_BAR = "#3a4d78"
-
 TOPBUTT_TEXT = "#FFFFFF"
+
+
 
 """
 SOCKET DATA
@@ -901,25 +901,11 @@ class app:
         off = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "dark.png")), size=(160,75))
 
 
-        global BG_COLOR
-        global LIGHT_BG
-        global GENERAL_TEXT
-        global INPUT_BOX
-        global BUTTON
-        global BUTTON_TEXT
-        global FRIEND_LIST
-        global PROFILE_INFO
-        global ADD_SHOWINFO
-        global TOPBUTT_TEXT
-
-
+        # Switch to light
         def light():
-            if tog_light:
-                # tog_light.configure(image=off)
-                label.configure(fg_color=BG_COLOR)
-                tog_light.configure(fg_color=BG_COLOR)
-                tog_dark.configure(fg_color=BG_COLOR)
+            global theme_changer
 
+            if tog_light:
                 BG_COLOR = "#F1F6F9"
                 LIGHT_BG = "#FFFFFF"
                 GENERAL_TEXT = "#000000"
@@ -931,14 +917,20 @@ class app:
                 ADD_SHOWINFO = "#6B7A97"
                 TOPBUTT_TEXT = "#FFFFFF"
 
-
-        def dark():
-            if tog_dark:
                 # tog_light.configure(image=off)
-                label.configure(fg_color=SIDE_BAR)
-                tog_light.configure(fg_color=SIDE_BAR)
-                tog_dark.configure(fg_color=SIDE_BAR)
+                label.configure(fg_color=BG_COLOR)
+                tog_light.configure(fg_color=BG_COLOR)
+                tog_dark.configure(fg_color=BG_COLOR)
+                theme_changer = False
 
+                # root.destroy()
+                return BG_COLOR, LIGHT_BG, GENERAL_TEXT, INPUT_BOX, BUTTON, BUTTON_TEXT, FRIEND_LIST, PROFILE_INFO, ADD_SHOWINFO, TOPBUTT_TEXT
+
+        # Switch to dark
+        def dark():
+            global theme_changer
+
+            if tog_dark:
                 BG_COLOR = "#212A3E"
                 LIGHT_BG = "#394867"
                 GENERAL_TEXT = "#000000"
@@ -949,6 +941,15 @@ class app:
                 PROFILE_INFO = "#394867"
                 ADD_SHOWINFO = "#6B7A97"
                 TOPBUTT_TEXT = "#394867"
+            
+                # tog_light.configure(image=off)
+                label.configure(fg_color=SIDE_BAR)
+                tog_light.configure(fg_color=SIDE_BAR)
+                tog_dark.configure(fg_color=SIDE_BAR)
+                theme_changer = True
+
+                # root.destroy()
+                return BG_COLOR, LIGHT_BG, GENERAL_TEXT, INPUT_BOX, BUTTON, BUTTON_TEXT, FRIEND_LIST, PROFILE_INFO, ADD_SHOWINFO, TOPBUTT_TEXT
 
         # Display button (function) for light & dark theme
         tog_light = customtkinter.CTkButton(self.popup_window, text="", image=on, height=300,width=200, fg_color=LIGHT_BG,  corner_radius=0, command=lambda: light())
@@ -958,6 +959,7 @@ class app:
         tog_dark.grid(row=1, column=0, pady=20, sticky="E")
 
         self.popup_window.wait_window()
+        return BG_COLOR, LIGHT_BG, GENERAL_TEXT, INPUT_BOX, BUTTON, BUTTON_TEXT, FRIEND_LIST, PROFILE_INFO, ADD_SHOWINFO, TOPBUTT_TEXT
         
     def main_menu(self):
         # Setting up grid and frame for button widgets/ texts
