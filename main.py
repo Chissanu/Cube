@@ -21,23 +21,45 @@ from tkinter import filedialog
 CURRENT_PATH = os.getcwd()
 
 # color palatte
+
+# global BG_COLOR
+# global LIGHT_BG
+# global GENERAL_TEXT
+# global INPUT_BOX
+# global BUTTON
+# global BUTTON_TEXT
+# global FRIEND_LIST
+# global PROFILE_INFO
+# global ADD_SHOWINFO
+# global TOPBUTT_TEXT
+
 BG_COLOR = "#F1F6F9"
+
 BG2_COLOR = "#9BA4B5"
+
 LIGHT_BG = "#FFFFFF"
 GENERAL_TEXT = "#000000"
+
 INPUT_TEXT = "#989898"
+
 INPUT_BOX = "#FFFFFF"
 BUTTON = "#394867"
 BUTTON_TEXT = "#FFFFFF"
 FRIEND_LIST = "#6B7A97"
+
+
 SIDE_BAR = "#212A3E"
 REQUEST_LIST = "#9BA4B5"
+
 PROFILE_INFO = "#FFFFFF"
 ADD_SHOWINFO = "#6B7A97"
+
+
 MSG_BOX = "#9BA4B5"
 MSG_TEXT = "#000000"
 EMOJIANDTIME = "#000000"
-TOPBUTT_BAR = "#212A3E"
+TOPBUTT_BAR = "#3a4d78"
+
 TOPBUTT_TEXT = "#FFFFFF"
 
 """
@@ -853,26 +875,87 @@ class app:
     def changeTheme(self):
         self.popup_window = tk.Toplevel(root)
         self.popup_window.geometry("1200x800+360+140")
+        self.popup_window.title("Toggle switch")
         self.popup_window.configure(bg=TOPBUTT_BAR)
 
         # create frame
-        theme_toggle_frame = customtkinter.CTkFrame(self.popup_window, width=1850, height=1080, fg_color=BG_COLOR)
-        theme_toggle_frame.grid(row=0, column=1, sticky="nsew")
-        theme_toggle_frame.grid_propagate(0)
+        # theme_toggle_frame = customtkinter.CTkFrame(self.popup_window, width=1850, height=1080, fg_color=BG_COLOR)
+        # theme_toggle_frame.grid(row=0, column=0, sticky="nsew")
+        # theme_toggle_frame.grid_propagate(0)
 
-        Grid.rowconfigure(theme_toggle_frame,0,weight=1)
-        Grid.rowconfigure(theme_toggle_frame,1,weight=1)
-        Grid.rowconfigure(theme_toggle_frame,2,weight=1)
+        Grid.columnconfigure(self.popup_window,0,weight=1)
+        Grid.rowconfigure( self.popup_window,0,weight=0)
+        Grid.rowconfigure( self.popup_window,1,weight=1)
+        Grid.rowconfigure( self.popup_window,2,weight=0)
 
-        # topbar frame
-        container_frame = customtkinter.CTkFrame(theme_toggle_frame, width=2500, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
-        container_frame.grid(row=0, column=0, sticky=N)
         # topbar frame text label
-        text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=TOPBUTT_TEXT)
-        text_label.grid(row=0, column=0)
+        text_label = customtkinter.CTkLabel(self.popup_window, text="Change theme", font=("Inter", 35), text_color=TOPBUTT_TEXT)
+        text_label.grid(row=0, column=0, pady=15)
 
-        # to add
+        # frame for toggle button
+        label = customtkinter.CTkFrame(self.popup_window, width=60, height=100, corner_radius=0, fg_color=LIGHT_BG)
+        label.grid(row=1, column=0, sticky="nsew")
 
+        # images for toggling buttons
+        on = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "light.png")), size=(160,75))
+        off = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "dark.png")), size=(160,75))
+
+
+        global BG_COLOR
+        global LIGHT_BG
+        global GENERAL_TEXT
+        global INPUT_BOX
+        global BUTTON
+        global BUTTON_TEXT
+        global FRIEND_LIST
+        global PROFILE_INFO
+        global ADD_SHOWINFO
+        global TOPBUTT_TEXT
+
+
+        def light():
+            if tog_light:
+                # tog_light.configure(image=off)
+                label.configure(fg_color=BG_COLOR)
+                tog_light.configure(fg_color=BG_COLOR)
+                tog_dark.configure(fg_color=BG_COLOR)
+
+                BG_COLOR = "#F1F6F9"
+                LIGHT_BG = "#FFFFFF"
+                GENERAL_TEXT = "#000000"
+                INPUT_BOX = "#FFFFFF"
+                BUTTON = "#394867"
+                BUTTON_TEXT = "#FFFFFF"
+                FRIEND_LIST = "#6B7A97"
+                PROFILE_INFO = "#FFFFFF"
+                ADD_SHOWINFO = "#6B7A97"
+                TOPBUTT_TEXT = "#FFFFFF"
+
+
+        def dark():
+            if tog_dark:
+                # tog_light.configure(image=off)
+                label.configure(fg_color=SIDE_BAR)
+                tog_light.configure(fg_color=SIDE_BAR)
+                tog_dark.configure(fg_color=SIDE_BAR)
+
+                BG_COLOR = "#212A3E"
+                LIGHT_BG = "#394867"
+                GENERAL_TEXT = "#000000"
+                INPUT_BOX = "#FFFFFF"
+                BUTTON = "#394867"
+                BUTTON_TEXT = "#394867"
+                FRIEND_LIST = "#6B7A97"
+                PROFILE_INFO = "#394867"
+                ADD_SHOWINFO = "#6B7A97"
+                TOPBUTT_TEXT = "#394867"
+
+        # Display button (function) for light & dark theme
+        tog_light = customtkinter.CTkButton(self.popup_window, text="", image=on, height=300,width=200, fg_color=LIGHT_BG,  corner_radius=0, command=lambda: light())
+        tog_light.grid(row=1, column=0, padx=(0,40), pady=20, sticky="W")
+
+        tog_dark = customtkinter.CTkButton(self.popup_window, text="", image=off, height=300,width=200, fg_color=LIGHT_BG, corner_radius=0, command=lambda: dark())
+        tog_dark.grid(row=1, column=0, pady=20, sticky="E")
 
         self.popup_window.wait_window()
         
