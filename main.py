@@ -253,8 +253,8 @@ class app:
                 for i, button_name in enumerate(tempFriends):
                     profile_pic = customtkinter.CTkImage(Image.open(os.path.join("profilePic", f"{tempFriends[i]['profileImage']}.png")), size=(80, 80))
                     profile_name = tempFriends[i]['name']
-                    if len(profile_name) > 5:
-                        profile_name = profile_name[:5] + '...'
+                    if len(profile_name) > 13:
+                        profile_name = profile_name[:13] + '...'
                     profile_user = tempFriends[i]['username']
 
                     friendBtn = customtkinter.CTkButton(friendList_frame, 
@@ -491,9 +491,6 @@ class app:
         try:
             for index, key in enumerate(chat_history):
                 msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
-                # height = msgBox.getHeight()
-                # newHeight = height.winfo_height()
-                # msgBox.grid_propagate(0)
                 chatFrameList.append(msgBox)
                 if chat_history[key]["name"] == self.curUser:
                     msgBox.grid(row=index,column=0, ipady=10, sticky="e")
@@ -605,7 +602,7 @@ class app:
 
                     profile_pic = customtkinter.CTkImage(Image.open(os.path.join("profilePic", f"{tempFriends[i]['profileImage']}.png")), size=(80, 80))
                     profile_name = tempFriends[i]['name']
-                    if len(profile_name) > 5:
+                    if len(profile_name) > 8:
                         profile_name = profile_name[:5] + '...'
                     profile_user = tempFriends[i]['username']
                     # print(tempFriends[i])
@@ -773,7 +770,7 @@ class app:
             picture = os.path.join("profilePic",f"{profile['profileImage']}.png")
             name = str(profile['name'])
             user = str(profile['username'])
-            bio = str(profile['bio'][0])
+            bio = str(profile['bio'])
             sortedEmotion = sorted(profile['emotions'].items(), key=lambda x: x[1], reverse=True)
             emojis = ""
             for val in sortedEmotion[:3]:
@@ -789,6 +786,7 @@ class app:
             self.tempframe.grid_propagate(0)
             Grid.columnconfigure(self.tempframe,0,weight=1)
             Grid.rowconfigure(self.tempframe,2,weight=1)
+            Grid.rowconfigure(self.tempframe,3,weight=1)
 
             # show profile info in tempframe
             profile_logo = customtkinter.CTkImage(Image.open(picture), size=(250, 250))
@@ -798,18 +796,19 @@ class app:
             name_text = customtkinter.CTkLabel(self.tempframe, text=name, font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
             name_text.grid(row = 1, column = 0, pady = (10,10))
             
-            emotion_text = customtkinter.CTkLabel(self.tempframe, text=("Most used Emotions: " + emojis), font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
-            emotion_text.grid(row = 2, column = 0, pady = (10,10))
+            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=150, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO, wrap="word")
+            bio_text.grid(row=2, column=0, padx=(20,0), sticky="n")
             
-            bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=200, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO, wrap="word")
-            bio_text.grid(row=3, column=0, padx=(20,0), sticky=N)
-            
+            print(bio)
             bio_text.insert("0.0", text=bio)
             bio_text.configure(state="disabled")
 
+            emotion_text = customtkinter.CTkLabel(self.tempframe, text=("Most used Emotions: " + emojis), font=("Inter", 30, "bold"), text_color=GENERAL_TEXT)
+            emotion_text.grid(row = 3, column = 0, sticky="n")
+
             # create add button
             add_btn = customtkinter.CTkButton(self.tempframe, text="add", font=("Inter", 30), corner_radius=10, text_color=BUTTON_TEXT, fg_color=BUTTON, width=150, height=50, command=lambda: self.afterAdd(user))
-            add_btn.grid(row=3, column=0, sticky=S, pady = (20,20), padx = 350)
+            add_btn.grid(row=4, column=0, sticky=S, pady = (20,20), padx = 350)
         except Exception as e:
             print(e)
             print("Profile not found")
