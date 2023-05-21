@@ -17,6 +17,7 @@ class ChatFrame(ctk.CTkFrame):
         self.curUser = curUser
         self.msgbox = msgbox
         self.textColor = textColor
+        self.threshold = 500
         print(msg)
 
         if chat["name"] == self.curUser:
@@ -31,16 +32,34 @@ class ChatFrame(ctk.CTkFrame):
                 image_data = response.content
                 image = Image.open(BytesIO(image_data))
                 
-                # Resize the image if necessary
-                if image.width > 500 or image.height > 500:
-                    image.thumbnail((image.width*0.5, image.height*0.5))
+                # Resize the image
+                width, height = image.size
+                if width > self.threshold or height > self.threshold:
+                    # Calculate the aspect ratio
+                    ratio = min(self.threshold / width, self.threshold / height)
+
+                    # Calculate the new dimensions
+                    new_width = int(width * ratio)
+                    new_height = int(height * ratio)
+                    image.thumbnail((new_width, new_height))
                 
                 tk_image =  ImageTk.PhotoImage(image)
                 label = ctk.CTkLabel(self, image=tk_image, text="")
                 label.grid(row=0, column=2, padx=(0, 20), sticky="e")  # Display the image in the grid
             elif uploadImage:
                 uploadImage = Image.open(self.chat["text"])
-                tk_image = ctk.CTkImage(uploadImage, size=(uploadImage.width, uploadImage.height))
+
+                # Resize the image
+                width, height = uploadImage.size
+                if width > self.threshold or height > self.threshold:
+                    # Calculate the aspect ratio
+                    ratio = min(self.threshold / width, self.threshold / height)
+
+                    # Calculate the new dimensions
+                    width = int(width * ratio)
+                    height = int(height * ratio)
+
+                tk_image = ctk.CTkImage(uploadImage, size=(width, height))
                 showImage = ctk.CTkLabel(self, image=tk_image, text="")
                 showImage.grid(row=0, column=2, padx=(0, 20), sticky="e")
             else:
@@ -68,18 +87,19 @@ class ChatFrame(ctk.CTkFrame):
                 image_data = response.content
                 image = Image.open(BytesIO(image_data))
                 
-                # Resize the image if necessary
-                if image.width > 500 or image.height > 500:
-                    image.thumbnail((image.width*0.5, image.height*0.5))
+                # Resize the image
+                if width > self.threshold or height > self.threshold:
+                    # Calculate the aspect ratio
+                    ratio = min(self.threshold / width, self.threshold / height)
+
+                    # Calculate the new dimensions
+                    new_width = int(width * ratio)
+                    new_height = int(height * ratio)
+                    image.thumbnail((new_width, new_height))
                 
                 tk_image =  ImageTk.PhotoImage(image)
                 label = ctk.CTkLabel(self, image=tk_image, text="")
                 label.grid(row=0, column=1)  # Display the image in the grid
-            # elif uploadImage:
-            #     tk_image = ctk.CTkImage(Image.open(self.chat["text"]))
-            #     tk_image.configure(size=(tk_image.width, tk_image.height))
-            #     showImage = ctk.CTkLabel(self, image=tk_image, text="")
-            #     showImage.grid(row=0, column=1)
             else:
                 # text label
                 self.messages = ctk.CTkLabel(self, text=chat["text"],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
