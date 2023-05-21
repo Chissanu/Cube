@@ -268,6 +268,211 @@ class app:
                 print(e)
                 pass
 
+        # # create chat frame
+        # self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
+        # self.chat_frame.grid(row=0, column=2, sticky="nsew")
+
+        # # create topbar
+        # self.topbar_subframe = customtkinter.CTkFrame(self.chat_frame, width=1355, height=75, corner_radius=0, fg_color=TOPBUTT_BAR)
+        # self.topbar_subframe.grid(row=0, column=0, sticky='w')
+        # self.topbar_subframe.grid_propagate(0)
+
+
+        # # create a message boxes container 
+        # # Remove texts after hitting enter to send a message
+        # def send_text(e):
+        #     # self.boxes_subframe.columnconfigure(1, weight=1)
+
+        #     msg = str(chat_entry.get())
+        #     if not msg.strip():
+        #         return
+
+        #     # Current Date and Time
+        #     if self.socketOn == False:
+        #         now = datetime.now()
+        #         date_time = now.strftime("%m/%d/%Y %H:%M")
+        #         #print(date_time)
+        #         chatObject = {
+        #             "text": msg,
+        #             "time": date_time,
+        #             "name": self.curUser,
+        #             "emotion": self.realTimeEmotion
+        #         }
+        #         msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
+        #         msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+        #         Grid.columnconfigure(msgBox,0,weight=0)
+        #         Grid.columnconfigure(msgBox,1,weight=0)
+        #         Grid.columnconfigure(msgBox,2,weight=1)
+        #     else:
+        #         self.send_message(str(chat_entry.get()))
+        #     #emotion = self.detectAI()
+
+        #     self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
+
+        #     chat_entry.delete(0, END) 
+        #     #self.index += 1
+
+        # self.boxes_subframe = customtkinter.CTkScrollableFrame(self.chat_frame, width=1370, height=905, corner_radius=0, fg_color=BG_COLOR, scrollbar_button_color="black")
+        # self.boxes_subframe.grid(row=1, column=0, sticky='nsew')
+        # Grid.columnconfigure(self.boxes_subframe,0,weight=1)
+
+        # # create chat box and emoji btn
+        # tool_subframe = customtkinter.CTkFrame(self.chat_frame, width=1385, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
+        # tool_subframe.grid(row=2, column=0)
+        # tool_subframe.grid_propagate(0)
+
+        # other_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Other_btn.png")), size=(40, 40))
+        # other_label = customtkinter.CTkButton(tool_subframe, image=other_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=lambda:self.upload_image())
+        # other_label.grid(row = 0, column = 0, padx = 30, pady = 30)
+
+        # chat_entry = customtkinter.CTkEntry(tool_subframe, font=("Inter", 20), border_width=2, corner_radius=10, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=1050, height=50)
+        # chat_entry.grid(row=0, column=1)
+
+        # chat_entry.bind("<Return>", send_text)
+
+        # sticker_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Sticker_btn.png")), size=(40, 40))
+        # sticker_label = customtkinter.CTkButton(tool_subframe, image=sticker_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
+        # sticker_label.grid(row = 0, column = 2, padx = 30, pady = 30)
+
+        # emoji_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Emoji_btn.png")), size=(40, 40))
+        # emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
+        # emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
+
+    def upload_image(self):
+        # Open a file dialog to select an image file
+        filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        data = {
+                "name" : self.curUser,
+                "msg" : filepath
+                }
+        self.add_message(data, "image")
+        self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
+
+    def topEmoji(self):
+        self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, anchor="n", command=lambda: self.controlAI())    
+        self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
+
+    def convert_emotion(self, emotion):
+        if emotion == "happy":
+            return "😄"
+        elif emotion == "sad":
+            return "😟"
+        elif emotion == "neutral":
+            return "🙂"
+        elif emotion == "angry":
+            return "😡"
+        elif emotion == "disgust":
+            return "🤢"
+        elif emotion == "surprise":
+            return "😲"
+        
+    """
+    SOCKET Functions
+    """
+    def add_message(self, data, inputType):
+        if inputType == "text":
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
+            #print(date_time)
+            chatObject = {
+                "text": data['msg'],
+                "time": date_time,
+                "name": data['name'],
+                "emotion": self.realTimeEmotion
+            }
+            # print(chatObject)
+            if data['name'] != self.curUser:
+                profilePic = self.db.getFriendPic(data['name'])
+            else:
+                profilePic = None
+
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
+
+            if self.curUser == data['name']:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=0)
+                Grid.columnconfigure(msgBox,2,weight=1)
+            else:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=1)
+                Grid.columnconfigure(msgBox,2,weight=0)
+            self.index += 1
+        elif inputType == "image":
+            now = datetime.now()
+            date_time = now.strftime("%m/%d/%Y %H:%M")
+            #print(date_time)
+            chatObject = {
+                "text": data['msg'],
+                "time": date_time,
+                "name": data['name'],
+                "emotion": self.realTimeEmotion
+            }
+            # print(chatObject)
+            if data['name'] != self.curUser:
+                profilePic = self.db.getFriendPic(data['name'])
+            else:
+                profilePic = None
+
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
+
+            if self.curUser == data['name']:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=0)
+                Grid.columnconfigure(msgBox,2,weight=1)
+            else:
+                msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
+                Grid.columnconfigure(msgBox,0,weight=0)
+                Grid.columnconfigure(msgBox,1,weight=1)
+                Grid.columnconfigure(msgBox,2,weight=0)
+            self.index += 1
+        
+    def connect(self):
+        # try except block
+        try:
+            # Connect to the server
+            self.client.connect((self.host, self.port))
+            print("Successfully connected to server")
+            print("[SERVER] Successfully connected to the server")
+        except:
+            print(f"Unable to connect to server", f"Unable to connect to server {self.host}:{self.port}")
+
+        if self.curUser != '':
+            self.client.sendall(self.curUser.encode())
+        else:
+            print("Invalid username", "Username cannot be empty")
+
+        self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
+        
+    def send_message(self,message):
+        #message = message_textbox.get()
+        if message != '':
+            self.client.sendall(message.encode())
+            # message_textbox.delete(0, len(message))
+        else:
+            print("Empty Message")
+    
+    def listen_for_messages_from_server(self,client):
+        while 1:
+            message = self.client.recv(2048).decode('utf-8')
+            if message != '':
+                username = message.split("~")[0]
+                content = message.split('~')[1]
+
+                data = {
+                    "name" : username,
+                    "msg" : content
+                }
+                self.add_message(data, "text")
+                
+            else:
+                print("Error")
+
+
+    # Function to display output message
+    def display_chat(self, friend, ini):
         # create chat frame
         self.chat_frame = customtkinter.CTkFrame(self.master, width=1370, height=1080, corner_radius=0, fg_color=BG_COLOR)
         self.chat_frame.grid(row=0, column=2, sticky="nsew")
@@ -277,12 +482,10 @@ class app:
         self.topbar_subframe.grid(row=0, column=0, sticky='w')
         self.topbar_subframe.grid_propagate(0)
 
-
         # create a message boxes container 
         # Remove texts after hitting enter to send a message
         def send_text(e):
             # self.boxes_subframe.columnconfigure(1, weight=1)
-
             msg = str(chat_entry.get())
             if not msg.strip():
                 return
@@ -298,7 +501,7 @@ class app:
                     "name": self.curUser,
                     "emotion": self.realTimeEmotion
                 }
-                msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+                msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, None, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
                 msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
                 Grid.columnconfigure(msgBox,0,weight=0)
                 Grid.columnconfigure(msgBox,1,weight=0)
@@ -338,107 +541,6 @@ class app:
         emoji_label = customtkinter.CTkButton(tool_subframe, image=emoji_logo, text="", width=0, height=0, fg_color=TOPBUTT_BAR, command=None)
         emoji_label.grid(row = 0, column = 3, padx = (0,30), pady = 30)
 
-    def upload_image(self):
-        # Open a file dialog to select an image file
-        filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
-        self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
-        print(filepath)
-
-    def topEmoji(self):
-        self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, anchor="n", command=lambda: self.controlAI())    
-        self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
-
-    def convert_emotion(self, emotion):
-        if emotion == "happy":
-            return "😄"
-        elif emotion == "sad":
-            return "😟"
-        elif emotion == "neutral":
-            return "🙂"
-        elif emotion == "angry":
-            return "😡"
-        elif emotion == "disgust":
-            return "🤢"
-        elif emotion == "surprise":
-            return "😲"
-        
-    """
-    SOCKET Functions
-    """
-    def add_message(self, data):
-        now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y %H:%M")
-        #print(date_time)
-        chatObject = {
-            "text": data['msg'],
-            "time": date_time,
-            "name": data['name'],
-            "emotion": self.realTimeEmotion
-        }
-        print(chatObject)
-        if data['name'] != self.curUser:
-            profilePic = self.db.getFriendPic(data['name'])
-        else:
-            profilePic = None
-
-        msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
-
-        if self.curUser == data['name']:
-            msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
-            Grid.columnconfigure(msgBox,0,weight=0)
-            Grid.columnconfigure(msgBox,1,weight=0)
-            Grid.columnconfigure(msgBox,2,weight=1)
-        else:
-            msgBox.grid(row=self.index,column=0, ipady=10, sticky="w")
-            Grid.columnconfigure(msgBox,0,weight=0)
-            Grid.columnconfigure(msgBox,1,weight=1)
-            Grid.columnconfigure(msgBox,2,weight=0)
-        self.index += 1
-        
-    def connect(self):
-        # try except block
-        try:
-            # Connect to the server
-            self.client.connect((self.host, self.port))
-            print("Successfully connected to server")
-            print("[SERVER] Successfully connected to the server")
-        except:
-            print(f"Unable to connect to server", f"Unable to connect to server {self.host}:{self.port}")
-
-        if self.curUser != '':
-            self.client.sendall(self.curUser.encode())
-        else:
-            print("Invalid username", "Username cannot be empty")
-
-        self.socketThread = Thread(target=self.listen_for_messages_from_server, args=(self.client, )).start()
-        
-    def send_message(self,message):
-        #message = message_textbox.get()
-        if message != '':
-            self.client.sendall(message.encode())
-            # message_textbox.delete(0, len(message))
-        else:
-            print("Empty Message")
-    
-    def listen_for_messages_from_server(self,client):
-        while 1:
-            message = self.client.recv(2048).decode('utf-8')
-            if message != '':
-                username = message.split("~")[0]
-                content = message.split('~')[1]
-
-                data = {
-                    "name" : username,
-                    "msg" : content
-                }
-                self.add_message(data)
-                
-            else:
-                print("Error")
-
-
-    # Function to display output message
-    def display_chat(self, friend, ini):
         try:
             self.socketOn = True
             self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -491,7 +593,7 @@ class app:
 
         try:
             for index, key in enumerate(chat_history):
-                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME)
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
                 chatFrameList.append(msgBox)
                 if chat_history[key]["name"] == self.curUser:
                     msgBox.grid(row=index,column=0, ipady=10, sticky="e")

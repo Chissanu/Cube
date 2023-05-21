@@ -5,10 +5,11 @@ import tkinter.font as tkfont
 import emoji
 import requests
 from io import BytesIO
+import os
 
 
 class ChatFrame(ctk.CTkFrame):
-    def __init__(self,master, chat, curUser, friendPic, bgColor, msgbox, textColor, emoji_time, **kwargs):
+    def __init__(self,master, chat, curUser, friendPic, bgColor, msgbox, textColor, emoji_time, uploadImage, **kwargs):
         super().__init__(master, **kwargs)
         self.master = master
         self.chat = chat
@@ -16,6 +17,7 @@ class ChatFrame(ctk.CTkFrame):
         self.curUser = curUser
         self.msgbox = msgbox
         self.textColor = textColor
+        print(msg)
 
         if chat["name"] == self.curUser:
             emotion = chat["emotion"]
@@ -32,6 +34,11 @@ class ChatFrame(ctk.CTkFrame):
                 tk_image =  ImageTk.PhotoImage(image)
                 label = ctk.CTkLabel(self, image=tk_image, text="")
                 label.grid(row=0, column=2, padx=(0, 20), sticky="e")  # Display the image in the grid
+            elif uploadImage:
+                uploadImage = Image.open(self.chat["text"])
+                tk_image = ctk.CTkImage(uploadImage, size=(uploadImage.width, uploadImage.height))
+                showImage = ctk.CTkLabel(self, image=tk_image, text="")
+                showImage.grid(row=0, column=2, padx=(0, 20), sticky="e")
             else:
                 # text label
                 self.messages = ctk.CTkLabel(self, text=self.chat['text'],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
@@ -64,6 +71,11 @@ class ChatFrame(ctk.CTkFrame):
                 tk_image =  ImageTk.PhotoImage(image)
                 label = ctk.CTkLabel(self, image=tk_image, text="")
                 label.grid(row=0, column=1)  # Display the image in the grid
+            # elif uploadImage:
+            #     tk_image = ctk.CTkImage(Image.open(self.chat["text"]))
+            #     tk_image.configure(size=(tk_image.width, tk_image.height))
+            #     showImage = ctk.CTkLabel(self, image=tk_image, text="")
+            #     showImage.grid(row=0, column=1)
             else:
                 # text label
                 self.messages = ctk.CTkLabel(self, text=chat["text"],text_color=textColor, fg_color=msgbox, font=("Inter", 30), wraplength=1000, corner_radius=10)
