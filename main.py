@@ -918,36 +918,6 @@ class app:
 
         self.popup_window.wait_window()
 
-
-        # self.popup_window = tk.Toplevel(root)
-        # self.popup_window.geometry("1200x800+360+140")
-        # self.popup_window.configure(bg=TOPBUTT_BAR)
-
-        # # create frame
-        # theme_toggle_frame = customtkinter.CTkFrame(self.popup_window, width=1850, height=1080, fg_color=BG_COLOR)
-        # theme_toggle_frame.grid(row=0, column=1, sticky="nsew")
-        # theme_toggle_frame.grid_propagate(0)
-
-        # Grid.columnconfigure(self.popup_window,0,weight=1)
-        # Grid.columnconfigure(self.popup_window,0,weight=1)
-        # Grid.columnconfigure(self.popup_window,0,weight=1)
-        # Grid.columnconfigure(self.popup_window,0,weight=1)
-        # Grid.rowconfigure(self.popup_window,0,weight=1)
-        # Grid.rowconfigure(self.popup_window,1,weight=1)
-        # Grid.rowconfigure(self.popup_window,2,weight=1)
-
-        # # topbar frame
-        # container_frame = customtkinter.CTkFrame(self.popup_window, width=2500, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
-        # container_frame.grid(row=0, column=0)
-
-        # # topbar frame text label
-        # text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=TOPBUTT_TEXT)
-        # text_label.grid(row=0, column=0)
-        
-        
-
-        # self.popup_window.wait_window()
-
     def changeThemeBtn(self, colorTheme):
         global BG_COLOR
         global BG2_COLOR
@@ -990,7 +960,7 @@ class app:
             TOPBUTT_BAR = "#4D455D"
             TOPBUTT_TEXT = "#FFFFFF"
 
-            self.master.update()
+            self.setting()
     """
     ======================================
     Sockets Functions
@@ -1110,8 +1080,8 @@ class app:
     def turnOnAI(self,name):
         print("Detecting")
         self.ai = self.db.getAI()
-        self.ai.stop_detection()
         self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
+        print("AI Has been turned off")
 
     def detectAI(self, name):
         while True:
@@ -1207,8 +1177,12 @@ class app:
             myProfile_hover = True
 
         # create sidebar
-        self.ai = self.db.getAI()
-        self.ai.stop_detection()
+        try:
+            self.ai = self.db.getAI()
+            self.ai.stop_detection()
+        except:
+            pass
+
         sidebar_frame = customtkinter.CTkFrame(self.master, width=70, height=1080, corner_radius=0, fg_color=SIDE_BAR)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
         sidebar_frame.grid_propagate(0)

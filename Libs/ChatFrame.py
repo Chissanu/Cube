@@ -18,7 +18,6 @@ class ChatFrame(ctk.CTkFrame):
         self.msgbox = msgbox
         self.textColor = textColor
         self.threshold = 500
-        print(msg)
 
         if chat["name"] == self.curUser:
             emotion = chat["emotion"]

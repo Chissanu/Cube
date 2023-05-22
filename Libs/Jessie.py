@@ -196,6 +196,7 @@ class Detection:
 		self.detection_control = 0
 
 		while success and self.detection_control == 0:
+			print("RUNNING")
 			if fno % 32 == 0 and self.detection_control == 0:
 				results = model(img)
 
@@ -255,6 +256,7 @@ class Detection:
 	
 	def stop_detection(self):
 		self.detection_control = 1
+		print("Stopping AI")
 		return
 
 # This class contains every processing algorithms for the emotions data
