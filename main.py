@@ -438,7 +438,7 @@ class app:
                     Grid.columnconfigure(msgBox,1,weight=1)
                     Grid.columnconfigure(msgBox,2,weight=0)
                     
-                # self.index += 1
+                self.index += 1
         except Exception as e:
             print(e)
             print("no chat")
