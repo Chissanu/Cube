@@ -1109,7 +1109,10 @@ class app:
     
     def sendAI(self):
         #print(f"Sending {self.realTimeEmotion} to other socket")
-        emotion = "$EMOTION:" + self.realTimeEmotion
+        if self.realTimeEmotion == "":
+            self.realTimeEmotion = "neutral"
+
+        emotion = "$EMOTION:" + str(self.realTimeEmotion)
         self.client.sendall(emotion.encode())
         time.sleep(5)
 
@@ -1132,7 +1135,7 @@ class app:
         print("Calibrating")
         self.ai = self.db.getAI()
         self.calibrate = self.ai.calibration(0, "Libs\Jessie_1.pt", self.calibrate_label)
-        self.calibrate_label.configure(text="Ending Thread to Calibrate AI")
+        self.calibrate_label.configure(text="Finish Calibrating! You can close this window now")
         print("Ending Thread to Calibrate AI")
         print(f"The calibration result is {self.calibrate}")
 
