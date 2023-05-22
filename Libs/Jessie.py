@@ -217,11 +217,11 @@ class Detection:
 		       							total_emotion[3] + temp[3], total_emotion[4] + temp[4], total_emotion[5] + temp[5]]
 						# print(total_emotion)
 
-				prediction_data = {"happy": total_emotion[0], "sad": total_emotion[1], "neutral": total_emotion[2],
-		       					  "angry": total_emotion[3], "disgust": total_emotion[4], "surprise": total_emotion[5]}
+				# prediction_data = {"happy": total_emotion[0], "sad": total_emotion[1], "neutral": total_emotion[2],
+		       	# 				  "angry": total_emotion[3], "disgust": total_emotion[4], "surprise": total_emotion[5]}
 				
 				get_emotion = Processing()
-				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
+				self.real_time_emotion = get_emotion.getPredictedEmotion(total_emotion, calibration_constant)
 				print(self.real_time_emotion)
 				total_emotion = np.array([])
 				self.emotion_table_cache = self.emotion_table_cache[:0]
@@ -273,16 +273,14 @@ class Processing:
 		amultiplier = 3
 		dmultiplier = 10
 		sumultiplier = 8 
-		mullist = [hmultiplier,smultiplier,nmultiplier,amultiplier,dmultiplier,sumultiplier]
-		emolist = ["happy","sad","neutral","angry","disgust","suprise"]
+		mullist = np.array([hmultiplier,smultiplier,nmultiplier,amultiplier,dmultiplier,sumultiplier])
+		# emolist = np.array(["happy","sad","neutral","angry","disgust","suprise"])
 
 		for i in range(6):
 			arr[i]*=arr[i]*mullist[i]
 
-		# print(table)
-		m = max(arr)
-		index = arr.index(m)
-		return emolist[index]
+		index = np.argmax(arr)
+		return self.conversion_table[index]
 	
 	# AI powered prediction from the custom gathered dataset. Result returns the absolute emotion value as a string
 	def getPredictedEmotion(self, data, calibration_constant):
@@ -290,33 +288,31 @@ class Processing:
 
 		# Load the model from a file using joblib
 		model = load('Libs\walter.joblib')
-		header = list(data.values())
 		calibrated_header = np.array([])
 		calibration_ratio = 0
 
 		if calibration_constant <= self.model_calibration_constant:
 			calibration_ratio = self.model_calibration_constant // calibration_constant
 
-		for x in header:
+		for x in data:
 			# calibrated_header.append(x + (x * calibration_ratio))
 			temp = x + (x * calibration_ratio)
 			calibrated_header = np.append(calibrated_header, temp)
 
 		# print(calibrated_header)
 		result = model.predict([calibrated_header])
-		result = self.conversion_table[result[0]]
-		
 
-		if data[result] <= 0:
+		if calibrated_header[result] <= 0:
 			result = self.getDominantEmotion(data)
 			#print("Finny")
 		else:
 			pass
+			result = self.conversion_table[result[0]]
 			#print("Most")
 		return result
 	
-test = Detection()
-# test.initialize(0, "Libs\Jessie_1.pt")
-# calibrate = test.calibration(0, "Libs\Jessie_1.pt")
-calibrate = 20
-test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
+# test = Detection()
+# # test.initialize(0, "Libs\Jessie_1.pt")
+# # calibrate = test.calibration(0, "Libs\Jessie_1.pt")
+# calibrate = 20
+# test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
