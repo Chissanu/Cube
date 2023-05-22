@@ -920,7 +920,7 @@ class app:
 
     def changeThemeBtn(self, colorTheme):
         global BG_COLOR
-        global BG2_COLOR
+        # global BG2_COLOR
         global LIGHT_BG
         global GENERAL_TEXT
         global INPUT_TEXT
@@ -942,7 +942,7 @@ class app:
             print("theme 1")
             # color palatte
             BG_COLOR = "#F5E9CF"
-            BG2_COLOR = "#7DB9B6"
+            # BG2_COLOR = "#7DB9B6"
             LIGHT_BG = "#FFFFFF"
             GENERAL_TEXT = "#000000"
             INPUT_TEXT = "#989898"
