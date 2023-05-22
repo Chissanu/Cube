@@ -362,10 +362,6 @@ class app:
         self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
 
     def controlAI(self):
-        global TOPBUTT_BAR
-        TOPBUTT_BAR = "#32CD32"
-        # self.yourEmojiLabel.configure(fg_color = TOPBUTT_BAR)
-        self.master.update()
         print("ehe")
     
     def display_chat(self, friend):
@@ -424,13 +420,13 @@ class app:
         for widget in self.boxes_subframe.winfo_children():
             widget.destroy()
         
-        chatFrameList = []
-        self.index = 0  
+        # chatFrameList = []
+        # self.index = 0  
 
         try:
             for index, key in enumerate(chat_history):
                 msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
-                chatFrameList.append(msgBox)
+                # chatFrameList.append(msgBox)
                 if chat_history[key]["name"] == self.curUser:
                     msgBox.grid(row=index,column=0, ipady=10, sticky="e")
                     Grid.columnconfigure(msgBox,0,weight=0)
@@ -442,7 +438,7 @@ class app:
                     Grid.columnconfigure(msgBox,1,weight=1)
                     Grid.columnconfigure(msgBox,2,weight=0)
                     
-                self.index += 1
+                # self.index += 1
         except Exception as e:
             print(e)
             print("no chat")
@@ -885,27 +881,115 @@ class app:
         self.popup_window.geometry("1200x800+360+140")
         self.popup_window.configure(bg=TOPBUTT_BAR)
 
-        # create frame
+        Grid.columnconfigure(self.popup_window,0,weight=1)
+        Grid.rowconfigure(self.popup_window,0,weight=0)  
+        Grid.rowconfigure(self.popup_window,1,weight=1)  
+        Grid.rowconfigure(self.popup_window,2,weight=0) 
+
+        label = customtkinter.CTkLabel(self.popup_window, text="Choose Color theme", text_color=TOPBUTT_TEXT, font=("Inter", 40))
+        label.grid(column = 0, row = 0, pady = 20)
+
+        # create scrollable frame
         theme_toggle_frame = customtkinter.CTkFrame(self.popup_window, width=1850, height=1080, fg_color=BG_COLOR)
-        theme_toggle_frame.grid(row=0, column=1, sticky="nsew")
+        theme_toggle_frame.grid(row=1, column=0, sticky="nsew")
         theme_toggle_frame.grid_propagate(0)
 
-        Grid.rowconfigure(theme_toggle_frame,0,weight=1)
-        Grid.rowconfigure(theme_toggle_frame,1,weight=1)
-        Grid.rowconfigure(theme_toggle_frame,2,weight=1)
+        Grid.columnconfigure(theme_toggle_frame,0,weight=1)
+        Grid.columnconfigure(theme_toggle_frame,1,weight=1)
+        Grid.columnconfigure(theme_toggle_frame,2,weight=1)
+        Grid.columnconfigure(theme_toggle_frame,3,weight=1)
 
-        # topbar frame
-        container_frame = customtkinter.CTkFrame(theme_toggle_frame, width=2500, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
-        container_frame.grid(row=0, column=0, sticky=N)
-        # topbar frame text label
-        text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=TOPBUTT_TEXT)
-        text_label.grid(row=0, column=0)
-
-        # to add
-
+        folder_path = 'colorThemePic'
+        num_files = len([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
+        
+        # create buttons
+        row = 0
+        col = 0
+        for i in range(num_files):
+            image = os.path.join(folder_path, f"{i}.png")
+            choose_image = customtkinter.CTkImage(Image.open(image), size=(200, 200))
+            choose_label = customtkinter.CTkButton(theme_toggle_frame, text="", image=choose_image, width=0, fg_color=LIGHT_BG, corner_radius=20, command=lambda colorTheme = i: self.changeThemeBtn(colorTheme))
+            choose_label.grid(row=row, column=col, padx=0, pady=15)
+            col += 1
+            if col > 3:
+                col = 0
+                row += 1
 
         self.popup_window.wait_window()
-    
+
+
+        # self.popup_window = tk.Toplevel(root)
+        # self.popup_window.geometry("1200x800+360+140")
+        # self.popup_window.configure(bg=TOPBUTT_BAR)
+
+        # # create frame
+        # theme_toggle_frame = customtkinter.CTkFrame(self.popup_window, width=1850, height=1080, fg_color=BG_COLOR)
+        # theme_toggle_frame.grid(row=0, column=1, sticky="nsew")
+        # theme_toggle_frame.grid_propagate(0)
+
+        # Grid.columnconfigure(self.popup_window,0,weight=1)
+        # Grid.columnconfigure(self.popup_window,0,weight=1)
+        # Grid.columnconfigure(self.popup_window,0,weight=1)
+        # Grid.columnconfigure(self.popup_window,0,weight=1)
+        # Grid.rowconfigure(self.popup_window,0,weight=1)
+        # Grid.rowconfigure(self.popup_window,1,weight=1)
+        # Grid.rowconfigure(self.popup_window,2,weight=1)
+
+        # # topbar frame
+        # container_frame = customtkinter.CTkFrame(self.popup_window, width=2500, height=100, corner_radius=0, fg_color=TOPBUTT_BAR)
+        # container_frame.grid(row=0, column=0)
+
+        # # topbar frame text label
+        # text_label = customtkinter.CTkLabel(container_frame, text="Change theme", font=("Inter", 35), width=2000, height=50, text_color=TOPBUTT_TEXT)
+        # text_label.grid(row=0, column=0)
+        
+        
+
+        # self.popup_window.wait_window()
+
+    def changeThemeBtn(self, colorTheme):
+        global BG_COLOR
+        global BG2_COLOR
+        global LIGHT_BG
+        global GENERAL_TEXT
+        global INPUT_TEXT
+        global INPUT_BOX
+        global BUTTON
+        global BUTTON_TEXT
+        global FRIEND_LIST
+        global SIDE_BAR
+        global REQUEST_LIST
+        global PROFILE_INFO
+        global ADD_SHOWINFO
+        global MSG_BOX
+        global MSG_TEXT
+        global EMOJIANDTIME
+        global TOPBUTT_BAR
+        global TOPBUTT_TEXT
+
+        if colorTheme == 0:
+            print("theme 1")
+            # color palatte
+            BG_COLOR = "#F5E9CF"
+            BG2_COLOR = "#7DB9B6"
+            LIGHT_BG = "#FFFFFF"
+            GENERAL_TEXT = "#000000"
+            INPUT_TEXT = "#989898"
+            INPUT_BOX = "#FFFFFF"
+            BUTTON = "#4D455D"
+            BUTTON_TEXT = "#FFFFFF"
+            FRIEND_LIST = "#7DB9B6"
+            SIDE_BAR = "#4D455D"
+            REQUEST_LIST = "#6D6374"
+            PROFILE_INFO = "#FFFFFF"
+            ADD_SHOWINFO = "#6B7A97"
+            MSG_BOX = "#6D5D6E"
+            MSG_TEXT = "#FFFFFF"
+            EMOJIANDTIME = "#000000"
+            TOPBUTT_BAR = "#4D455D"
+            TOPBUTT_TEXT = "#FFFFFF"
+
+            self.master.update()
     """
     ======================================
     Sockets Functions
