@@ -73,7 +73,7 @@ class Database:
             'pending'  : [""],
             'incoming' : [""],
             'friends'  : [""],
-            'bio'      : [""],
+            'bio'      : "",
             'emotions' : {
                 'happy'   : 0,
                 'sad'     : 0,
