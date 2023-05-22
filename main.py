@@ -362,7 +362,11 @@ class app:
         self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
 
     def controlAI(self):
-        print("turn off ai")
+        global TOPBUTT_BAR
+        TOPBUTT_BAR = "#32CD32"
+        # self.yourEmojiLabel.configure(fg_color = TOPBUTT_BAR)
+        self.master.update()
+        print("ehe")
     
     def display_chat(self, friend):
         other_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "Other_btn.png")), size=(40, 40))
