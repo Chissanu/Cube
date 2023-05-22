@@ -974,6 +974,10 @@ class app:
         
     def add_message(self, data, inputType):
         if inputType == "text":
+            if "$EMOTION:" in data['msg']:
+                emotion = data['msg'][9:]
+                print(emotion)
+                return
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
             #print(date_time)
@@ -1088,11 +1092,18 @@ class app:
             self.realTimeEmotion = self.ai.real_time_emotion
             try:
                 self.yourEmojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
+                sendAIThread = Thread(target=self.sendAI).start()
             except:
                 pass
             
             # print(self.realTimeEmotion)
-            
+    
+    def sendAI(self):
+        #print(f"Sending {self.realTimeEmotion} to other socket")
+        emotion = "$EMOTION:" + self.realTimeEmotion
+        self.client.sendall(emotion.encode())
+        time.sleep(5)
+
     def calibrateThread(self):
         self.popup_window = tk.Toplevel(root)
         self.popup_window.geometry("1200x800+360+140")
