@@ -222,7 +222,7 @@ class Detection:
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(total_emotion, calibration_constant)
-				print(self.real_time_emotion)
+				# print(self.real_time_emotion)
 				total_emotion = np.array([])
 				self.emotion_table_cache = self.emotion_table_cache[:0]
 				self.time_elasped -= 1

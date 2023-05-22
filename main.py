@@ -421,7 +421,7 @@ class app:
             widget.destroy()
         
         # chatFrameList = []
-        # self.index = 0  
+        self.index = 0
 
         try:
             for index, key in enumerate(chat_history):
