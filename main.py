@@ -50,7 +50,7 @@ class app:
         self.master = master
         window_width = 1080
         window_height = 1920
-        self.host = '192.168.0.110'
+        self.host = '10.100.1.96'
         self.port = 1105
         master.bind('<Escape>',lambda e: quit(e))
         # get the screen dimension
@@ -73,7 +73,7 @@ class app:
 
         self.calibrate = 70
 
-        self.setIP()
+        # self.setIP()
 
         self.main_menu()
         
@@ -984,7 +984,10 @@ class app:
         if inputType == "text":
             if "$EMOTION:" in data['msg']:
                 emotion = data['msg'][9:]
-                self.friendEmojiLabel.configure(text=self.convert_emotion(str(emotion)))
+                try:
+                    self.friendEmojiLabel.configure(text=self.convert_emotion(str(emotion)))
+                except:
+                    pass
                 return
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
@@ -1092,11 +1095,11 @@ class app:
     def turnOnAI(self,name):
         print("Detecting")
         self.ai = self.db.getAI()
+        sendAIThread = Thread(target=self.sendAI).start()
         self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
         print("AI Has been turned off")
 
     def detectAI(self, name):
-        sendAIThread = Thread(target=self.sendAI).start()
         
         while True:
             self.realTimeEmotion = self.ai.real_time_emotion
@@ -1109,12 +1112,11 @@ class app:
     
     def sendAI(self):
         #print(f"Sending {self.realTimeEmotion} to other socket")
-        if self.realTimeEmotion == "":
-            self.realTimeEmotion = "neutral"
-
-        emotion = "$EMOTION:" + str(self.realTimeEmotion)
-        self.client.sendall(emotion.encode())
-        time.sleep(5)
+        while True:
+            emotion = "$EMOTION:" + self.realTimeEmotion
+            self.client.sendall(emotion.encode())
+            print("Sending " + emotion)
+            time.sleep(2)
 
     def calibrateThread(self):
         self.popup_window = tk.Toplevel(root)

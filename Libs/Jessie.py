@@ -196,6 +196,7 @@ class Detection:
 		self.detection_control = 0
 
 		while success and self.detection_control == 0:
+			print("Running Real Time Detection")
 			if fno % 32 == 0 and self.detection_control == 0:
 				results = model(img)
 
