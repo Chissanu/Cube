@@ -17,8 +17,7 @@ def listen_for_messages(client, username):
             
             final_msg = username + '~' + message
             #print(final_msg)
-            # send_messages_to_all(final_msg)
-            send_message_to_client(active_clients[1], final_msg)
+            send_messages_to_all(final_msg, client)
 
         else:
             print(f"The message send from client {username} is empty")
@@ -31,11 +30,10 @@ def send_message_to_client(client, message):
 
 # Function to send any new message to all the clients that
 # are currently connected to this server
-def send_messages_to_all(message):
-    
+def send_messages_to_all(message,client_socker):
     for user in active_clients:
-
-        send_message_to_client(user[1], message)
+        if user[1] != client_socker:
+            send_message_to_client(user[1], message)
 
 # Function to handle client
 def client_handler(client):
