@@ -4,14 +4,15 @@ import torch
 import time
 import statistics
 import customtkinter
+import numpy as np
 
 # This class contains all detection algorithms and some data accessing
 class Detection:
 	def __init__(self):
 		# This dictionary stores emotions count detected by the A.I
 		self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
-		self.emotion_table_cache = []
-		self.calibration_operator = []
+		self.emotion_table_cache = np.array([])
+		self.calibration_operator = np.array([])
 		self.user_calibration_constant = 0
 		self.detection_control = 0
 		self.real_time_emotion = ""
@@ -70,7 +71,7 @@ class Detection:
 				success, img = vid.read()
 		
 		if len(self.calibration_operator) <= 5:
-			self.calibration_operator.append(count)
+			self.calibration_operator = np.append(self.calibration_operator, count)
 
 		return self.emotion_table
 
@@ -202,14 +203,16 @@ class Detection:
 			if self.time_elasped >= detection_threshold and self.detection_control == 0:
 				# print(time_elasped)
 				duration = 0.5
-				total_emotion = []
+				total_emotion = np.array([])
 				for items in self.emotion_table_cache:
-					if total_emotion == []:
-						total_emotion = list(items.values())
+					if np.size(total_emotion) == 0:
+						# total_emotion = list(items.values())
+						total_emotion = np.array(list(items.values()))
 						# print(total_emotion)
 					
 					else:
-						temp = list(items.values())
+						# temp = list(items.values())
+						temp = np.array(list(items.values()))
 						total_emotion = [total_emotion[0] + temp[0], total_emotion[1] + temp[1], total_emotion[2] + temp[2], 
 		       							total_emotion[3] + temp[3], total_emotion[4] + temp[4], total_emotion[5] + temp[5]]
 						# print(total_emotion)
@@ -219,9 +222,9 @@ class Detection:
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
-				# print(self.real_time_emotion)
-				total_emotion = []
-				self.emotion_table_cache.pop(0)
+				print(self.real_time_emotion)
+				total_emotion = np.array([])
+				self.emotion_table_cache = self.emotion_table_cache[:0]
 				self.time_elasped -= 1
 				# self.stop_detection()
 				# print("New Iteration")
@@ -243,7 +246,7 @@ class Detection:
 			current = time.time()
 			if current - initial >= duration and self.detection_control == 0:
 				self.time_elasped += 1
-				self.emotion_table_cache.append(self.emotion_table)
+				self.emotion_table_cache = np.append(self.emotion_table_cache, self.emotion_table)
 				self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 				# print(self.emotion_table_cache)
 				initial = time.time()
@@ -286,14 +289,16 @@ class Processing:
 		# Load the model from a file using joblib
 		model = load('Libs\walter.joblib')
 		header = list(data.values())
-		calibrated_header = []
+		calibrated_header = np.array([])
 		calibration_ratio = 0
 
 		if calibration_constant <= self.model_calibration_constant:
 			calibration_ratio = self.model_calibration_constant // calibration_constant
 
 		for x in header:
-			calibrated_header.append(x + (x * calibration_ratio))
+			# calibrated_header.append(x + (x * calibration_ratio))
+			temp = x + (x * calibration_ratio)
+			calibrated_header = np.append(calibrated_header, temp)
 
 		# print(calibrated_header)
 		result = model.predict([calibrated_header])
@@ -308,7 +313,8 @@ class Processing:
 			#print("Most")
 		return result
 	
-# test = Detection()
+test = Detection()
 # test.initialize(0, "Libs\Jessie_1.pt")
 # calibrate = test.calibration(0, "Libs\Jessie_1.pt")
-# test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
+calibrate = 20
+test.realTimeDetection(0, "Libs\Jessie_1.pt", calibrate)
