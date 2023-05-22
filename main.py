@@ -358,8 +358,14 @@ class app:
         self.chat_entry.delete(0, END)
         
     def topEmoji(self):
+        self.friendEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, command=lambda: self.controlAI())    
+        self.friendEmojiLabel.grid(row=0, column=1, pady=(0,10))
+
+        # self.partition = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, command=lambda: self.controlAI())    
+        # self.partition.grid(row=0, column=2, padx=(0,15), pady=(0,10))
+
         self.yourEmojiLabel = customtkinter.CTkButton(self.topbar_subframe, text=self.convert_emotion("neutral"), font=("Inter", 50), width=70, height=70, text_color=TOPBUTT_TEXT, fg_color=TOPBUTT_BAR, border_spacing=1, command=lambda: self.controlAI())    
-        self.yourEmojiLabel.grid(row=0, column=2, padx=(0,15), pady=(0,10))
+        self.yourEmojiLabel.grid(row=0, column=2, pady=(0,10), sticky="w")
 
     def controlAI(self):
         print("ehe")
@@ -401,7 +407,9 @@ class app:
         name = self.db.findFriend(self.curChatFriend)["name"]
 
         Grid.columnconfigure(self.topbar_subframe,0,weight=1)
-        Grid.columnconfigure(self.topbar_subframe,1,weight=1)
+        Grid.columnconfigure(self.topbar_subframe,1,weight=2)
+        Grid.columnconfigure(self.topbar_subframe,2,weight=1)
+        Grid.columnconfigure(self.topbar_subframe,3,weight=2)
         Grid.rowconfigure(self.topbar_subframe,0,weight=1)
         
         # create name in topbar
@@ -976,7 +984,7 @@ class app:
         if inputType == "text":
             if "$EMOTION:" in data['msg']:
                 emotion = data['msg'][9:]
-                print(emotion)
+                self.friendEmojiLabel.configure(text=self.convert_emotion(str(emotion)))
                 return
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
@@ -1088,11 +1096,12 @@ class app:
         print("AI Has been turned off")
 
     def detectAI(self, name):
+        sendAIThread = Thread(target=self.sendAI).start()
+        
         while True:
             self.realTimeEmotion = self.ai.real_time_emotion
             try:
                 self.yourEmojiLabel.configure(text=self.convert_emotion(str(self.realTimeEmotion)))
-                sendAIThread = Thread(target=self.sendAI).start()
             except:
                 pass
             
