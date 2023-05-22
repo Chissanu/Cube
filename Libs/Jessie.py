@@ -16,6 +16,8 @@ class Detection:
 		self.detection_control = 0
 		self.real_time_emotion = ""
 		self.calibration_progress = ""
+		self.real_time_detection_control = 0
+		self.time_elasped = 0
 		self.progress_bar = ["Creating Thread to Calibrate AI\n0%", "Creating Thread to Calibrate AI\n20%", "Creating Thread to Calibrate AI\n40%",
 		       				 "Creating Thread to Calibrate AI\n60%", "Creating Thread to Calibrate AI\n80%", "Creating Thread to Calibrate AI\n100%"]
 	
@@ -184,16 +186,20 @@ class Detection:
 		fno = 0
 		success, img = vid.read()
 		initial = time.time()
-		time_elasped = 0
+		if self.real_time_detection_control == 0:
+			self.time_elasped = 0
+			self.real_time_detection_control = 1
+
 		detection_threshold = 5
 		duration = 1
 		self.detection_control = 0
 
 		while success and self.detection_control == 0:
-			if fno % 32 == 0:
+			if fno % 32 == 0 and self.detection_control == 0:
 				results = model(img)
 
-			if time_elasped >= detection_threshold:
+
+			if self.time_elasped >= detection_threshold and self.detection_control == 0:
 				# print(time_elasped)
 				duration = 0.5
 				total_emotion = []
@@ -213,25 +219,30 @@ class Detection:
 				
 				get_emotion = Processing()
 				self.real_time_emotion = get_emotion.getPredictedEmotion(prediction_data, calibration_constant)
-				print(self.real_time_emotion)
+				# print(self.real_time_emotion)
 				total_emotion = []
 				self.emotion_table_cache.pop(0)
-				time_elasped -= 1
+				self.time_elasped -= 1
 				# self.stop_detection()
 				# print("New Iteration")
+				if self.detection_control == 1:
+					break
 
 			else:
 				try:
 					emotion = results.pandas().xyxy[0].name[0]
 					self.emotion_table[emotion] += 1
+					if self.detection_control == 1:
+						break
 
 				except IndexError:
 					#print("Not Detected")
-					pass
+					if self.detection_control == 1:
+						break
 			
 			current = time.time()
-			if current - initial >= duration:
-				time_elasped += 1
+			if current - initial >= duration and self.detection_control == 0:
+				self.time_elasped += 1
 				self.emotion_table_cache.append(self.emotion_table)
 				self.emotion_table = {"happy": 0, "sad": 0, "neutral": 0, "angry": 0, "disgust": 0, "surprise": 0}
 				# print(self.emotion_table_cache)
