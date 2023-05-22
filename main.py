@@ -820,7 +820,8 @@ class app:
             bio_text = customtkinter.CTkTextbox(self.tempframe, width=450, height=150, corner_radius=0, font=("Inter", 30), text_color=GENERAL_TEXT, fg_color=ADD_SHOWINFO, wrap="word")
             bio_text.grid(row=2, column=0, padx=(20,0), sticky="n")
             
-            if bio == "":
+            bioText = bio
+            if bioText == "":
                 bioText = "None"
             
             bio_text.insert("0.0", text=bioText)
