@@ -349,10 +349,17 @@ class app:
         
     def send_text(self,e):
         msg = str(self.chat_entry.get())
+        
 
         # Current Date and Time
         if self.socketOn == True:
             self.send_message(msg)
+
+            dataObj = {
+                'name' : self.curUser,
+                'msg'  : msg
+            }
+            self.add_message(dataObj, "text")
 
         self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
         self.chat_entry.delete(0, END)
@@ -982,6 +989,7 @@ class app:
         
     def add_message(self, data, inputType):
         if inputType == "text":
+            print(data['msg'])
             if "$EMOTION:" in data['msg']:
                 emotion = data['msg'][9:]
                 print("Receving " + emotion)
