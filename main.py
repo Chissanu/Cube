@@ -73,7 +73,7 @@ class app:
 
         self.calibrate = 70
 
-        # self.setIP()
+        self.setIP()
 
         self.main_menu()
         
@@ -984,6 +984,7 @@ class app:
         if inputType == "text":
             if "$EMOTION:" in data['msg']:
                 emotion = data['msg'][9:]
+                print("Receving " + emotion)
                 try:
                     self.friendEmojiLabel.configure(text=self.convert_emotion(str(emotion)))
                 except:
@@ -1113,10 +1114,13 @@ class app:
     def sendAI(self):
         #print(f"Sending {self.realTimeEmotion} to other socket")
         while True:
-            emotion = "$EMOTION:" + self.realTimeEmotion
-            self.client.sendall(emotion.encode())
-            print("Sending " + emotion)
-            time.sleep(2)
+            try:
+                emotion = "$EMOTION:" + self.realTimeEmotion
+                self.client.sendall(emotion.encode())
+                print("Sending " + emotion)
+                time.sleep(2)
+            except:
+                pass
 
     def calibrateThread(self):
         self.popup_window = tk.Toplevel(root)
