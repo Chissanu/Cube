@@ -266,7 +266,7 @@ class Processing:
 		# Model Data Calibration Constant Multiplier
 		self.model_calibration_constant = 170
 
-	def getDominantEmotion(self, table):
+	def getDominantEmotion(self, arr):
 		hmultiplier = 40
 		smultiplier = 2
 		nmultiplier = 1
@@ -274,13 +274,15 @@ class Processing:
 		dmultiplier = 10
 		sumultiplier = 8 
 		mullist = [hmultiplier,smultiplier,nmultiplier,amultiplier,dmultiplier,sumultiplier]
-		emolist = ["happy","sad","neutral","angry","disgust","surprise"]
+		emolist = ["happy","sad","neutral","angry","disgust","suprise"]
 
 		for i in range(6):
-			table[emolist[i]]*=mullist[i]
+			arr[i]*=arr[i]*mullist[i]
 
 		# print(table)
-		return max(table, key=table.get)
+		m = max(arr)
+		index = arr.index(m)
+		return emolist[index]
 	
 	# AI powered prediction from the custom gathered dataset. Result returns the absolute emotion value as a string
 	def getPredictedEmotion(self, data, calibration_constant):
