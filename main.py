@@ -1206,6 +1206,8 @@ class app:
             myProfile_hover = True
 
         # create sidebar
+        self.ai = self.db.getAI()
+        self.ai.stop_detection()
         sidebar_frame = customtkinter.CTkFrame(self.master, width=70, height=1080, corner_radius=0, fg_color=SIDE_BAR)
         sidebar_frame.grid(row=0, column=0, sticky="nsew")
         sidebar_frame.grid_propagate(0)
