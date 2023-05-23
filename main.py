@@ -351,27 +351,25 @@ class app:
     """
     def upload_image(self):
         # Open a file dialog to select an image file
-        try:
-            filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
-            self.ai = self.db.getAI()
-            self.ai.stop_detection()
-            self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
-            # self.add_message(data, "image")c2 2
-            chat_history = self.db.loadchat(self.curChatFriend)
-            data = {
-                'name' : self.curUser,
-                'msg'  : filepath
-            }
-            image = ""
-            for chat in chat_history:
-                if "https://" in chat_history[chat]['text']:
-                    image = chat_history[chat]['text']
+        filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        self.ai = self.db.getAI()
+        self.ai.stop_detection()
+        self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
+        # self.add_message(data, "image")c2 2
+        chat_history = self.db.loadchat(self.curChatFriend)
+        data = {
+            'name' : self.curUser,
+            'msg'  : filepath
+        }
+        image = ""
+        for chat in chat_history:
+            if "https://" in chat_history[chat]['text']:
+                image = chat_history[chat]['text']
 
-            self.send_message(image)
-            self.add_message(data,"image")
-            self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
-        except:
-            pass
+        self.send_message(image)
+        self.add_message(data,"image")
+        self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
+
         
     def send_text(self,e):
         self.ai = self.db.getAI()
@@ -1208,7 +1206,6 @@ class app:
         print("AI Has been turned off")
 
     def detectAI(self, name):
-        
         while True:
             self.realTimeEmotion = self.ai.real_time_emotion
             try:
@@ -1225,7 +1222,7 @@ class app:
                 emotion = "$EMOTION:" + self.realTimeEmotion
                 self.client.sendall(emotion.encode())
                 print("Sending " + emotion)
-                time.sleep(1)
+                time.sleep(2)
             except:
                 pass
 
@@ -1347,7 +1344,6 @@ class app:
         myProfile_label.grid(row = 3, column = 0, pady = (450, 25))
         logout_label.grid(row = 4, column = 0, pady = (30, 25))
         shutdown_label.grid(row = 5, column = 0, pady = (30, 25))
-
 
 
     def quit(self,e):
