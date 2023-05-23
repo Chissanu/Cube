@@ -461,7 +461,7 @@ class app:
 
         try:
             for index, key in enumerate(chat_history):
-                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
+                msgBox = ChatFrame(self.boxes_subframe,chat_history[key], self.curUser,self.curChatFriend, self.db.getFriendPic(friend), fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
                 # chatFrameList.append(msgBox)
                 if chat_history[key]["name"] == self.curUser:
                     msgBox.grid(row=index,column=0, ipady=10, sticky="e")
@@ -1075,10 +1075,11 @@ class app:
             # print(chatObject)
             if data['name'] != self.curUser:
                 profilePic = self.db.getFriendPic(data['name'])
+                friend = data['name']
             else:
                 profilePic = None
 
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, self.curChatFriend, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=False)
 
             if self.curUser == data['name']:
                 msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
@@ -1104,10 +1105,11 @@ class app:
             # print(chatObject)
             if data['name'] != self.curUser:
                 profilePic = self.db.getFriendPic(data['name'])
+                friend = data['name']
             else:
                 profilePic = None
 
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, friend, self.curChatFriend, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
 
             if self.curUser == data['name']:
                 msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
@@ -1169,6 +1171,7 @@ class app:
     def turnOnAI(self,name):
         print("Detecting")
         self.ai = self.db.getAI()
+        self.ai.stop_detection()
         sendAIThread = Thread(target=self.sendAI).start()
         self.ai.realTimeDetection(0, "Libs\Jessie_1.pt", self.calibrate)
         print("AI Has been turned off")

@@ -10,7 +10,7 @@ from Libs.Jessie import Processing, Detection
 from threading import Thread
 
 class ChatFrame(ctk.CTkFrame):
-    def __init__(self,master, chat, curUser, friendPic, bgColor, msgbox, textColor, emoji_time, uploadImage, **kwargs):
+    def __init__(self,master, chat, curUser, friendName, friendPic, bgColor, msgbox, textColor, emoji_time, uploadImage, **kwargs):
         super().__init__(master, **kwargs)
         self.master = master
         self.chat = chat
@@ -78,7 +78,7 @@ class ChatFrame(ctk.CTkFrame):
             self.emotion = ctk.CTkLabel(self.frame, text=self.convert_emotion(emotion),text_color=emoji_time, fg_color=bgColor, font=("Inter", 30))
             self.emotion.grid(row=0, column=0)
 
-        else:
+        elif chat['name'] == friendName:
             emotion = chat["emotion"]
 
             if msg[0:8]=="https://":
