@@ -476,6 +476,7 @@ class app:
                     
                 self.index += 1
         except Exception as e:
+            print("Displaying CHAT Error")
             print(e)
             print("no chat")
     """
