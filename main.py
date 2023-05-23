@@ -812,7 +812,7 @@ class app:
         editName_label.grid(row=1, column=2, pady=self.padName, padx=(10,20), sticky='e')
         self.bio_text.grid(row=2, column=1, padx=(0, 0), sticky='w')
         bio_label.grid(row=2, column=0, padx=(150, 0), pady=(5,0), sticky='n')
-        editBio_label.grid(row=2, column=0, padx=(10,20), sticky='ne')
+        editBio_label.grid(row=2, column=2, padx=(10,20), sticky='ne')
         name_howto.grid(row=0, column=1, sticky="se")
         partition.grid(row=3, column=0, columnspan=3, padx=(185, 0), sticky="w")
         self.emotion_subframe.grid(row=4, column=0, columnspan=3, padx=50, sticky="ne")
