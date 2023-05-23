@@ -1093,6 +1093,8 @@ class app:
                 except:
                     pass
                 return
+            else:
+                self.emotion = self.realTimeEmotion
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
             #print(date_time)
