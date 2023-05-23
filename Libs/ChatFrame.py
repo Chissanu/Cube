@@ -6,7 +6,8 @@ import emoji
 import requests
 from io import BytesIO
 import os
-
+from Libs.Jessie import Processing, Detection
+from threading import Thread
 
 class ChatFrame(ctk.CTkFrame):
     def __init__(self,master, chat, curUser, friendPic, bgColor, msgbox, textColor, emoji_time, uploadImage, **kwargs):
