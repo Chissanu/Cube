@@ -351,24 +351,27 @@ class app:
     """
     def upload_image(self):
         # Open a file dialog to select an image file
-        filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
-        self.ai = self.db.getAI()
-        self.ai.stop_detection()
-        self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
-        # self.add_message(data, "image")c2 2
-        chat_history = self.db.loadchat(self.curChatFriend)
-        data = {
-            'name' : self.curUser,
-            'msg'  : filepath
-        }
-        image = ""
-        for chat in chat_history:
-            if "https://" in chat_history[chat]['text']:
-                image = chat_history[chat]['text']
+        try:
+            filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+            self.ai = self.db.getAI()
+            self.ai.stop_detection()
+            self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
+            # self.add_message(data, "image")c2 2
+            chat_history = self.db.loadchat(self.curChatFriend)
+            data = {
+                'name' : self.curUser,
+                'msg'  : filepath
+            }
+            image = ""
+            for chat in chat_history:
+                if "https://" in chat_history[chat]['text']:
+                    image = chat_history[chat]['text']
 
-        self.send_message(image)
-        self.add_message(data,"image")
-        self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
+            self.send_message(image)
+            self.add_message(data,"image")
+            self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
+        except:
+            pass
         
     def send_text(self,e):
         self.ai = self.db.getAI()
