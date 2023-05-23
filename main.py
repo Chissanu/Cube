@@ -74,7 +74,7 @@ class app:
 
         self.calibrate = 70
 
-        self.setIP()
+        # self.setIP()
 
         self.main_menu()
         
@@ -146,20 +146,19 @@ class app:
         self.image = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "vaadin_cube.png")), size=(180, 180))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
 
-        tk.Label(self.master, text="Login", font=("Inter", 40), bg= BG2_COLOR).grid(column=1, row=1, pady=5, sticky=tk.N)
-
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
         username_label = customtkinter.CTkLabel(self.master, text="Username", font=("Inter", 20), text_color=GENERAL_TEXT)
         username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
 
-        username_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
+        password_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
         password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
 
         arrow_label.grid(row = 0, column = 0, padx=10, pady=10,sticky=tk.NW, columnspan=2)
         img_label.grid(column=1, row=0, pady=35)
+        tk.Label(self.master, text="Login", font=("Inter", 40), bg= BG2_COLOR).grid(column=1, row=1, pady=5, sticky=tk.N)
         username_label.grid(column=1, row=2, pady=(20,0), padx=(250,0), sticky=SW)
         username_entry.grid(column=1, row=3, sticky = N)
-        username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
+        password_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
         password_entry.grid(column=1, row=5, sticky = N)
         
         # create error frame
@@ -208,41 +207,40 @@ class app:
         # Arrow on top corner left
         self.arrow_logo = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "material-symbols_arrow-back.png")), size=(50, 50))
         arrow_label = customtkinter.CTkButton(self.master, image=self.arrow_logo, text="", width=0, fg_color=BG2_COLOR, command=self.main_menu)
+        arrow_label.grid(row = 0, column = 0, padx=10, pady=10, sticky=tk.NW, columnspan=2)
     
         # Cube logo
         self.image = customtkinter.CTkImage(Image.open(os.path.join("logostorage", "vaadin_cube.png")), size=(180, 180))
         img_label = customtkinter.CTkLabel(self.master, text="", image=self.image)
+        img_label.grid(column=1, row=0, pady=35)
 
         tk.Label(self.master, text="Register", font=("Inter", 40), bg=BG2_COLOR).grid(column=1, row=1, pady=5)
 
         # Insert text widget/ To add in sending data to firebase admin things after actual login attempt
         username_label = customtkinter.CTkLabel(self.master, text="Name", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=2, pady=(50,0), padx=(250,0), sticky=SW)
         name_entry = customtkinter.CTkEntry(self.master, placeholder_text="Name", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
+        name_entry.grid(column=1, row=3)
 
         username_label = customtkinter.CTkLabel(self.master, text="Username", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
         username_entry = customtkinter.CTkEntry(self.master, placeholder_text="Username", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
+        username_entry.grid(column=1, row=5)
 
         username_label = customtkinter.CTkLabel(self.master, text="Password", font=("Inter", 20), text_color=GENERAL_TEXT)
+        username_label.grid(column=1, row=6, pady=(20,0), padx=(250,0), sticky=SW)
         password_entry = customtkinter.CTkEntry(self.master, placeholder_text="Password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
+        password_entry.grid(column=1, row=7)
 
         username_label = customtkinter.CTkLabel(self.master, text="Confirm password", font=("Inter", 20), text_color=GENERAL_TEXT)
-        confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
-
-        arrow_label.grid(row = 0, column = 0, padx=10, pady=10, sticky=tk.NW, columnspan=2)
-        img_label.grid(column=1, row=0, pady=35)
-        username_label.grid(column=1, row=4, pady=(20,0), padx=(250,0), sticky=SW)
-        username_entry.grid(column=1, row=5)
-        username_label.grid(column=1, row=6, pady=(20,0), padx=(250,0), sticky=SW)
-        password_entry.grid(column=1, row=7)
         username_label.grid(column=1, row=8, pady=(20,0), padx=(250,0), sticky=SW)
+        confirm_entry = customtkinter.CTkEntry(self.master, placeholder_text="Confirm password", show="*", font=("Inter", 20), corner_radius=15, text_color=GENERAL_TEXT, fg_color=INPUT_BOX, width=500, height=60)
         confirm_entry.grid(column=1, row=9)
 
         # create error frame
         errReg_frame = customtkinter.CTkFrame(self.master, width=500, height=100, corner_radius=0, fg_color=BG2_COLOR)
         errReg_frame.grid(row=10, column=1, rowspan=2)
         errReg_frame.grid_propagate(0)
-        username_label.grid(column=1, row=2, pady=(50,0), padx=(250,0), sticky=SW)
-        name_entry.grid(column=1, row=3)
 
         # setting up error frame 
         Grid.columnconfigure(errReg_frame,0,weight=1)
@@ -1019,6 +1017,29 @@ class app:
 
             self.setting()
         if colorTheme == 1:
+            # color palatte
+            BG_COLOR = "#FFD460"
+            # BG2_COLOR = "#7DB9B6"
+            LIGHT_BG = "#FDE299"
+            GENERAL_TEXT = "#000000"
+            INPUT_TEXT = "#989898"
+            INPUT_BOX = "#FFFFFF"
+            BUTTON = "#2D4059"
+            BUTTON_TEXT = "#FFFFFF"
+            FRIEND_LIST = "#EA5455"
+            SIDE_BAR = "#2D4059"
+            REQUEST_LIST = "#FF8586"
+            PROFILE_INFO = "#FFFFFF"
+            ADD_SHOWINFO = "#F2E5E5"
+            BIO_ADD = "#FFFFFF"
+            MSG_BOX = "#FFFFFF"
+            MSG_TEXT = "#000000"
+            EMOJIANDTIME = "#000000"
+            TOPBUTT_BAR = "#2D4059"
+            TOPBUTT_TEXT = "#FFFFFF"
+
+            self.setting()
+        if colorTheme == 2:
             # color palatte
             BG_COLOR = "#FFD460"
             # BG2_COLOR = "#7DB9B6"
