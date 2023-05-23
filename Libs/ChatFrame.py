@@ -26,11 +26,10 @@ class ChatFrame(ctk.CTkFrame):
                 print("---no emotion---")
                 emotion = "neutral"
 
-            if msg[0:8]=="https://":
+            if msg[0:8] in "https://":
                 response = requests.get(msg)
                 image_data = response.content
                 image = Image.open(BytesIO(image_data))
-                
                 # Resize the image
                 width, height = image.size
                 if width > self.threshold or height > self.threshold:
@@ -86,6 +85,7 @@ class ChatFrame(ctk.CTkFrame):
                 image_data = response.content
                 image = Image.open(BytesIO(image_data))
                 
+                width, height = image.size
                 # Resize the image
                 if width > self.threshold or height > self.threshold:
                     # Calculate the aspect ratio
