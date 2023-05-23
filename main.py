@@ -352,14 +352,19 @@ class app:
     def upload_image(self):
         # Open a file dialog to select an image file
         filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        self.ai = self.db.getAI()
+        self.ai.stop_detection()
         data = {
                 "name" : self.curUser,
                 "msg" : filepath
                 }
         self.add_message(data, "image")
         self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
+        self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
         
     def send_text(self,e):
+        self.ai = self.db.getAI()
+        self.ai.stop_detection()
         if self.chat_entry.get().strip() != '':
             msg = str(self.chat_entry.get())
 
@@ -375,6 +380,7 @@ class app:
 
             self.db.send(str(msg),self.curChatFriend,self.realTimeEmotion)
             self.chat_entry.delete(0, END)
+        self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
     
     def display_chat(self, friend):
         for i in self.topbar_subframe.winfo_children():
@@ -468,6 +474,7 @@ class app:
                     
                 self.index += 1
         except Exception as e:
+            print("Displaying CHAT Error")
             print(e)
             print("no chat")
     """
