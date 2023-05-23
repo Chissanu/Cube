@@ -354,11 +354,20 @@ class app:
         filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg")])
         self.ai = self.db.getAI()
         self.ai.stop_detection()
+
+        # self.add_message(data, "image")
+        chat_history = self.db.loadchat(self.curChatFriend)
+
         data = {
-                "name" : self.curUser,
-                "msg" : filepath
-                }
-        self.add_message(data, "image")
+            'name' : self.curUser,
+            'msg'  : filepath
+        }
+        for chat in chat_history:
+            if "https://" in chat_history[chat]['text']:
+                image = chat_history[chat]['text']
+
+        self.send_message(image)
+        self.add_message(data,"image")
         self.db.send(filepath, self.curChatFriend, self.realTimeEmotion)
         self.realTimeAI = Thread(target=self.turnOnAI, args=(1,)).start()
         
