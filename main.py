@@ -1126,11 +1126,10 @@ class app:
             # print(chatObject)
             if data['name'] != self.curUser:
                 profilePic = self.db.getFriendPic(data['name'])
-                friend = data['name']
             else:
                 profilePic = None
 
-            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, friend, self.curChatFriend, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
+            msgBox = ChatFrame(self.boxes_subframe,chatObject, self.curUser, self.curChatFriend,profilePic, width=1355, height=100, fg_color = BG_COLOR, bgColor=BG_COLOR, msgbox=MSG_BOX, textColor=MSG_TEXT, emoji_time=EMOJIANDTIME, uploadImage=True)
 
             if self.curUser == data['name']:
                 msgBox.grid(row=self.index,column=0, ipady=10, sticky="e")
@@ -1215,7 +1214,7 @@ class app:
                 emotion = "$EMOTION:" + self.realTimeEmotion
                 self.client.sendall(emotion.encode())
                 print("Sending " + emotion)
-                time.sleep(2)
+                time.sleep(1)
             except:
                 pass
 
