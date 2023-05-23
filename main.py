@@ -1086,16 +1086,17 @@ class app:
         if inputType == "text":
             print(data['msg'])
             if "$EMOTION:" in data['msg']:
-                emotion = data['msg'][9:]
-                print("Receving " + emotion)
+                self.emotion = data['msg'][9:]
+                print("Receving " + self.emotion)
                 try:
-                    self.friendEmojiLabel.configure(text=self.convert_emotion(str(emotion)))
+                    self.friendEmojiLabel.configure(text=self.convert_emotion(str(self.emotion)))
                 except:
                     pass
                 return
             now = datetime.now()
             date_time = now.strftime("%m/%d/%Y %H:%M")
             #print(date_time)
+            self.realTimeEmotion = self.emotion
             chatObject = {
                 "text": data['msg'],
                 "time": date_time,
